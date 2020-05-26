@@ -36,10 +36,10 @@ public class NotificationsFragment extends Fragment implements onBackPressed {
     }
 
 
-    private RecyclerView recyclerView;
-    private NotificationAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private List<NotificationModel> list;
+    private RecyclerView recyclerView,mRecyclerView;
+    private NotificationAdapter mAdapter,mmAdapter;
+    private RecyclerView.LayoutManager mLayoutManager,mmLayoutManager;
+    private List<NotificationModel> list,mlist;
 
 
     private DatabaseReference mDatabaseRef;
@@ -52,32 +52,63 @@ public class NotificationsFragment extends Fragment implements onBackPressed {
 
         View view = inflater.inflate(R.layout.fragment_notification, container, false);
         list = new ArrayList<>();
-        recyclerView = view.findViewById(R.id.recycler_notification);
+        mlist = new ArrayList<>();
+
+        recyclerView = view.findViewById(R.id.recycler_notification_global);
         recyclerView.setHasFixedSize(true);
+
+        mRecyclerView = view.findViewById(R.id.recycler_notification_personal);
+        mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext());
+        mmLayoutManager = new LinearLayoutManager(getContext());
+
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
 
         showNotification();
 
+        showPersonalNotification();
 
 
         return view;
     }
 
-    private void showNotification() {
-        list.clear();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("NOTIFICATION");
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+    private void showPersonalNotification() {
+        mlist.clear();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("InstructorNotification").child(user.getUid());
+        mDatabaseRef.limitToLast(100).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds: dataSnapshot.getChildren())
                 {
                     Log.d(TAG,ds.getValue()+"");
                     NotificationModel model = ds.getValue(NotificationModel.class);
-                    list.add(model);
+                    mlist.add(0,model);
                 }
-                Collections.reverse(list);
+                mmAdapter = new NotificationAdapter(mlist,getContext());
+                mRecyclerView.setLayoutManager(mmLayoutManager);
+                mRecyclerView.setAdapter(mmAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void showNotification() {
+        list.clear();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("NOTIFICATION");
+        mDatabaseRef.limitToLast(25).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds: dataSnapshot.getChildren())
+                {
+                    Log.d(TAG,ds.getValue()+"");
+                    NotificationModel model = ds.getValue(NotificationModel.class);
+                    list.add(0,model);
+                }
                 mAdapter = new NotificationAdapter(list,getContext());
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(mAdapter);

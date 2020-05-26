@@ -22,17 +22,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".SplashScreen_Activity" android:theme="@style/Theme.AppCompat.NoActionBar">
-
+        <activity android:name=".InstructorLogin"></activity>
+        <activity
+            android:name=".SplashScreen_Activity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".category_view.routine.addRoutine" />
+        <activity android:name=".category_view.routine.addRoutine"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            />
         <activity android:name=".SignUpNextScreen" />
-        <activity android:name=".category_view.Courses.upload_course" />
+        <activity android:name=".category_view.Courses.upload_course"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            />
         <activity
             android:name=".ChatBox.ChatWithInstructor"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -40,6 +46,7 @@
         <activity
             android:name=".Login"
             android:configChanges="orientation|screenSize|keyboardHidden"
+
             android:launchMode="singleTop" />
         <activity
             android:name=".Demo.demo2"
@@ -66,27 +73,26 @@
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
 
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
-
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
-
-
 
         <meta-data
             android:name="com.razorpay.ApiKey"

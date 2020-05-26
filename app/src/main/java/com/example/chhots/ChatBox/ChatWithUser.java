@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chhots.Notificatios.Client;
@@ -44,7 +45,8 @@ public class ChatWithUser extends AppCompatActivity {
 
 
     EditText message;
-    ImageView send_message;
+    ImageView send_message,peopleImage;
+    TextView peopleName;
     private String people_id,routineId;
     private String userId;
     private String TAG = "ChatWithInstructor12345";
@@ -118,7 +120,7 @@ public class ChatWithUser extends AppCompatActivity {
     }
 
     private void showMessage() {
-        databaseReference.child("CHAT").child("Instructor").child(userId).child(routineId).child(people_id)
+        databaseReference.child(getString(R.string.CHAT)).child("Instructor").child(userId).child(routineId).child(people_id)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -154,7 +156,7 @@ public class ChatWithUser extends AppCompatActivity {
         MessageModel model = new MessageModel(mess,time,0,"");
 
             //instructor is sending a message
-            databaseReference.child("CHAT").child("Instructor").child(userId).child(routineId).child(people_id).child(time).setValue(model);
+            databaseReference.child(getString(R.string.CHAT)).child("Instructor").child(userId).child(routineId).child(people_id).child(time).setValue(model);
             model.setFlag(1);
             databaseReference.child("CHAT").child("Users").child(people_id).child(routineId).child(time).setValue(model);
 

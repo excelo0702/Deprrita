@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.chhots.InstructorInfoModel;
 import com.example.chhots.R;
 import com.example.chhots.category_view.routine.RoutineThumbnailModel;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,6 +44,7 @@ public class ApproveVideo extends Fragment {
     private List<RoutineThumbnailModel> list;
 
     private FirebaseUser user;
+    private InstructorInfoModel User_model;
 
 
     @Override
@@ -59,10 +61,28 @@ public class ApproveVideo extends Fragment {
 
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
+        fetchUserInfo();
+
         fetchRoutine();
 
 
         return view;
+    }
+
+    private void fetchUserInfo() {
+        mDatabaseReference.child(getString(R.string.InstructorInfo)).child(user.getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User_model = dataSnapshot.getValue(InstructorInfoModel.class);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     private void fetchRoutine() {
@@ -73,7 +93,7 @@ public class ApproveVideo extends Fragment {
                    for(DataSnapshot ds: dataSnapshot.getChildren())
                    {
                        RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
-                       if(model.getInstructor_name().equals(user.getUid()))
+                       if(model.getInstructorId().equals(user.getUid()))
                        {
                            list.add(0,model);
                        }

@@ -27,8 +27,30 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/notification_text"
             android:layout_margin="10dp"
-            android:id="@+id/recycler_notification"
+            android:id="@+id/recycler_notification_global"
             ></androidx.recyclerview.widget.RecyclerView>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Peronal Notification "
+                    android:textSize="20dp"
+                    android:layout_below="@id/recycler_notification_global"
+                    android:textStyle="bold"
+                    android:layout_marginRight="10dp"
+                    android:id="@+id/ttt"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="#000000"></TextView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_below="@id/ttt"
+                    android:id="@+id/recycler_notification_personal"
+                    ></androidx.recyclerview.widget.RecyclerView>
 
 
 

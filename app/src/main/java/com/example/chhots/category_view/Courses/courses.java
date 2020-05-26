@@ -83,14 +83,6 @@ public class courses extends Fragment {
         View view = inflater.inflate(R.layout.fragment_courses, container, false);
         upload_btn = view.findViewById(R.id.upload_course);
 
-//        loadingDialog.startLoadingDialog();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loadingDialog.DismissDialog();
-            }
-        },3000);
         databaseReference = FirebaseDatabase.getInstance().getReference("");
         upload_btn.setOnClickListener(new View.OnClickListener() {
             @Override

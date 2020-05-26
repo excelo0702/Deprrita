@@ -6,11 +6,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chhots.Notificatios.Client;
@@ -19,7 +21,7 @@ import com.example.chhots.Notificatios.MyResponse;
 import com.example.chhots.Notificatios.Sender;
 import com.example.chhots.Notificatios.Token;
 import com.example.chhots.R;
-import com.example.chhots.UserInfoModel;
+import com.example.chhots.InstructorInfoModel;
 import com.example.chhots.ui.Dashboard.ApproveVideo.ChatPeopleModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,9 +34,15 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,7 +53,9 @@ public class ChatWithInstructor extends AppCompatActivity {
 
 
     EditText message;
-    ImageView send_message;
+
+    ImageView send_message,peopleImage;
+    TextView peopleName;
     private String instructor_id,routineId,category,peopleId;
     private String userId;
     private String TAG = "ChatWithInstructor12345";
@@ -56,7 +66,7 @@ public class ChatWithInstructor extends AppCompatActivity {
     private MessageAdapter adapter;
 
     String instructorImage,instructorName;
-    String userImage,userName;
+    String userImage,userName,localtime;
 
     FirebaseAuth auth;
     FirebaseUser user;
@@ -87,21 +97,18 @@ public class ChatWithInstructor extends AppCompatActivity {
         send_video = findViewById(R.id.send_video_chat);
         adapter = new MessageAdapter(ChatWithInstructor.this,list);
 
+
+        peopleImage = findViewById(R.id.people_profile_image);
+        peopleName = findViewById(R.id.people_profile_name);
+
         apiService = Client.getClient("https:/fcm.googleapis.com/").create(APIService.class);
 
 
-        if(category.equals("USER")) {
-            instructor_id = intent.getStringExtra("instructorId");
-            routineId = intent.getStringExtra("routineId");
-
-            fetchUserInfo();
-            fetchInstructorInfo();
-        }
-        else if(category.equals("INSTRUCTOR"))
-        {
             routineId = intent.getStringExtra("routineId");
             peopleId = intent.getStringExtra("peopleId");
-        }
+
+        fetchInstructorInfo();
+        fetchPeopleInfo();
 
 
         FirebaseInstanceId.getInstance().getInstanceId()
@@ -129,14 +136,19 @@ public class ChatWithInstructor extends AppCompatActivity {
             }
         });
     }
-    private void fetchUserInfo()
-    {
-        databaseReference.child("UserInfo").child(userId).addValueEventListener(new ValueEventListener() {
+
+
+    private void fetchPeopleInfo() {
+
+        databaseReference.child("UserInfo").child(peopleId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                UserInfoModel model = dataSnapshot.getValue(UserInfoModel.class);
-                userName = model.getUserName();
-                userImage = model.getUserImageurl();
+
+                //TODO:maybe we have to create UserInfoModel
+
+                InstructorInfoModel model = dataSnapshot.getValue(InstructorInfoModel.class);
+                peopleName.setText(model.getUserName());
+                Picasso.get().load(Uri.parse(model.getUserImageurl())).into(peopleImage);
             }
 
             @Override
@@ -148,10 +160,10 @@ public class ChatWithInstructor extends AppCompatActivity {
 
     private void fetchInstructorInfo()
     {
-        databaseReference.child("UserInfo").child(instructor_id).addValueEventListener(new ValueEventListener() {
+        databaseReference.child(getString(R.string.InstructorInfo)).child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                UserInfoModel model = dataSnapshot.getValue(UserInfoModel.class);
+                InstructorInfoModel model = dataSnapshot.getValue(InstructorInfoModel.class);
                 instructorName = model.getUserName();
                 instructorImage = model.getUserImageurl();
             }
@@ -164,6 +176,7 @@ public class ChatWithInstructor extends AppCompatActivity {
     }
 
 
+
     private void sendVideo() {
     }
 
@@ -171,28 +184,17 @@ public class ChatWithInstructor extends AppCompatActivity {
     {
         String mess = message.getText().toString();
         String time = System.currentTimeMillis()+"";
-        MessageModel model = new MessageModel(mess,time,0,"");
 
-        if(category.equals("USER")) {
-            // user is sending a message
-            model.setFlag(1);
-            databaseReference.child("CHAT").child("Instructor").child(instructor_id).child(routineId).child(userId).child(time).setValue(model);
-            model.setFlag(0);
-            databaseReference.child("CHAT").child("Users").child(userId).child(routineId).child(time).setValue(model);
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+5:30"));
+        Date currentLocalTime = cal.getTime();
+        DateFormat date = new SimpleDateFormat("HH:mm a");
+        date.setTimeZone(TimeZone.getTimeZone("GMT+5:30"));
+
+        localtime = date.format(currentLocalTime);
+        MessageModel model = new MessageModel(mess,localtime,0,"");
 
 
-            sendNotification(instructor_id, userName, mess);
-            notify = false;
 
-            ChatPeopleModel mode1 = new ChatPeopleModel(userId, userImage, userName);
-            databaseReference.child("CHAT_LIST").child(instructor_id).child(userId).setValue(mode1);
-
-            ChatPeopleModel mode2 = new ChatPeopleModel(instructor_id, instructorImage, instructorName);
-            databaseReference.child("CHAT_LIST").child(userId).child(instructor_id).setValue(mode1);
-            message.setText("");
-        }
-        else if(category.equals("INSTRUCTOR"))
-        {
             //instructor is sending a message
             model.setFlag(0);
             databaseReference.child("CHAT").child("Instructor").child(userId).child(routineId).child(peopleId).child(time).setValue(model);
@@ -203,7 +205,7 @@ public class ChatWithInstructor extends AppCompatActivity {
 
 
             message.setText("");
-        }
+
 
 
 
@@ -256,7 +258,7 @@ public class ChatWithInstructor extends AppCompatActivity {
     {
         Log.d(TAG,"show");
 
-            databaseReference.child("CHAT").child("Users").child(userId).child(routineId)
+            databaseReference.child("CHAT").child("Instructor").child(userId).child(routineId).child(peopleId)
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

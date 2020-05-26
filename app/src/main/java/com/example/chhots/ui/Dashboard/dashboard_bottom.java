@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.chhots.R;
-import com.example.chhots.UserInfoModel;
+import com.example.chhots.InstructorInfoModel;
 import com.example.chhots.ui.Dashboard.HistoryPackage.history;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -70,11 +70,11 @@ public class dashboard_bottom extends Fragment {
 
         auth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("UserInfo").child(auth.getCurrentUser().getUid())
+        databaseReference.child("InstructorInfo").child(auth.getCurrentUser().getUid())
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        UserInfoModel model = dataSnapshot.getValue(UserInfoModel.class);
+                        InstructorInfoModel model = dataSnapshot.getValue(InstructorInfoModel.class);
                         Picasso.get().load(Uri.parse(model.getUserImageurl())).into(userImage);
                         userName.setText(model.getUserName());
                     }

@@ -30,7 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chhots.R;
-import com.example.chhots.UserInfoModel;
+import com.example.chhots.InstructorInfoModel;
 import com.example.chhots.ui.Dashboard.HistoryPackage.HistoryModel;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -87,7 +87,7 @@ public class See_Video extends Fragment {
 
     List<CommentModel> list;
     String htitle,hvideoName,hthumbnail;
-    UserInfoModel usermodel;
+    InstructorInfoModel usermodel;
     int k=0;
     String s="";
 
@@ -154,11 +154,12 @@ public class See_Video extends Fragment {
         });
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("");
-        mDatabaseRef.child("UserInfo").child(user.getUid())
+        mDatabaseRef.child(getString(R.string.InstructorInfo)).child(user.getUid())
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        usermodel = dataSnapshot.getValue(UserInfoModel.class);
+                        Toast.makeText(getContext(),"Fetched",Toast.LENGTH_SHORT).show();
+                        usermodel = dataSnapshot.getValue(InstructorInfoModel.class);
                     }
 
                     @Override

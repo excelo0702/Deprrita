@@ -155,7 +155,6 @@ public class upload_video extends Fragment implements onBackPressed {
         storageReference = FirebaseStorage.getInstance().getReference();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),R.array.category_list,android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -253,6 +252,7 @@ public class upload_video extends Fragment implements onBackPressed {
             description.setVisibility(View.VISIBLE);
             spinner.setVisibility(View.VISIBLE);
             uploadBtn.setVisibility(View.VISIBLE);
+
 
             fullScreen = false;
         }

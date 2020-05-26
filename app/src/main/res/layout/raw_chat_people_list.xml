@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:id="@+id/people_profile"
-        android:src="@color/Smurfogreen"></ImageView>
+        android:src="@color/Smurfogreen"></de.hdodenhof.circleimageview.CircleImageView>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="People Name"
         android:id="@+id/people_name"
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        android:padding="5dp"
         android:layout_toRightOf="@id/people_profile"></TextView>
 
 

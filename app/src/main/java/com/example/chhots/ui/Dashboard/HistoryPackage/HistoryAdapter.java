@@ -55,7 +55,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.value = historylist.get(position).getId();
         holder.date.setText(historylist.get(position).getDate());
         holder.category = historylist.get(position).getCategory();
-        Picasso.get().load(Uri.parse(historylist.get(position).getUrl())).resize(70,70).into(holder.image);
+    //    Picasso.get().load(Uri.parse(historylist.get(position).getUrl())).into(holder.image);
     }
 
     @Override

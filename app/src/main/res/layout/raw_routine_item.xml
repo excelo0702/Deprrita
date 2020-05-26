@@ -10,9 +10,8 @@
     <androidx.cardview.widget.CardView
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:padding="15dp"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="30dp">
+        android:paddingTop="15dp"
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,16 +23,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:text="Title"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="5dp"
                 android:textSize="20dp"
                 android:layout_marginTop="10dp"
                 android:id="@+id/video_adapter_title"></TextView>
 
             <ImageView
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="200dp"
-
-                android:layout_margin="15dp"
+                android:background="@color/black"
                 android:src="@drawable/smurfooo"
                 android:id="@+id/video_view_item"></ImageView>
 
@@ -42,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:text="21035"
                 android:id="@+id/video_views"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="5dp"
                 android:textSize="14dp"
                 ></TextView>
 
@@ -60,6 +58,7 @@
                     android:layout_height="30dp"
                     android:id="@+id/video_likes"
                     android:layout_marginLeft="15dp"
+                    android:layout_weight="1"
                     app:srcCompat="@drawable/ic_thumb_up"
                     ></ImageView>
 
@@ -70,34 +69,19 @@
                     android:textSize="20dp"
                     android:id="@+id/video_likess"
                     android:layout_marginRight="15dp"
+                    android:layout_weight="1"
                     android:text="21"
                     ></TextView>
 
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:id="@+id/video_downvote"
-                    android:layout_marginLeft="15dp"
-                    app:srcCompat="@drawable/ic_thumb_down_black_24dp"
-                    ></ImageView>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberSigned"
-                    android:textSize="20dp"
-                    android:id="@+id/video_downvotee"
-
-                    android:layout_marginRight="10dp"
-                    android:text="21"
-                    ></TextView>
 
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:id="@+id/video_share"
+                    android:layout_weight="1"
+
                     app:srcCompat="@drawable/ic_share_black_24dp"
                     android:layout_marginLeft="15dp"
                     ></ImageView>
@@ -107,6 +91,8 @@
                     android:layout_height="wrap_content"
                     android:inputType="numberSigned"
                     android:textSize="20dp"
+                    android:layout_weight="1"
+
                     android:layout_marginRight="16dp"
                     android:id="@+id/video_sharee"
 
@@ -119,6 +105,8 @@
                     android:layout_height="30dp"
                     android:id="@+id/video_comment"
                     android:layout_marginLeft="18dp"
+                    android:layout_weight="1"
+
                     app:srcCompat="@drawable/ic_comment_black_24dp"
                     ></ImageView>
 
@@ -128,6 +116,8 @@
                     android:inputType="numberSigned"
                     android:textSize="16dp"
                     android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+
                     android:id="@+id/video_commentt"
                     android:text="Comment"
                     ></TextView>

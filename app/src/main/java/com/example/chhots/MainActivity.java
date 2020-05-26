@@ -9,7 +9,6 @@ import android.os.Bundle;
 import com.example.chhots.bottom_navigation_fragments.Calendar.calendar;
 import com.example.chhots.bottom_navigation_fragments.Explore.explore;
 import com.example.chhots.bottom_navigation_fragments.Explore.upload_video;
-import com.example.chhots.bottom_navigation_fragments.trending;
 import com.example.chhots.category_view.Contest.form_contest;
 import com.example.chhots.category_view.Courses.course_purchase_view;
 import com.example.chhots.category_view.Courses.video_course;
@@ -27,7 +26,6 @@ import com.example.chhots.User_Profile.userprofile;
 import com.example.chhots.ui.notifications.NotificationsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import android.os.Handler;
 import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -81,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
     Button chatBtn;
     ActionBarDrawerToggle t;
     LoadingDialog loadingDialog;
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = "MainActivity1";
 
 
 
@@ -186,13 +184,14 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
             login.setText(user.getEmail());
             login.setPaintFlags(login.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
 
-            Query query = databaseReference.child("UserInfo").child(auth.getCurrentUser().getUid());
+            Query query = databaseReference.child(getString(R.string.InstructorInfo)).child(auth.getCurrentUser().getUid());
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    UserInfoModel model = dataSnapshot.getValue(UserInfoModel.class);
-                   // login.setText(model.getUserName());
-                    //Picasso.get().load(Uri.parse(model.getUserImageurl())).placeholder(R.mipmap.ic_logo).into(user_profile_header);
+                    InstructorInfoModel model = dataSnapshot.getValue(InstructorInfoModel.class);
+                    Log.d(TAG,dataSnapshot.getValue()+"");
+                      login.setText(model.getUserName());
+                      Picasso.get().load(Uri.parse(model.getUserImageurl())).placeholder(R.mipmap.ic_logo).into(user_profile_header);
                 }
 
                 @Override
@@ -320,10 +319,10 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
 
     public void setFragment(Fragment fragment)
     {
+        bottomNavigationView.setVisibility(View.VISIBLE);
+        bottomNavigationView.setEnabled(true);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.drawer_layout,fragment);
-
-
         fragmentTransaction.commit();
     }
 

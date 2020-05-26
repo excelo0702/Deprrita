@@ -38,7 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chhots.R;
-import com.example.chhots.UserInfoModel;
+import com.example.chhots.InstructorInfoModel;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -68,7 +68,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static android.view.View.GONE;
 import static com.paytm.pgsdk.easypay.manager.PaytmAssist.getContext;
 
 public class addRoutine extends AppCompatActivity {
@@ -809,10 +808,10 @@ public class addRoutine extends AppCompatActivity {
 
     private void fetchUserInfo()
     {
-        mDatabaseReference.child("UserInfo").child(user.getUid()).addValueEventListener(new ValueEventListener() {
+        mDatabaseReference.child(getString(R.string.InstructorInfo)).child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                UserInfoModel model = dataSnapshot.getValue(UserInfoModel.class);
+                InstructorInfoModel model = dataSnapshot.getValue(InstructorInfoModel.class);
                 userName = model.getUserName();
                 userImage = model.getUserImageurl();
             }

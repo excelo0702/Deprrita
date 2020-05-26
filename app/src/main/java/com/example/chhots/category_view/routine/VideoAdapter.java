@@ -126,8 +126,8 @@ public class VideoAdapter extends
      */
     public class VideoViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView title,upvote,downvote,comments,share,views;
-        public ImageView upvote_icon,downvote_icon,comment_icon,share_icon;
+        public TextView title,upvote,comments,share,views;
+        public ImageView upvote_icon,comment_icon,share_icon;
         public ImageView videoview;
         String value,isSusbscribed,isPurchased,sub_category,thumbnail,userId;
 
@@ -140,12 +140,10 @@ public class VideoAdapter extends
 
             title = view.findViewById(R.id.video_adapter_title);
             upvote = view.findViewById(R.id.video_likess);
-            downvote = view.findViewById(R.id.video_downvotee);
             share = view.findViewById(R.id.video_sharee);
             comments = view.findViewById(R.id.video_commentt);
             views = view.findViewById(R.id.video_views);
             upvote_icon = view.findViewById(R.id.video_likes);
-            downvote_icon = view.findViewById(R.id.video_downvote);
             share_icon = view.findViewById(R.id.video_share);
             comment_icon = view.findViewById(R.id.video_comment);
             videoview = view.findViewById(R.id.video_view_item);

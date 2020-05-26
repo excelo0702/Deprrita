@@ -119,6 +119,7 @@ public class hostContest extends Fragment {
                         mPopupWindow.dismiss();
                     }
                 });
+                select_date.setText(date_text);
 
 
             }

@@ -23,11 +23,11 @@
         android:layout_margin="10dp"
         android:orientation="horizontal">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="@dimen/dp40"
             android:layout_height="@dimen/dp40"
             android:src="@drawable/image"
-            android:id="@+id/instructor_profile_image"
+            android:id="@+id/people_profile_image"
             />
 
         <TextView
@@ -36,7 +36,8 @@
             android:text="Instructor Name"
             android:textSize="@dimen/text20"
             android:layout_marginStart="@dimen/margin10"
-            android:id="@+id/instructor_profile_name"
+            android:textColor="@color/black"
+            android:id="@+id/people_profile_name"
             />
 
     </LinearLayout>

@@ -84,7 +84,6 @@ public class ContestAdapter extends PagerAdapter {
         System.out.println(models.get(position).getImageUrl()+"  jjjj");
 
         ImageView img1 = (ImageView)view.findViewById(R.id.contest_view);
-        TextView txt1 = (TextView)view.findViewById(R.id.participate);
         TextView txt2 = view.findViewById(R.id.contest_leaderboard);
         relativeLayout = view.findViewById(R.id.rr1);
 
@@ -165,23 +164,6 @@ public class ContestAdapter extends PagerAdapter {
         });
 
 
-        txt1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth auth = FirebaseAuth.getInstance();
-
-                if(auth.getCurrentUser()==null)
-                {
-                    Toast.makeText(context,"To participate in contest you have to first login",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getContext(), Login.class);
-                    context.startActivity(intent);
-                }
-                else {
-                    setFragment(new form_contest(),info,contestId,models.get(position).getImageUrl());
-                    //TODO: also need to send data
-                }
-            }
-        });
         container.addView(view);
 
         return view;

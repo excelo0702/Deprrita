@@ -1,16 +1,34 @@
 package com.example.chhots;
 
-public class UserInfoModel {
-    private String userId,userEmail,userProfession,userLevel,userImageurl,userName;
+public class InstructorInfoModel {
+    private String userId,userEmail,userProfession,userLevel,userImageurl,userName,points,badge;
     private int r1,r2,r3,r4,r5,r6;
 
-    public UserInfoModel(String userId, String userEmail, String userProfession, String userLevel, String userImageurl, String userName, int r1, int r2, int r3, int r4, int r5, int r6) {
+    public String getPoints() {
+        return points;
+    }
+
+    public void setPoints(String points) {
+        this.points = points;
+    }
+
+    public String getBadge() {
+        return badge;
+    }
+
+    public void setBadge(String badge) {
+        this.badge = badge;
+    }
+
+    public InstructorInfoModel(String userId, String userEmail, String userProfession, String userLevel, String userImageurl, String userName, String points, String badge, int r1, int r2, int r3, int r4, int r5, int r6) {
         this.userId = userId;
         this.userEmail = userEmail;
         this.userProfession = userProfession;
         this.userLevel = userLevel;
         this.userImageurl = userImageurl;
         this.userName = userName;
+        this.points = points;
+        this.badge = badge;
         this.r1 = r1;
         this.r2 = r2;
         this.r3 = r3;
@@ -115,7 +133,7 @@ public class UserInfoModel {
         this.r6 = r6;
     }
 
-    public UserInfoModel() {
+    public InstructorInfoModel() {
     }
 
 

@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.provider.MediaStore;
 import android.util.Log;
@@ -35,16 +33,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.example.chhots.PaymentListener;
 import com.example.chhots.R;
-import com.example.chhots.UserClass;
-import com.example.chhots.UserInfoModel;
+import com.example.chhots.InstructorInfoModel;
 import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
-import com.example.chhots.category_view.routine.routine_view;
 import com.example.chhots.onBackPressed;
-import com.example.chhots.ui.notifications.NotificationModel;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -169,10 +163,10 @@ public class form_contest extends Fragment implements onBackPressed, PaymentList
 
     private void fetchUserInfo()
     {
-        databaseReference.child("UserInfo").child(user.getUid()).addValueEventListener(new ValueEventListener() {
+        databaseReference.child(getString(R.string.InstructorInfo)).child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                UserInfoModel model = dataSnapshot.getValue(UserInfoModel.class);
+                InstructorInfoModel model = dataSnapshot.getValue(InstructorInfoModel.class);
                 userName.setText( model.getUserName());
             }
 
