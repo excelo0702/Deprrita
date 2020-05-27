@@ -87,12 +87,12 @@ public class video_course extends Fragment implements onBackPressed {
         playerView.setBackgroundColor(Color.parseColor("#000000"));
         rr4 =view.findViewById(R.id.rr4);
 
-        fullScreenButton.setOnClickListener(new View.OnClickListener() {
+  /*      fullScreenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FullScreen();
             }
-        });
+        });*/
         return view;
     }
 
@@ -162,11 +162,6 @@ public class video_course extends Fragment implements onBackPressed {
             params.height = params.MATCH_PARENT;
             params.width = params.MATCH_PARENT;
 
-
-            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)rr4.getLayoutParams();
-            param.height = param.MATCH_PARENT;
-            param.width = param.MATCH_PARENT;
-            rr4.setLayoutParams(param);
 
             playerView.setBackgroundColor(Color.parseColor("#000000"));
             playerView.setLayoutParams(params);

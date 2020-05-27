@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.chhots.Login;
+import com.example.chhots.InstructorLogin;
+import com.example.chhots.LoadingDialog;
 import com.example.chhots.R;
 import com.example.chhots.UserClass;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,6 +43,7 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
     private List<RoutineThumbnailModel> list;
     private Context context;
     private final String TAG = "RoutineAdapter1";
+    int selected=-1;
 
     public RoutineAdapter(List<RoutineThumbnailModel> list, Context context) {
         this.list = list;
@@ -61,6 +64,10 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
 
     @Override
     public void onBindViewHolder(@NonNull RoutineView holder, int position) {
+
+
+
+
         holder.title.setText(list.get(position).getTitle());
         holder.instructor_name.setText(list.get(position).getInstructor_name());
         holder.level.setText(list.get(position).getRoutine_level());
@@ -85,29 +92,31 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
         String routineId,thumbnail,userId,instructorId;
         FirebaseUser user;
         DatabaseReference mDatabaseReference;
+        LoadingDialog loadingDialog;
 
-         public RoutineView(@NonNull View itemView) {
-             super(itemView);
-             title = itemView.findViewById(R.id.routine_view_title);
-             instructor_name = itemView.findViewById(R.id.routine_instructor_name);
-             routine_view_image = itemView.findViewById(R.id.routine_view_item);
-             routine_views = itemView.findViewById(R.id.routine_views);
-             level = itemView.findViewById(R.id.routine_level);
-             user = FirebaseAuth.getInstance().getCurrentUser();
-             mDatabaseReference = FirebaseDatabase.getInstance().getReference();
-             userId = user.getUid();
+        public RoutineView(@NonNull View itemView) {
+            super(itemView);
+            title = itemView.findViewById(R.id.routine_view_title);
+            instructor_name = itemView.findViewById(R.id.routine_instructor_name);
+            routine_view_image = itemView.findViewById(R.id.routine_view_item);
+            routine_views = itemView.findViewById(R.id.routine_views);
+            level = itemView.findViewById(R.id.routine_level);
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+            userId = user.getUid();
+            loadingDialog = new LoadingDialog(((AppCompatActivity) context));
 
-             itemView.setOnClickListener(new View.OnClickListener() {
-                 @Override
-                 public void onClick(View view) {
-                     int p=0;
-                     //TODO: add handler
-                     if(user==null)
-                     {
-                         Toast.makeText(context,"Login First",Toast.LENGTH_SHORT).show();
-                         Intent intent = new Intent(context, Login.class);
-                         context.startActivity(intent);
-                     }
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int p=0;
+                    //TODO: add handler
+                    if(user==null)
+                    {
+                        Toast.makeText(context,"Login First",Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(context, InstructorLogin.class);
+                        context.startActivity(intent);
+                    }
                      else if(userId==instructorId)
                      {
                          Fragment fragment = new routine_view();
@@ -120,100 +129,104 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
                          fragmentTransaction.addToBackStack(null);
                          fragmentTransaction.commit();
                      }
-                     else
-                     {
-                      //   p = checkSubscription();
-                         if(p==0)
-                         {
-                         //    p = checkPurchased();
-                         }
-                     }
-                     p=1;
-                     if(p==1)
-                     {
-                         Fragment fragment = new routine_view();
-                         Bundle bundle = new Bundle();
-                         bundle.putString("category","Routine");
-                         bundle.putString("routineId",routineId);
-                         fragment.setArguments(bundle);
-                         FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                         fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                         fragmentTransaction.addToBackStack(null);
-                         fragmentTransaction.commit();
-                     }
-                     else
-                     {
-                         Fragment fragment = new routine_purchase();
-                         Bundle bundle = new Bundle();
-                         bundle.putString("routineId", routineId);
-                         bundle.putString("thumbnail", thumbnail);
-                         bundle.putString("userId", userId);
-                         fragment.setArguments(bundle);
-                         FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                         fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                         fragmentTransaction.addToBackStack(null);
-                         fragmentTransaction.commit();
-                     }
-
-                 }
-             });
-
-         }
-
-
-/*
-        public int checkSubscription()
-        {
-            Log.d(TAG," pqq ");
-            final int[] flag = new int[1];
-            mDatabaseReference.child("SUBSCRIPTION").child(user.getUid())
-                    .addValueEventListener(new ValueEventListener() {
+                    else
+                    {
+                        loadingDialog.startLoadingDialog();
+                        //   p = checkSubscription();
+                        if(p==0)
+                        {
+                            p = checkPurchased();
+                        }
+                    }
+                    new Handler().postDelayed(new Runnable() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds: dataSnapshot.getChildren())
-                            {
-                                Log.d(TAG,ds.getValue()+"");
+                        public void run() {
+                            loadingDialog.DismissDialog();
+                        }
+                    },3000);
+                    if(p==1)
+                    {
+                        Fragment fragment = new routine_view();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("category","Routine");
+                        bundle.putString("routineId",routineId);
+                        fragment.setArguments(bundle);
+                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.drawer_layout, fragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                    }
+                    else
+                    {
+                        Fragment fragment = new routine_purchase();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("routineId", routineId);
+                        bundle.putString("thumbnail", thumbnail);
+                        bundle.putString("userId", userId);
+                        fragment.setArguments(bundle);
+                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.drawer_layout, fragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                    }
+                }
+            });
+        }
 
-                                SubscriptionModel model = ds.getValue(SubscriptionModel.class);
-                                if(model.getVideoId().equals(value))
-                                {
-                                    Log.d(TAG," pqq ");
-                                    flag[0] =1;
-                                    return;
+
+        /*
+                public int checkSubscription()
+                {
+                    Log.d(TAG," pqq ");
+                    final int[] flag = new int[1];
+                    mDatabaseReference.child("SUBSCRIPTION").child(user.getUid())
+                            .addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot ds: dataSnapshot.getChildren())
+                                    {
+                                        Log.d(TAG,ds.getValue()+"");
+
+                                        SubscriptionModel model = ds.getValue(SubscriptionModel.class);
+                                        if(model.getVideoId().equals(value))
+                                        {
+                                            Log.d(TAG," pqq ");
+                                            flag[0] =1;
+                                            return;
+                                        }
+
+                                    }
+                                    if(flag[0]==1)
+                                    {
+                                        Fragment fragment = new See_Video();
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("videoId", value);
+                                        fragment.setArguments(bundle);
+                                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+                                        fragmentTransaction.replace(R.id.drawer_layout, fragment);
+                                        fragmentTransaction.addToBackStack(null);
+                                        fragmentTransaction.commit();
+                                    }
+
                                 }
 
-                            }
-                            if(flag[0]==1)
-                            {
-                                Fragment fragment = new See_Video();
-                                Bundle bundle = new Bundle();
-                                bundle.putString("videoId", value);
-                                fragment.setArguments(bundle);
-                                FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                                fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();
-                            }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-            if(flag[0]==1)
-                return 1;
+                                }
+                            });
+                    if(flag[0]==1)
+                        return 1;
 
 
-            return 0;
-        }
-*/
+                    return 0;
+                }
+        */
         public int checkPurchased()
         {
             Log.d(TAG," pqq ");
             final int[] flag = new int[1];
-            mDatabaseReference.child("USERS").child(user.getUid()).child("routines")
+            mDatabaseReference.child("USER_PURCHASED_ROUTINES").child(userId)
                     .addValueEventListener(new ValueEventListener() {
 
                         @Override
@@ -223,7 +236,6 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
                             for(DataSnapshot ds: dataSnapshot.getChildren())
                             {
                                 Log.d(TAG,ds.getValue()+"");
-
                                 UserClass model = ds.getValue(UserClass.class);
                                 if(model.getVideoId().equals(routineId))
                                 {
@@ -236,26 +248,20 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
                                 Fragment fragment = new routine_view();
                                 Bundle bundle = new Bundle();
                                 bundle.putString("routineId", routineId);
+                                bundle.putString("category","Routine");
                                 fragment.setArguments(bundle);
                                 FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
                                 fragmentTransaction.replace(R.id.drawer_layout, fragment);
                                 fragmentTransaction.addToBackStack(null);
                                 fragmentTransaction.commit();
                             }
-
                         }
-
                         @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
+                        public void onCancelled(@NonNull DatabaseError databaseError) { }
                     });
-
             //TODO: handler for wait
-
             return 0;
         }
-
 
 
     }

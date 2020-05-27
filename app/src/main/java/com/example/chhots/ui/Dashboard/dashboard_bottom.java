@@ -1,10 +1,12 @@
 package com.example.chhots.ui.Dashboard;
 
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -26,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import com.squareup.picasso.Picasso;
 
 import static android.view.View.GONE;
@@ -47,6 +50,7 @@ public class dashboard_bottom extends Fragment {
     String cat="p";
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
+    CircularProgressBar circularProgressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,6 +63,11 @@ public class dashboard_bottom extends Fragment {
         cat = bundle.getString("category");
         Log.d("main22222",cat);
 
+        circularProgressBar = (CircularProgressBar)view.findViewById(R.id.progress_bar_chart);
+        circularProgressBar.setColor(ContextCompat.getColor(getContext(), R.color.Smurfogreen));
+        circularProgressBar.setBackgroundColor(Color.GRAY);
+        int animationDuration = 2500; // 2500ms = 2,5s
+        circularProgressBar.setProgressWithAnimation(65, animationDuration);
 
         history = view.findViewById(R.id.history);
         leaderboard = view.findViewById(R.id.learderboard);

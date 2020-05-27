@@ -19,11 +19,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chhots.LoadingDialog;
 import com.example.chhots.Login;
 import com.example.chhots.R;
 import com.example.chhots.bottom_navigation_fragments.Explore.See_Video;
 import com.example.chhots.SubscriptionModel;
 import com.example.chhots.UserClass;
+import com.example.chhots.category_view.routine.routine_view;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -81,7 +83,6 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
 
     public class MyView
             extends RecyclerView.ViewHolder {
-        int[] p = {1};
 
         // Text View
         TextView CourseName,CourseCategory;
@@ -89,6 +90,8 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
         String courseId,instructorId,thumbnail;
         FirebaseUser user;
         DatabaseReference mDatabaseReference;
+        LoadingDialog loadingDialog;
+
         // parameterised constructor for View Holder class
         // which takes the view as a parameter
         public MyView(View view)
@@ -100,41 +103,72 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
 
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+            loadingDialog = new LoadingDialog(((AppCompatActivity) context));
+
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+int p=0;
                     if (user == null) {
                         Toast.makeText(context, "Login First", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(context, Login.class);
                         context.startActivity(intent);
-                    } else {
-
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                //p=checkSubscription();
-                                p[0] = 0;
-                                if (p[0] == 0) {
-                                    p[0] = checkPurchased();
-                                }
-                            }
-                        },5000);
-
-
-                        if (p[0] == 0) {
-                            Fragment fragment = new course_purchase_view();
-                            Bundle bundle = new Bundle();
-                            bundle.putString("courseId", courseId);
-                            fragment.setArguments(bundle);
-                            FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                            fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                            fragmentTransaction.addToBackStack(null);
-                            fragmentTransaction.commit();
+                    }
+                    else if(user.getUid()==instructorId)
+                    {
+                        Fragment fragment = new routine_view();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("category","Course");
+                        bundle.putString("courseId",courseId);
+                        fragment.setArguments(bundle);
+                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.drawer_layout, fragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                    }
+                    else {
+                        loadingDialog.startLoadingDialog();
+                        if (p == 0) {
+                      //      p = checkPurchased();
                         }
                     }
+                    p=1;
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadingDialog.DismissDialog();
+                        }
+                    },3000);
+                    if(p==1)
+                    {
+                        Fragment fragment = new routine_view();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("category","Course");
+                        bundle.putString("courseId",courseId);
+                        fragment.setArguments(bundle);
+                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.drawer_layout, fragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                    }
+                    else
+                    {
+                        Fragment fragment = new course_purchase_view();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("courseId", courseId);
+                        bundle.putString("thumbnail", thumbnail);
+                        bundle.putString("userId", user.getUid());
+                        fragment.setArguments(bundle);
+                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.drawer_layout, fragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                    }
+
+
+
                 }
             });
 
@@ -142,57 +176,11 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
 
         }
 
-
-        public int checkSubscription()
-        {
-            Log.d(TAG," pqq ");
-            final int[] flag = new int[1];
-            mDatabaseReference.child("COURSESUBSCRIPTION").child(user.getUid())
-                    .addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds: dataSnapshot.getChildren())
-                            {
-                                Log.d(TAG,ds.getValue()+"");
-
-                                SubscriptionModel model = ds.getValue(SubscriptionModel.class);
-                                if(model.getVideoId().equals(courseId))
-                                {
-                                    Log.d(TAG," pqq ");
-                                    flag[0] =1;
-                                    return;
-                                }
-
-                            }
-                            if(flag[0]==1)
-                            {
-                                Fragment fragment = new See_Video();
-                                Bundle bundle = new Bundle();
-                                bundle.putString("videoId", courseId);
-                                fragment.setArguments(bundle);
-                                FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                                fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-            if(flag[0]==1)
-                return 1;
-            return 0;
-        }
-
         public int checkPurchased()
         {
             Log.d(TAG," pqq ");
             final int[] flag = new int[1];
-            mDatabaseReference.child("USERS").child(user.getUid()).child("courses")
+            mDatabaseReference.child("USER_PURCHASED_ROUTINES").child(user.getUid())
                     .addValueEventListener(new ValueEventListener() {
 
                         @Override
@@ -202,9 +190,8 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                             for(DataSnapshot ds: dataSnapshot.getChildren())
                             {
                                 Log.d(TAG,ds.getValue()+"");
-
                                 UserClass model = ds.getValue(UserClass.class);
-                                if(model.getCourseId().equals(courseId))
+                                if(model.getVideoId().equals(courseId))
                                 {
                                     Log.d(TAG," peee ");
                                     flag[0] =1;
@@ -212,35 +199,24 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                                 }
                             }
                             if(flag[0]==1) {
-                                Fragment fragment = new course_view();
+                                Fragment fragment = new routine_view();
                                 Bundle bundle = new Bundle();
-                                bundle.putString("courseId", courseId);
-                                bundle.putString("thumbnail",thumbnail);
-                                bundle.putString("instructorId",instructorId);
+                                bundle.putString("routineId", courseId);
+                                bundle.putString("category","Routine");
                                 fragment.setArguments(bundle);
                                 FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
                                 fragmentTransaction.replace(R.id.drawer_layout, fragment);
                                 fragmentTransaction.addToBackStack(null);
                                 fragmentTransaction.commit();
-                                return;
                             }
-
                         }
-
                         @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
+                        public void onCancelled(@NonNull DatabaseError databaseError) { }
                     });
-            if(flag[0]==1)
-            {
-                return 1;
-            }
-
             //TODO: handler for wait
-
             return 0;
         }
+
 
 
 

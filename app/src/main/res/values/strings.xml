@@ -38,6 +38,9 @@
 
     <string name="InstructorInfo">InstructorInfo</string>
     <string name="CHAT">CHAT</string>
+    <string name="UserPurchasedRoutines">USER_PURCHASED_ROUTINES</string>
+    <string name="RoutineThumbnail">ROUTINE_THUMBNAIL</string>
+
 
 
 

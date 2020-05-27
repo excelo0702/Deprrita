@@ -3,61 +3,66 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rr5"
     tools:context=".category_view.routine.routine_view"
-    android:background="#9C27B0"
-    >
+    android:background="#FFFFFF">
 
-    <RelativeLayout
+    <com.google.android.exoplayer2.ui.PlayerView
         android:layout_width="match_parent"
-        android:layout_height="260dp"
+        android:layout_height="300dp"
         android:id="@+id/video_space_routine"
-        android:background="#AD1515"
-        ></RelativeLayout>
+        android:padding="0dp"
+        app:controller_layout_id="@layout/exo_playback_control_view"
+        app:use_controller="true"
+        android:keepScreenOn="true"
+        android:focusable="true"
+        android:background="@color/black"
+        app:resize_mode="fit"
+        ></com.google.android.exoplayer2.ui.PlayerView>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:id="@+id/rr3"
         android:layout_below="@id/video_space_routine">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Routine Sections"
-        android:textSize="@dimen/text20"
-        android:textColor="@color/black"
-        android:padding="10dp"
-        android:id="@+id/lala_land"
-        >
-    </TextView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Routine Sections"
+            android:textSize="@dimen/text20"
+            android:textColor="@color/black"
+            android:padding="10dp"
+            android:id="@+id/lala_land"
+            >
+        </TextView>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/lala_land"
-        android:background="@color/black"
-        android:id="@+id/lala_land1"
-        android:orientation="vertical"
-        ></FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/lala_land"
+            android:background="@color/black"
+            android:id="@+id/lala_land1"
+            android:orientation="vertical"
+            ></FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:scrollbars="vertical"
-        android:id="@+id/routines_recycler_view_section"
-        android:layout_below="@id/lala_land1">
-    </androidx.recyclerview.widget.RecyclerView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:scrollbars="vertical"
+            android:id="@+id/routines_recycler_view_section"
+            android:layout_below="@id/lala_land1">
+        </androidx.recyclerview.widget.RecyclerView>
 
-    <ImageView
-        android:layout_width="@dimen/text30"
-        android:layout_height="@dimen/text30"
-        android:src="@color/Smurfogreen"
-        android:id="@+id/chat_with_instructor_routine"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:visibility="visible"
-        android:layout_marginBottom="30dp">
-    </ImageView>
-</RelativeLayout>
+        <ImageView
+            android:layout_width="@dimen/text30"
+            android:layout_height="@dimen/text30"
+            android:src="@color/Smurfogreen"
+            android:id="@+id/chat_with_instructor_routine"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="30dp">
+        </ImageView>
+    </RelativeLayout>
 
 </RelativeLayout>

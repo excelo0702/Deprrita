@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".InstructorLogin">
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin15"
+        android:layout_marginEnd="@dimen/margin15"
+        android:layout_marginTop="@dimen/margin20"
+        android:background="@drawable/buttonbackground"
+        android:id="@+id/email_instructor_login_TIL"
+        >
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/email_instructor_login"
+            android:hint="@string/mail"
+            android:textStyle="bold"
+            android:layout_marginStart="@dimen/margin10"
+            android:layout_marginEnd="@dimen/margin10"
+            android:textColorHint="@color/black"
+
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:passwordToggleEnabled="true"
+        android:layout_marginTop="@dimen/margin20"
+        android:layout_marginLeft="@dimen/margin10"
+        android:layout_marginRight="@dimen/margin10"
+        android:id="@+id/password_instructor_login_TIL"
+        android:background="@drawable/buttonbackground"
+
+        >
+
+        <EditText
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/password_instructor_login"
+            android:inputType="textPassword"
+            android:hint="@string/pass"
+            android:layout_marginEnd="@dimen/margin10"
+            android:layout_marginStart="@dimen/margin10"
+
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <Button
+        android:layout_marginTop="@dimen/dp25"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:background="@drawable/buttonbackground1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp40"
+        android:layout_marginLeft="@dimen/margin10"
+        android:layout_marginRight="@dimen/margin10"
+        android:id="@+id/login_instructor_btn"
+        android:textColor="@color/black"
+        android:text="@string/login" />
+
+
+    <Button
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:background="@drawable/buttonbackground1"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/signup_instructor"
+        android:textColor="@color/black"
+        android:layout_marginTop="@dimen/margin20"
+        android:text="@string/create_account"
+        />
+
+
+
+
+</LinearLayout>
