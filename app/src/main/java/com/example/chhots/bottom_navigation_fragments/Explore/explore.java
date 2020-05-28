@@ -130,6 +130,36 @@ public class explore extends Fragment{
 
         showVideos(category);
 
+        DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
+        presenceRef.onDisconnect().setValue("I disconnected!");
+        presenceRef.onDisconnect().removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError error, @NonNull DatabaseReference reference) {
+                if (error != null) {
+                    Log.d(TAG, "could not establish onDisconnect event:" + error.getMessage());
+                }
+            }
+        });
+
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    Log.d(TAG, "connected");
+                } else {
+                    Log.d(TAG, "not connected");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, "Listener was cancelled");
+            }
+        });
+
+
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -266,7 +296,7 @@ public class explore extends Fragment{
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) { }
                     });
-
+                mDatabaseRef.keepSynced(true);
 
             }
         },2000);
@@ -316,6 +346,7 @@ public class explore extends Fragment{
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
+        mDatabaseRef.keepSynced(true);
     }
 
     @Override

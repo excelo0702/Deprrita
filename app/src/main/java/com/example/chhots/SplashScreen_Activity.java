@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.example.chhots.ChatBox.ChatWithInstructor;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sarnava.textwriter.TextWriter;
@@ -23,6 +24,15 @@ public class SplashScreen_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         usesr = FirebaseAuth.getInstance().getCurrentUser();
+
+
+        if(getIntent().hasCategory("Chat"))
+        {
+            Intent intent = new Intent(SplashScreen_Activity.this, ChatWithInstructor.class);
+
+            startActivity(intent);
+        }
+
 
         text=findViewById(R.id.textwriter);
         text .setWidth(12)

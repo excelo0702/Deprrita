@@ -72,9 +72,44 @@ public class contest extends Fragment {
         viewPager = (ViewPager)view.findViewById(R.id.view_contest_Pager);
 
 
+        DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
+        presenceRef.onDisconnect().setValue("I disconnected!");
+        presenceRef.onDisconnect().removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError error, @NonNull DatabaseReference reference) {
+                if (error != null) {
+                    Log.d(TAG, "could not establish onDisconnect event:" + error.getMessage());
+                }
+            }
+        });
+
+
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    Toast.makeText(getContext(),"Connected",Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "connected");
+                } else {
+
+                    Toast.makeText(getContext(),"Not Connected",Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "not connected");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, "Listener was cancelled");
+            }
+        });
+
+
 
 
         showContests();
+        databaseReference.child("ContestThumbnail").keepSynced(true);
 
         host_contest.setOnClickListener(new View.OnClickListener() {
             @Override

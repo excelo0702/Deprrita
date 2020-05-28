@@ -50,6 +50,7 @@ import android.widget.VideoView;
 import com.example.chhots.R;
 import com.example.chhots.Services.FloatingWidgetService;
 import com.example.chhots.onBackPressed;
+import com.example.chhots.ui.Category.category;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -70,11 +71,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.iceteck.silicompressorr.SiliCompressor;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -176,6 +179,13 @@ public class upload_video extends Fragment implements onBackPressed {
             @Override
             public void onClick(View view) {
 
+         /*       try {
+                    String filePath = SiliCompressor.with(getContext()).compressVideo(videouri, "/");
+                    Log.d("filePath",filePath);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }*/
+
                 if(user==null)
                 {
                     Toast.makeText(getContext(),"user cant be null",Toast.LENGTH_SHORT).show();
@@ -185,6 +195,7 @@ public class upload_video extends Fragment implements onBackPressed {
                     uploadBtn.setEnabled(false);
                     choosebtn.setEnabled(false);
                     thumbnail.setEnabled(false);
+
                 }
             }
         });
@@ -415,7 +426,7 @@ public class upload_video extends Fragment implements onBackPressed {
             //   Toast.makeText(getApplicationContext(),"upl88",Toast.LENGTH_SHORT).show();
 
             final String title = video_title.getText().toString();
-            final String category = choose_category.getText().toString();
+//            final String category = choose_category.getText().toString();
             final String sub_category;
 
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -450,11 +461,6 @@ public class upload_video extends Fragment implements onBackPressed {
             if(title.equals(""))
             {
                 Toast.makeText(getContext(),"Title cant be null",Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if(category.equals(""))
-            {
-                Toast.makeText(getContext(),"Category cant be null",Toast.LENGTH_SHORT).show();
                 return;
             }
             Log.d("222222","2222222");
@@ -494,7 +500,7 @@ public class upload_video extends Fragment implements onBackPressed {
                                                                         }
                                                                     },100);
 
-                                                                    VideoModel model = new VideoModel(user.getUid(),title,category,descriptio,videouri.toString(),imageuri.toString(),"NONE","NONE",Price,upload,"0","0","0",sub_category);
+                                                                    VideoModel model = new VideoModel(user.getUid(),title,"",descriptio,videouri.toString(),imageuri.toString(),"NONE","NONE",Price,upload,"0","0","0",sub_category);
                                                                     databaseReference.child("VIDEOS").child(upload).setValue(model);
                                                                 }
                                                             });

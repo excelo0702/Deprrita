@@ -51,6 +51,7 @@ public class dashboard_bottom extends Fragment {
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
     CircularProgressBar circularProgressBar;
+    String TAG ="dashboard";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,6 +63,37 @@ public class dashboard_bottom extends Fragment {
         Bundle bundle = this.getArguments();
         cat = bundle.getString("category");
         Log.d("main22222",cat);
+
+
+        DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
+        presenceRef.onDisconnect().setValue("I disconnected!");
+        presenceRef.onDisconnect().removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError error, @NonNull DatabaseReference reference) {
+                if (error != null) {
+                    Log.d(TAG, "could not establish onDisconnect event:" + error.getMessage());
+                }
+            }
+        });
+
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    Log.d(TAG, "connected");
+                } else {
+                    Log.d(TAG, "not connected");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, "Listener was cancelled");
+            }
+        });
+
 
         circularProgressBar = (CircularProgressBar)view.findViewById(R.id.progress_bar_chart);
         circularProgressBar.setColor(ContextCompat.getColor(getContext(), R.color.Smurfogreen));

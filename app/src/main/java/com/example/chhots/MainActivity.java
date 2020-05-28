@@ -88,6 +88,10 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        //firebase offline capabilities
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
         loadingDialog = new LoadingDialog(MainActivity.this);
         getSupportFragmentManager().beginTransaction().add(R.id.drawer_layout,new HomeFragment()).commit();
         auth = FirebaseAuth.getInstance();
@@ -100,6 +104,36 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
         drawer.addDrawerListener(t);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         t.setDrawerIndicatorEnabled(true);
+        DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
+        presenceRef.onDisconnect().setValue("I disconnected!");
+        presenceRef.onDisconnect().removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError error, @NonNull DatabaseReference reference) {
+                if (error != null) {
+                    Log.d(TAG, "could not establish onDisconnect event:" + error.getMessage());
+                }
+            }
+        });
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    Toast.makeText(getApplicationContext(),"Connected",Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "connected");
+                } else {
+
+                    Toast.makeText(getApplicationContext(),"Not Connected",Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "not connected");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, "Listener was cancelled");
+            }
+        });
 
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -195,10 +229,9 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
+                public void onCancelled(@NonNull DatabaseError databaseError) { }
             });
+            databaseReference.child(getString(R.string.InstructorInfo)).child(auth.getCurrentUser().getUid()).keepSynced(true);
 
 
             login.setOnClickListener(new View.OnClickListener() {
@@ -409,10 +442,6 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
                 return 1;
             }
 
-            if(f != null && (f instanceof routine)) {
-                ((routine) f).onBackPressed();
-                return 1;
-            }
         }
         return 0;
     }

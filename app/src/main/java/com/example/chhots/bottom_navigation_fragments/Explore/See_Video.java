@@ -130,7 +130,34 @@ public class See_Video extends Fragment {
         recyclerView = view.findViewById(R.id.comments);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
+        presenceRef.onDisconnect().setValue("I disconnected!");
+        presenceRef.onDisconnect().removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError error, @NonNull DatabaseReference reference) {
+                if (error != null) {
+                    Log.d(TAG, "could not establish onDisconnect event:" + error.getMessage());
+                }
+            }
+        });
 
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    Log.d(TAG, "connected");
+                } else {
+                    Log.d(TAG, "not connected");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, "Listener was cancelled");
+            }
+        });
 
 
 
@@ -171,6 +198,8 @@ public class See_Video extends Fragment {
 
                 Bundle bundle = this.getArguments();
         videoId = bundle.getString("videoId");
+        mDatabaseRef.child("VIDEOS").child(videoId).keepSynced(true);
+        mDatabaseRef.child("COMMENTS").child(videoId).keepSynced(true);
 
 
         upvote_icon.setOnClickListener(new View.OnClickListener() {
@@ -199,7 +228,6 @@ public class See_Video extends Fragment {
 
             }
         });
-
 
         downvote_icon.setOnClickListener(new View.OnClickListener() {
             @Override

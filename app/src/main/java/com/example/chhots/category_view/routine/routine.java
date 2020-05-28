@@ -52,7 +52,7 @@ import java.util.List;
 
 import static android.view.View.GONE;
 
-public class routine extends Fragment implements onBackPressed {
+public class routine extends Fragment {
 
     public routine() {
         // Required empty public constructor
@@ -130,6 +130,36 @@ public class routine extends Fragment implements onBackPressed {
         });
         so=0;
         showRoutine(category);
+        mDatabaseRef.child("ROUTINE_THUMBNAIL").keepSynced(true);
+        DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
+        presenceRef.onDisconnect().setValue("I disconnected!");
+        presenceRef.onDisconnect().removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError error, @NonNull DatabaseReference reference) {
+                if (error != null) {
+                    Log.d(TAG, "could not establish onDisconnect event:" + error.getMessage());
+                }
+            }
+        });
+
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    Log.d(TAG, "connected");
+                } else {
+                    Log.d(TAG, "not connected");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, "Listener was cancelled");
+            }
+        });
+
 
         addRoutine.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -493,10 +523,7 @@ public class routine extends Fragment implements onBackPressed {
         }
     }
 
-    @Override
-    public void onBackPressed() {
 
-    }
 
 
 }
