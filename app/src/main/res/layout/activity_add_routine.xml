@@ -85,13 +85,21 @@
             android:hint="Routine Name"
             android:id="@+id/routine_name"></EditText>
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Choose Category"
             android:textSize="20dp"
             android:id="@+id/choose_category"
             android:layout_below="@id/routine_name"></TextView>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/choose_category"
+            android:layout_marginLeft="20dp"
+            android:inputType="textMultiLine"
+            android:layout_below="@id/routine_name"
+            android:id="@+id/selected_categories"></TextView>
 
 
 

@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SignUpNextScreen">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="@dimen/dp150"
         android:layout_height="@dimen/dp150"
@@ -25,7 +28,6 @@
         android:hint="@string/user_name"
         />
 
-
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +37,6 @@
         android:padding="10dp"
         android:hint="@string/profession"
         />
-
 
     <Spinner
         android:layout_width="match_parent"
@@ -138,6 +139,6 @@
         android:layout_gravity="center|bottom"
         android:layout_marginBottom="@dimen/margin20"
         android:visibility="gone" />
+    </RelativeLayout>
 
-
-</RelativeLayout>
+</ScrollView>

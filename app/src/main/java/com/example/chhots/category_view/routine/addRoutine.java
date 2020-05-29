@@ -68,6 +68,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 import static android.view.View.GONE;
 import static com.paytm.pgsdk.easypay.manager.PaytmAssist.getContext;
@@ -83,7 +84,7 @@ public class addRoutine extends AppCompatActivity {
     private ProgressBar progress_seekbar1,progressBar2;
     private static final String TAG = "Upload_Routine";
     final String time = System.currentTimeMillis()+"";
-    public StringBuffer category=new StringBuffer("000000000000000000");
+    public StringBuffer category=new StringBuffer("0000000000000000000");
     String level;
 
     int flag=0;
@@ -98,8 +99,8 @@ public class addRoutine extends AppCompatActivity {
     private DatabaseReference mDatabaseReference;
     private StorageReference storageReference;
     String userName,userImage;
-    private TextView choose_category;
-
+    private TextView choose_category,selected_categories;
+    String categories ="";
 
     //exoplayer implementation
     PlayerView playerView;
@@ -111,8 +112,7 @@ public class addRoutine extends AppCompatActivity {
     boolean fullScreen = false;
 
     private static final int PICK_IMAGE_REQUEST = 2;
-
-
+    HashMap<String,String> mm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +122,7 @@ public class addRoutine extends AppCompatActivity {
 
         init();
         fetchUserInfo();
+        mm = new HashMap<>();
 
         choose_video.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,6 +198,13 @@ public class addRoutine extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                for(String value : mm.keySet())
+                {
+                    categories+=value+"  ";
+                }
+                selected_categories.setText(categories);
+                selected_categories.setVisibility(View.VISIBLE);
                 mPopupWindow.dismiss();
             }
         });
@@ -208,6 +216,11 @@ public class addRoutine extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
                     Toast.makeText(getApplicationContext(),category,Toast.LENGTH_SHORT).show();
+
+
+
+
+
 
                     mPopupWindow.dismiss();
                 }
@@ -235,12 +248,14 @@ public class addRoutine extends AppCompatActivity {
                 {
                     classical1=true;
                     category.setCharAt(0,'1');
+                    mm.put("Classical","Classical");
                     classical.setBackgroundColor(Color.parseColor("#88111111"));
                     Toast.makeText(getApplicationContext(),"checkde",Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
                     classical1=false;
+                    mm.remove("Classical");
                     classical.setBackgroundColor(Color.parseColor("#0D111111"));
                     Toast.makeText(getApplicationContext(),"Unchecked",Toast.LENGTH_SHORT).show();
                     category.setCharAt(0,'0');
@@ -266,6 +281,7 @@ public class addRoutine extends AppCompatActivity {
                 if(!breaking1)
                 {
                     breaking1=true;
+                    mm.put("Breaking","Breaking");
                     category.setCharAt(1,'1');
                     breaking.setBackgroundColor(Color.parseColor("#88111111"));
                     Toast.makeText(getApplicationContext(),"checkde",Toast.LENGTH_SHORT).show();
@@ -273,6 +289,7 @@ public class addRoutine extends AppCompatActivity {
                 else
                 {
                     breaking1=false;
+                    mm.remove("Breaking");
                     breaking.setBackgroundColor(Color.parseColor("#0D111111"));
                     Toast.makeText(getApplicationContext(),"Unchecked",Toast.LENGTH_SHORT).show();
                     category.setCharAt(1,'0');
@@ -299,6 +316,7 @@ public class addRoutine extends AppCompatActivity {
                 if(!krump1)
                 {
                     krump1=true;
+                    mm.put("Krump","Krump");
                     category.setCharAt(2,'1');
                     krump.setBackgroundColor(Color.parseColor("#88111111"));
                     Toast.makeText(getApplicationContext(),"checkde",Toast.LENGTH_SHORT).show();
@@ -306,6 +324,7 @@ public class addRoutine extends AppCompatActivity {
                 else
                 {
                     krump1=false;
+                    mm.remove("Krump");
                     krump.setBackgroundColor(Color.parseColor("#0D111111"));
                     Toast.makeText(getApplicationContext(),"Unchecked",Toast.LENGTH_SHORT).show();
                     category.setCharAt(2,'0');
@@ -330,6 +349,7 @@ public class addRoutine extends AppCompatActivity {
                 if(!locking1)
                 {
                     locking1=true;
+                    mm.put("Locking","Locking");
                     category.setCharAt(3,'1');
                     locking.setBackgroundColor(Color.parseColor("#88111111"));
                     Toast.makeText(getApplicationContext(),"checkde",Toast.LENGTH_SHORT).show();
@@ -337,6 +357,7 @@ public class addRoutine extends AppCompatActivity {
                 else
                 {
                     locking1=false;
+                    mm.remove("Locking");
                     locking.setBackgroundColor(Color.parseColor("#0D111111"));
                     Toast.makeText(getApplicationContext(),"Unchecked",Toast.LENGTH_SHORT).show();
                     category.setCharAt(3,'0');
@@ -361,6 +382,7 @@ public class addRoutine extends AppCompatActivity {
                 if(!popping1)
                 {
                     popping1=true;
+                    mm.put("Popping","Popping");
                     category.setCharAt(4,'1');
                     popping.setBackgroundColor(Color.parseColor("#88111111"));
                     Toast.makeText(getApplicationContext(),"checkde",Toast.LENGTH_SHORT).show();
@@ -368,6 +390,7 @@ public class addRoutine extends AppCompatActivity {
                 else
                 {
                     popping1=false;
+                    mm.remove("Popping");
                     popping.setBackgroundColor(Color.parseColor("#0D111111"));
                     Toast.makeText(getApplicationContext(),"Unchecked",Toast.LENGTH_SHORT).show();
                     category.setCharAt(4,'0');
@@ -392,6 +415,7 @@ public class addRoutine extends AppCompatActivity {
                 if(!house1)
                 {
                     house1=true;
+                    mm.put("House","House");
                     category.setCharAt(5,'1');
                     house.setBackgroundColor(Color.parseColor("#88111111"));
                     Toast.makeText(getApplicationContext(),"checkde",Toast.LENGTH_SHORT).show();
@@ -399,6 +423,7 @@ public class addRoutine extends AppCompatActivity {
                 else
                 {
                     house1=false;
+                    mm.remove("House");
                     house.setBackgroundColor(Color.parseColor("#0D111111"));
                     Toast.makeText(getApplicationContext(),"Unchecked",Toast.LENGTH_SHORT).show();
                     category.setCharAt(5,'0');
@@ -957,7 +982,7 @@ public class addRoutine extends AppCompatActivity {
         routine_Name = findViewById(R.id.routine_name);
         choose_category = findViewById(R.id.choose_category);
         relativeLayout = findViewById(R.id.routine_course);
-
+        selected_categories = findViewById(R.id.selected_categories);
         user = FirebaseAuth.getInstance().getCurrentUser();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();

@@ -105,7 +105,11 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
 
 
         //firebase offline capabilities
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        Intent intent = getIntent();
+        if(intent.getStringExtra("Category")==null)
+        {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        }
 
         loadingDialog = new LoadingDialog(MainActivity.this);
         getSupportFragmentManager().beginTransaction().add(R.id.drawer_layout,new HomeFragment()).commit();

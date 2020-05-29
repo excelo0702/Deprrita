@@ -66,7 +66,7 @@ import static android.view.View.VISIBLE;
 public class See_Video extends Fragment {
 
 
-    public TextView title,upvote,downvote,comments,share,views,chat;
+    public TextView title,upvote,downvote,comments,share,views,chat,AddToBookmark;
     public ImageView favorite_icon,share_icon;
     public ImageButton upvote_icon,downvote_icon;
     private ImageView send_comment,camera_comment;
@@ -91,7 +91,7 @@ public class See_Video extends Fragment {
     int k=0;
     String s="";
 
-
+    int flag=0;
     //exoplayer implementation
     RelativeLayout tt;
     PlayerView playerView;
@@ -124,6 +124,8 @@ public class See_Video extends Fragment {
         send_comment = view.findViewById(R.id.send_comment);
         camera_comment = view.findViewById(R.id.select_image_content);
         comment_message = view.findViewById(R.id.comment_message);
+
+        AddToBookmark = view.findViewById(R.id.save_to_device);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         list = new ArrayList<>();
@@ -251,6 +253,29 @@ public class See_Video extends Fragment {
                 sendComment();
             }
         });
+
+        AddToBookmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(flag==0)
+                {
+                    //add
+                    flag=1;
+                    mDatabaseRef.child("Bookmarks").child(auth.getCurrentUser().getUid()).child(videoId).setValue(current);
+                    Toast.makeText(getContext(),"Added to  Liked Videos",Toast.LENGTH_SHORT).show();
+
+                }
+                else
+                {
+                    //remove
+                    flag=0;
+                    mDatabaseRef.child("Bookmarks").child(user.getUid()).child(videoId).removeValue();
+                    Toast.makeText(getContext(),"Remove From Liked Videos",Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+
         showVideo();
         showComments();
         return view;

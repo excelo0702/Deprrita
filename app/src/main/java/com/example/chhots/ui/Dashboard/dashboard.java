@@ -18,7 +18,10 @@ import android.widget.Button;
 import com.example.chhots.R;
 import com.example.chhots.onBackPressed;
 import com.example.chhots.ui.Dashboard.ApproveVideo.ApproveVideo;
+import com.example.chhots.ui.Dashboard.CoursePackage.MyCourses;
 import com.example.chhots.ui.Dashboard.Favorite.favorite;
+import com.example.chhots.ui.Dashboard.MyBookmarkPackage.MyBookmarks;
+import com.example.chhots.ui.Dashboard.MyExploreVideos.MyExplore;
 import com.example.chhots.ui.home.HomeFragment;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -128,15 +131,15 @@ public class dashboard extends Fragment implements onBackPressed {
                         break;
 
                     case R.id.favorite_dashboard:
-                        setFragment(new favorite());
+                        setFragment(new MyBookmarks());
                         break;
 
                     case R.id.community_dashboard:
-                        setFragment(new favorite());
+                        setFragment(new MyCourses());
                         break;
 
                     case R.id.certificates_dashboard:
-                        setFragment(new favorite());
+                        setFragment(new MyExplore());
                         break;
 
                     case R.id.approve_videos_dashboard:

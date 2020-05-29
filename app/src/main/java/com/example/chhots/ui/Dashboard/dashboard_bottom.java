@@ -50,7 +50,7 @@ public class dashboard_bottom extends Fragment {
     String cat="p";
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
-    CircularProgressBar circularProgressBar;
+    CircularProgressBar circularProgressBar,circularProgressBar2;
     String TAG ="dashboard";
 
     @Override
@@ -63,7 +63,6 @@ public class dashboard_bottom extends Fragment {
         Bundle bundle = this.getArguments();
         cat = bundle.getString("category");
         Log.d("main22222",cat);
-
 
         DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
         presenceRef.onDisconnect().setValue("I disconnected!");
@@ -100,6 +99,13 @@ public class dashboard_bottom extends Fragment {
         circularProgressBar.setBackgroundColor(Color.GRAY);
         int animationDuration = 2500; // 2500ms = 2,5s
         circularProgressBar.setProgressWithAnimation(65, animationDuration);
+
+
+        circularProgressBar2 = (CircularProgressBar)view.findViewById(R.id.progress_bar_chart2);
+        circularProgressBar2.setColor(ContextCompat.getColor(getContext(), R.color.Smurfogreen));
+        circularProgressBar2.setBackgroundColor(Color.GRAY);
+        circularProgressBar2.setProgressWithAnimation(65, animationDuration);
+
 
         history = view.findViewById(R.id.history);
         leaderboard = view.findViewById(R.id.learderboard);

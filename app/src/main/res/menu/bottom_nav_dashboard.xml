@@ -6,27 +6,32 @@
         android:id="@+id/dashboard_dashboard"
         android:enabled="true"
         android:title="Dashboard"
+        android:icon="@drawable/ic_dashboard_black_24dp"
         app:showAsAction="always"></item>
 
     <item
         android:id="@+id/favorite_dashboard"
         android:enabled="true"
-        android:title="My Routine"
+        android:title="My Bookmarks"
+        android:icon="@drawable/ic_dashboard_black_24dp"
         app:showAsAction="always"></item>
     <item
         android:id="@+id/community_dashboard"
         android:enabled="true"
         android:title="My Course"
+        android:icon="@drawable/ic_dashboard_black_24dp"
         app:showAsAction="always"></item>
     <item
         android:id="@+id/certificates_dashboard"
         android:enabled="true"
         android:title="Certificates"
+        android:icon="@drawable/ic_dashboard_black_24dp"
         app:showAsAction="always"></item>
     <item
         android:id="@+id/approve_videos_dashboard"
         android:enabled="true"
-        android:title="Routines"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="My Routines"
         app:showAsAction="always"></item>
 
 </menu>

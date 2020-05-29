@@ -76,13 +76,13 @@ public class routine extends Fragment {
     SwipeRefreshLayout swipeRefreshLayout;
     ProgressBar progressBar;
     int fi=0,so=0;
+    int l=0,u=18;
 
     private List<RoutineThumbnailModel> searchlist;
     private SearchAdapter searchAdapter;
     SearchView searchView;
     private RecyclerView srecyclerView;
     LoadingDialog loadingDialog;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -124,12 +124,12 @@ public class routine extends Fragment {
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
                 so=0;
-                showRoutine(category);
+                showRoutine(l,u);
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
         so=0;
-        showRoutine(category);
+        showRoutine(l,u);
         mDatabaseRef.child("ROUTINE_THUMBNAIL").keepSynced(true);
         DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
         presenceRef.onDisconnect().setValue("I disconnected!");
@@ -191,7 +191,7 @@ public class routine extends Fragment {
                     isScrolling=false;
                     progressBar.setVisibility(View.VISIBLE);
                     if(so==0)
-                    datafetch("");
+                    datafetch(l,u);
                     else if(so==1)
                     {
                         datafetchOld("");
@@ -217,11 +217,11 @@ public class routine extends Fragment {
                         {
                             case R.id.latest:
                                 so=0;
-                                showRoutine("");
+                                showRoutine(0,18);
                                 break;
                             case R.id.old:
                                 so=1;
-                                showRoutineOld("");
+                                showRoutineOld(l,u);
                                 break;
                         }
                         return true;
@@ -247,23 +247,23 @@ public class routine extends Fragment {
                         {
                             case R.id.street:
 
-                                category = "111111110000000000";
-                                showRoutine(category);
+                                l = 0;
+                                u=8;
+                                showRoutine(l,u);
                                 break;
 
                             case R.id.classical:
-                                category = "111111110000000000";
-                                showRoutine(category);
+                                l=9;
+                                u=13;
+                                showRoutine(l,u);
                                 break;
-
                             case R.id.other:
-                                category = "111111110000000000";
-                                showRoutine(category);
+                                l=13;
+                                u=18;
+                                showRoutine(l,u);
                                 break;
-
                             default:
-                                category="111111110000000000";
-                                showRoutine(category);
+                                showRoutine(l,u);
                                 break;
                         }
                         return true;
@@ -275,7 +275,7 @@ public class routine extends Fragment {
         return view;
     }
 
-    private void datafetch(final String category) {
+    private void datafetch(final int l,final int u) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -292,8 +292,20 @@ public class routine extends Fragment {
                                 RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
                             //    Log.d(TAG, model.getVideoId() + " p p p ");
 
-                                if (model.category.equals(category)) {
-                                    videolist.add(k - 1, model);
+                                int flag=0;
+                                String news = model.getCategory().substring(l,u);
+
+                                for(int i=0;i<news.length();i++)
+                                {
+                                    if(news.charAt(i)=='1')
+                                    {
+                                        flag=1;
+                                        break;
+                                    }
+                                }
+                                if(flag==1)
+                                {
+                                    videolist.add(0, model);
                                 }
                                 if (videolist.size() == 8 + k) {
                                     mLastKey = videolist.get(k).getRoutineId();
@@ -370,10 +382,10 @@ public class routine extends Fragment {
     }
 
 
-    private void showRoutine(final String category) {
+    private void showRoutine(final int l,final int u) {
         videolist.clear();
 
-            mDatabaseRef.child("ROUTINE_THUMBNAIL").limitToLast(8).addValueEventListener(new ValueEventListener() {
+            mDatabaseRef.child("ROUTINE_THUMBNAIL").limitToLast(14).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -383,9 +395,20 @@ public class routine extends Fragment {
 
                         Log.d(TAG,ds.getValue()+"");
                         RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
-                        if(category.compareTo(model.category)>0)
+                        String news = model.getCategory().substring(l,u);
+                        int flag=0;
+                        for(int i=0;i<news.length();i++)
+                        {
+                            if(news.charAt(i)=='1')
+                            {
+                                flag=1;
+                                break;
+                            }
+                        }
+                        if(flag==1)
+                        {
                             videolist.add(0, model);
-
+                        }
                         if(p==0) {
                             tempkey = model.getRoutineId();
                         }
@@ -417,10 +440,10 @@ public class routine extends Fragment {
 
 
 
-    private void showRoutineOld(final String category) {
+    private void showRoutineOld(final int l,final int u) {
         videolist.clear();
 
-        mDatabaseRef.child("ROUTINE_THUMBNAIL").limitToFirst(8).addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.child("ROUTINE_THUMBNAIL").limitToFirst(14).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -430,9 +453,20 @@ public class routine extends Fragment {
 
                     Log.d(TAG,ds.getValue()+"");
                     RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
-                    if(model.category.equals(category))
+                    String news = model.getCategory().substring(l,u);
+                    int flag=0;
+                    for(int i=0;i<news.length();i++)
+                    {
+                        if(news.charAt(i)=='1')
+                        {
+                            flag=1;
+                            break;
+                        }
+                    }
+                    if(flag==1)
+                    {
                         videolist.add( model);
-
+                    }
                     if(p==0) {
                         tempkey = model.getRoutineId();
                     }
@@ -447,12 +481,9 @@ public class routine extends Fragment {
                     mLastKey = videolist.get(videolist.size() - 1).getRoutineId();
                 }
                 mAdapter.setData(videolist);
-                Log.d(TAG, videolist.size() + "  mmm  ");
-                Log.d(TAG, mLastKey + " ooo ");
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(mAdapter);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });

@@ -80,19 +80,47 @@
         app:cpb_background_progressbar_width="2dp"
         android:layout_below="@id/user_dashboard_profile"
         app:cpb_progressbar_color="#F44336"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="30dp"
         android:id="@+id/progress_bar_chart"
         app:cpb_progressbar_width="5dp" />
 
 
-    <ProgressBar
-        android:id="@+id/progress_bar_chart2"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+
+    <com.mikhaellopez.circularprogressbar.CircularProgressBar
+        android:layout_width="170dp"
+        android:layout_height="170dp"
+        app:cpb_background_progressbar_color="#FFCDD2"
+        app:cpb_background_progressbar_width="2dp"
         android:layout_below="@id/user_dashboard_profile"
+        app:cpb_progressbar_color="#F44336"
         android:layout_toRightOf="@id/progress_bar_chart"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="40dp"
         android:layout_marginLeft="30dp"
-        />
+        android:id="@+id/progress_bar_chart2"
+        app:cpb_progressbar_width="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Progress1"
+        android:textSize="20dp"
+        android:layout_below="@id/progress_bar_chart"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/black"
+        android:layout_marginLeft="70dp"></TextView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Progress2"
+        android:textSize="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/progress_bar_chart2"
+        android:layout_toRightOf="@id/progress_bar_chart"
+        android:textColor="@color/black"
+        android:layout_marginLeft="70dp"></TextView>
+
 
 
 

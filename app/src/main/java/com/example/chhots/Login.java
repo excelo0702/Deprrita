@@ -56,16 +56,12 @@ public class Login extends AppCompatActivity {
     TextInputLayout email_login_ttl,password_login_ttl;
     EditText email_login,password_login;
     Button loginBtn;
-    SignInButton Gbtn;
     TextView register,forgotpassword;
     private static final int RC_SIGN_IN = 234;
     private FirebaseAuth auth;
 
-    private GoogleSignInClient mGoogleSignInClient;
     private static final String TAG = "LoginLogin";
     private static final String EMAIL = "email";
-    LoginButton loginButton;
-    CallbackManager callbackManager;
     String id;
 
 
@@ -85,101 +81,9 @@ public class Login extends AppCompatActivity {
         register = findViewById(R.id.signup_text);
         forgotpassword= findViewById(R.id.forgot_password_text);
         auth = FirebaseAuth.getInstance();
-        Gbtn = findViewById(R.id.google_signin);
 
 
 
-
-        callbackManager = CallbackManager.Factory.create();
-
-        loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setPermissions(Arrays.asList("basic_info",EMAIL));
-        // If you are using in a fragment, call loginButton.setFragment(this);
-
-        // Callback registration
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d("Facebook123","Success");
-
-                GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(JSONObject me, GraphResponse response) {
-                                if (response.getError() != null) {
-                                    // handle error
-                                } else {
-                                    // get email and id of the user
-                                    String email = me.optString(EMAIL);
-                                    String name = me.optString("name");
-                                    id = me.optString("id");
-                                    Log.d("Facebook123",email+" ppp    "+id+"  oo o "+name);
-
-                                }
-                            }
-                        }).executeAsync();
-                new GraphRequest(
-                        AccessToken.getCurrentAccessToken(),
-                        "/{me}/live_videos",
-                        null,
-                        HttpMethod.GET,
-                        new GraphRequest.Callback() {
-                            public void onCompleted(GraphResponse response) {
-                                String id1 = response.getRawResponse();
-                                Log.d("GraphResponse", id1+"  oo  ");
-
-                            }
-                        }
-                ).executeAsync();
-
-          /*      GraphRequest request = GraphRequest.newPostRequest(
-                        AccessToken.getCurrentAccessToken(),
-                        "/{user-id}/live_videos",
-                        new JSONObject("{\"title\":\"Today's Live Video\",\"description\":\"This is the live video for today.\"}"),
-                        new GraphRequest.Callback() {
-                            @Override
-                            public void onCompleted(GraphResponse response) {
-                                // Insert your code here
-                            }
-                        });
-                request.executeAsync();*/
-
-
-                Toast.makeText(getApplicationContext(),"Login",Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(Login.this,SignUpNextScreen.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                Login.this.finish();
-            }
-
-            @Override
-            public void onCancel() {
-                // App code
-                Log.d("Facebook123","Failes");
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                // App code
-                Log.d("Facebook123",exception.getMessage());
-            }
-        });
-
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-   //     mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-
-        Gbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signIn();
-            }
-        });
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -301,61 +205,10 @@ public class Login extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        //if the requestCode is the Google Sign In code that we defined at starting
-        if (requestCode == RC_SIGN_IN) {
-
-            //Getting the GoogleSignIn Task
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                //Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-
-                //authenticating with firebase
-                firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                Toast.makeText(Login.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }
-        callbackManager.onActivityResult(requestCode, resultCode, data);
 
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-
-        //getting the auth credential
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-
-        //Now using firebase we are signing in the user here
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = auth.getCurrentUser();
-
-                            Toast.makeText(Login.this, "User Signed In", Toast.LENGTH_SHORT).show();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(Login.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-
-                        }
-
-                        // ...
-                    }
-                });
-    }
 
 
-    private void signIn() {
-        //getting the google signin intent
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-
-        //starting the activity for result
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
 
 }

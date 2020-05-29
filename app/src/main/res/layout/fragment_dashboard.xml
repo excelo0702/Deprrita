@@ -15,7 +15,7 @@
         android:layout_gravity="bottom"
         android:background="#FFFFFF"
         android:layout_alignParentBottom="true"
-        app:itemIconTint="#000000"
+        app:itemIconTint="@color/Smurfogreen"
         app:itemTextColor="#000000"
         app:menu="@menu/bottom_nav_dashboard"
         />

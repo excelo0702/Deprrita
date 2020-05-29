@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -56,17 +57,19 @@ public class SignUpNextScreen extends AppCompatActivity {
     private Uri mImageUri;
     private StorageReference storageReference;
 
+    Spinner spinner;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_next_screen);
 
         init();
-
         Intent intent = getIntent();
         Semail = intent.getStringExtra("email");
         Spassword = intent.getStringExtra("password");
-
+        spinner =findViewById(R.id.user_dancer_level);
 
         userImage_signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +77,12 @@ public class SignUpNextScreen extends AppCompatActivity {
                 openFileChooser();
             }
         });
+
+
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(),R.array.level_list,android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
 
 
         finalsignUp.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +161,9 @@ public class SignUpNextScreen extends AppCompatActivity {
                                                                 public void onSuccess(Uri uri) {
                                                                     InstructorInfoModel model = new InstructorInfoModel(auth.getCurrentUser().getUid(), Semail, profession, level, uri.toString(),name,"","beginner", R1, R2, R3, R4, R5, R6);
                                                                     mDatabaseReference.child("InstructorInfo").child(auth.getCurrentUser().getUid()).setValue(model);
-                                                                    startActivity(new Intent(SignUpNextScreen.this, MainActivity.class));
+                                                                    Intent intent = new Intent(SignUpNextScreen.this,MainActivity.class);
+                                                                    intent.putExtra("Category","Nope");
+                                                                    startActivity(intent);
                                                                 }
                                                             });
                                                     }

@@ -18,20 +18,6 @@
         android:layout_width="@dimen/dp300"
         android:layout_height="@dimen/dp150"/>
 
-    <TextView
-        android:text="Hello,"
-        android:textSize="@dimen/text30"
-        android:layout_marginStart="@dimen/margin10"
-        android:textStyle="bold"
-        android:layout_marginTop="@dimen/margin10"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"/>
-    <TextView
-        android:text="We would Love to have you on SMURFO."
-        android:textSize="@dimen/text20"
-        android:layout_marginStart="@dimen/margin10"
-        android:layout_width="match_parent"
-        android:layout_height="25dp"/>
 
     <TextView
         android:text="Hello,"
@@ -112,8 +98,7 @@
         android:layout_marginRight="@dimen/margin10"
         android:id="@+id/signup"
         android:textColor="@color/black"
-        android:text="Register"
-        />
+        android:text="Register" />
 
     <ProgressBar
         android:id="@+id/progressBar"
