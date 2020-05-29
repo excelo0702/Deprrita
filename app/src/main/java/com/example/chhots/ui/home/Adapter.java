@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -52,9 +53,11 @@ public class Adapter extends PagerAdapter {
 
 
         TextView txt1,des1;
+        ImageView img;
         txt1 = (TextView)view.findViewById(R.id.text);
-
+        img = view.findViewById(R.id.viewpager_image);
         txt1.setText(models.get(position).getName());
+        img.setImageResource(models.get(position).getImage());
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override

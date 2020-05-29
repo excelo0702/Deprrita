@@ -109,7 +109,8 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-int p=0;
+
+                    int p=0;
                     if (user == null) {
                         Toast.makeText(context, "Login First", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(context, Login.class);
@@ -134,7 +135,6 @@ int p=0;
                         }
                     }
                     p=1;
-
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {

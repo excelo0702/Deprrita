@@ -57,11 +57,12 @@
         <ImageView
             android:layout_width="@dimen/text30"
             android:layout_height="@dimen/text30"
-            android:src="@color/Smurfogreen"
+            android:src="@drawable/ic_chat"
             android:id="@+id/chat_with_instructor_routine"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="30dp">
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="20dp">
         </ImageView>
     </RelativeLayout>
 

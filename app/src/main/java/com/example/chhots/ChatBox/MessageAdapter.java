@@ -64,14 +64,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyHolder
         if(model.getFlag()==0)
         {
             holder.message.setText(model.getMessage());
-            holder.message_date.setText(model.getTime());
             holder.playerView.getLayoutParams().height=0;
             holder.playerView.getLayoutParams().width = 0;
         }
         else
         {
             holder.message_left.setText(model.getMessage());
-            holder.message_left_date.setText(model.getTime());
 
             holder.playerView.getLayoutParams().height=0;
             holder.playerView.getLayoutParams().width = 0;
@@ -94,8 +92,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyHolder
             Log.d(TAG,"fghjkk");
             message = itemView.findViewById(R.id.show_message);
             message_left = itemView.findViewById(R.id.show_message_left);
-            message_left_date = itemView.findViewById(R.id.show_message__left_date);
-            message_date = itemView.findViewById(R.id.show_message_date);
             playerView = itemView.findViewById(R.id.video_view_chat);
 
         }

@@ -2,19 +2,31 @@ package com.example.chhots.ui.Dashboard.ApproveVideo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chhots.ChatBox.ChatWithInstructor;
+import com.example.chhots.MyFirebaseMessagingService;
 import com.example.chhots.NotificationBadgeModel;
+import com.example.chhots.NotificationNumberModel;
 import com.example.chhots.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +43,9 @@ public class ChatPeopleAdapter extends RecyclerView.Adapter<ChatPeopleAdapter.My
     private List<ChatPeopleModel> list;
     private Context context;
     private String routineId;
+    private DatabaseReference db;
+    private FirebaseUser user;
+    int flag=1;
 
     public ChatPeopleAdapter(List<ChatPeopleModel> list, Context context,String routineId) {
         this.list = list;
@@ -46,21 +61,29 @@ public class ChatPeopleAdapter extends RecyclerView.Adapter<ChatPeopleAdapter.My
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyView holder, int position) {
-        NotificationBadgeModel notif = new NotificationBadgeModel();
-        if(notif!=null) {
-            HashMap<String, Integer> mm = notif.getNotification_chatlist();
+    public void onBindViewHolder(@NonNull final MyView holder, final int position) {
 
-            if(mm!=null) {
-                Log.d("Notification Chat", mm.size() + "");
+        holder.chatlist_notification.setVisibility(GONE);
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        db = FirebaseDatabase.getInstance().getReference("NotificationNumber").child(user.getUid());
+        db.child("dashboard").child("ApproveVideo").child("Routine").child(routineId).child(list.get(position).getUserId())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        NotificationNumberModel model = dataSnapshot.getValue(NotificationNumberModel.class);
 
-                if (mm.size() > 0 && mm.get(list.get(position).getUserId()) > 0) {
-                    holder.chatlist_notification.setText(mm.get(list.get(position).getUserId()));
-                } else {
-                    holder.chatlist_notification.setVisibility(GONE);
-                }
-            }
-        }
+                            if(model!=null) {
+                                Log.d("count_notify", dataSnapshot.getValue() + "");
+                                holder.chatlist_notification.setVisibility(View.VISIBLE);
+                                holder.chatlist_notification.setText(String.valueOf(model.getI()));
+                                dataSnapshot.getRef().removeValue();
+                            }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
+
+
         holder.name.setText(list.get(position).getUserName());
    //     Picasso.get().load(Uri.parse(list.get(position).getuserImageurl())).into(holder.image);
         holder.peopleId = list.get(position).getUserId();
@@ -95,6 +118,7 @@ public class ChatPeopleAdapter extends RecyclerView.Adapter<ChatPeopleAdapter.My
                     intent.putExtra("category","INSTRUCTOR");
                     intent.putExtra("routineId",routineId);
                     intent.putExtra("peopleId",peopleId);
+
                     chatlist_notification.setVisibility(GONE);
                     context.startActivity(intent);
                 }

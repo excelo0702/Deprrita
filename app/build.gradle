@@ -106,6 +106,8 @@ dependencies {
 
     implementation 'com.iceteck.silicompressorr:silicompressor:2.2.3'
     implementation 'com.android.volley:volley:1.1.1'
+    implementation project(path: ':versatileprogressbar')
+
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'

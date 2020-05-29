@@ -140,15 +140,6 @@ public class ChatWithInstructor extends AppCompatActivity {
             }
         });
 
-        NotificationBadgeModel notif = new NotificationBadgeModel();
-        if(notif!=null) {
-            HashMap<String, Integer> mm = notif.getNotification_chatlist();
-
-            if(mm!=null) {
-                Log.d("Notification Chat", mm.size() + "");
-                mm.put(peopleId,0);
-            }
-        }
 
         peopleImage = findViewById(R.id.people_profile_image);
         peopleName = findViewById(R.id.people_profile_name);
@@ -164,7 +155,7 @@ public class ChatWithInstructor extends AppCompatActivity {
 
         fetchInstructorInfo();
         fetchPeopleInfo();
-
+        recyclerView.scrollToPosition(list.size()-1);
 
         showMessage();
         send_message.setOnClickListener(
@@ -181,9 +172,6 @@ public class ChatWithInstructor extends AppCompatActivity {
             }
         });
     }
-
-
-
 
     private void sendNotification(String message) {
   /*      //json object

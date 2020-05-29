@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.example.chhots.R;
 import com.example.chhots.InstructorInfoModel;
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -68,6 +69,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import static android.view.View.GONE;
 import static com.paytm.pgsdk.easypay.manager.PaytmAssist.getContext;
 
 public class addRoutine extends AppCompatActivity {
@@ -946,6 +948,7 @@ public class addRoutine extends AppCompatActivity {
         upload_routine = findViewById(R.id.upload_routine);
         video_title = findViewById(R.id.routine_video_title);
         sequence_no = findViewById(R.id.routine_sequence_no);
+        seqNo = findViewById(R.id.text);
         description = findViewById(R.id.routine_description);
         thumbnail = findViewById(R.id.choose_thumbnail);
         spinner = findViewById(R.id.routine_level_spinner);
@@ -966,13 +969,13 @@ public class addRoutine extends AppCompatActivity {
         playerView.setPadding(5,0,5,0);
 
 
+
     }
 
 
     private void FullScreen() {
         if(fullScreen)
         {
-            fullScreenButton.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.ic_fullscreen_black_24dp));
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
 
             addRoutine.this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
@@ -983,30 +986,51 @@ public class addRoutine extends AppCompatActivity {
             params.width = params.MATCH_PARENT;
             params.height = (int)( 330 * getContext().getResources().getDisplayMetrics().density);
             playerView.setLayoutParams(params);
+
+
+
+            choose_video.setVisibility(View.VISIBLE);
+            upload_routine.setVisibility(View.VISIBLE);
+            upload_video.setVisibility(View.VISIBLE);
+            sequence_no.setVisibility(View.VISIBLE);
+            seqNo.setVisibility(View.VISIBLE);
+            thumbnail.setVisibility(View.VISIBLE);
+            progress_seekbar1.setVisibility(View.VISIBLE);
+            progress_seekbar1.setVisibility(View.VISIBLE);
+            routine_Name.setVisibility(View.VISIBLE);
+            choose_category.setVisibility(View.VISIBLE);
+
             fullScreen = false;
         }
         else{
-            fullScreenButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_fullscreen_black_24dp));
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-            addRoutine.this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
-            );
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
             if(getSupportActionBar() != null){
                 getSupportActionBar().hide();
             }
-
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
-            addRoutine.this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
-                    |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) playerView.getLayoutParams();
-            params.width = params.MATCH_PARENT;
-            params.setMargins(0,0,0,0);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)playerView.getLayoutParams();
             params.height = params.MATCH_PARENT;
-
+            params.width = (int)( (params.height*4)/3);
+            playerView.setBackgroundColor(Color.parseColor("#000000"));
             playerView.setLayoutParams(params);
+            player.setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT);
 
+            choose_video.setVisibility(GONE);
+            upload_routine.setVisibility(GONE);
+            upload_video.setVisibility(GONE);
+            sequence_no.setVisibility(GONE);
+            seqNo.setVisibility(GONE);
+            thumbnail.setVisibility(GONE);
+progress_seekbar1.setVisibility(GONE);
+progress_seekbar1.setVisibility(GONE);
+routine_Name.setVisibility(GONE);
+choose_category.setVisibility(GONE);
             fullScreen = true;
         }
     }
@@ -1062,6 +1086,9 @@ public class addRoutine extends AppCompatActivity {
         MediaSource mediaSource = buildMediaSource(videouri);
 
         player.setPlayWhenReady(playWhenReady);
+
+        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+        player.setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT);
         //  player.seekTo(currentWindow, playbackPosition);
         player.prepare(mediaSource, false, false);
     }

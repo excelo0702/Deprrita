@@ -15,4 +15,16 @@
         android:layout_toRightOf="@id/routine_thumbnail"
         android:id="@+id/routine_title"></TextView>
 
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:inputType="numberSigned"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/routine_title_notification"></TextView>
+
 </RelativeLayout>

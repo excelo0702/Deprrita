@@ -25,6 +25,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.chhots.R;
 import com.example.chhots.bottom_navigation_fragments.Calendar.CalendarModel;
 import com.example.chhots.ui.notifications.NotificationModel;
@@ -34,11 +41,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
@@ -67,6 +81,10 @@ public class hostContest extends Fragment {
     private PopupWindow mPopupWindow;
     String date_text;
     RelativeLayout relativeLayout;
+
+
+    private RequestQueue mRequestQueue;
+    private String URL="https://fcm.googleapis.com/fcm/send";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -124,7 +142,6 @@ public class hostContest extends Fragment {
 
             }
         });
-
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,8 +149,67 @@ public class hostContest extends Fragment {
             }
         });
 
+        mRequestQueue = Volley.newRequestQueue(getContext());
+        FirebaseMessaging.getInstance().subscribeToTopic("contest");
         return view;
     }
+
+
+    private void sendNotification(String contestId) {
+  /*      //json object
+        {
+            "to": "topics/topic name"
+                notification:   {
+                    title: "some titlle"
+                     body:  "some body"
+                }
+        }*/
+
+        JSONObject mainObj = new JSONObject();
+        try {
+            mainObj.put("to","/topics/"+"contest");
+            JSONObject notificationObj = new JSONObject();
+            notificationObj.put("title","Contest");
+            notificationObj.put("body","New Contest Hosted");
+
+            JSONObject extraData = new JSONObject();
+            extraData.put("category","Chat");
+            extraData.put("contestId",contestId);
+
+            mainObj.put("notification",notificationObj);
+            mainObj.put("data",extraData);
+
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, URL,
+                    mainObj, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Toast.makeText(getContext(),"sent",Toast.LENGTH_SHORT).show();
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String,String> header = new HashMap<>();
+                    header.put("content-type","application/json");
+                    header.put("authorization","key=AAAAk4aOdMQ:APA91bGIGSc4-YEFm1lkWu5fiP9Cg8NRT0hC4Jwkg4yhn2GkGQH4uD-FNoDMkDW8Hl_pULwRfj7EFMLW--qnTIH6WUNG7_ZkH9_6Z-Mo6ATU30SErTZJNYe7K69AsljvTxhVavn1XW56");
+                    return header;
+                }
+            };
+
+            mRequestQueue.add(request);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
 
 
     private String getFileExtension(Uri uri) {
@@ -208,6 +284,8 @@ public class hostContest extends Fragment {
                             progress_seekBar.setProgress((int)progress);
                         }
                     });
+            sendNotification(time);
+
         }
     }
 

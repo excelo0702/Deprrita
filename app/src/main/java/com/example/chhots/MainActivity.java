@@ -1,6 +1,7 @@
 package com.example.chhots;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
@@ -28,6 +29,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.provider.Settings;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.MenuItem;
@@ -36,6 +41,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -65,6 +71,9 @@ import android.widget.VideoView;
 
 import java.util.List;
 
+import static android.graphics.Typeface.BOLD;
+import static androidx.core.view.MenuItemCompat.getActionView;
+
 public class MainActivity extends AppCompatActivity implements  PaymentListener{
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -81,12 +90,18 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
     LoadingDialog loadingDialog;
     private static final String TAG = "MainActivity1";
 
+    TextView notification_text,dashboard_text;
+    private String original_text;
+    int k=0;
+    NavigationView navigationView;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
 
         //firebase offline capabilities
@@ -136,10 +151,14 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
         });
 
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+
+        navigationView = findViewById(R.id.nav_view);
+
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
                 switch (item.getItemId())
                 {
                     case R.id.nav_home:
@@ -162,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
                             Log.d("main222","fragment");
                             fragmentTransaction.commit();
                         }
+
                         drawer.closeDrawers();
                         break;
                     case R.id.nav_notification:
@@ -214,10 +234,33 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
             firebaseDatabase = FirebaseDatabase.getInstance();
+
             databaseReference = firebaseDatabase.getReference("");
+            databaseReference.child("NotificationNumber").child(user.getUid()).child("dashboard")
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            k=(int)dataSnapshot.getChildrenCount();
+                            Log.d("mmmmmm",dataSnapshot.getValue()+""+dataSnapshot.getChildrenCount()+"  "+k);
+
+                            if(k>0) {
+                                Menu menu = navigationView.getMenu();
+                                MenuItem nav_dashboard = menu.findItem(R.id.nav_home);
+                                MenuItem nav_notification = menu.findItem(R.id.nav_notification);
+                                SpannableStringBuilder builder = new SpannableStringBuilder();
+                                String original = "dashboard               " + k;
+                                SpannableString spannableString = new SpannableString(original);
+                                ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(Color.RED);
+                                spannableString.setSpan(foregroundColorSpan, spannableString.length() - 2, spannableString.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                                spannableString.setSpan(new StyleSpan(BOLD), 0, 2, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+                                nav_dashboard.setTitle(spannableString);
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) { }
+                    });
             login.setText(user.getEmail());
             login.setPaintFlags(login.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
-
             Query query = databaseReference.child(getString(R.string.InstructorInfo)).child(auth.getCurrentUser().getUid());
             query.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -271,7 +314,6 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
                         switch (item.getItemId()) {
                             case R.id.action_dashboard:
                                 setFragment(new HomeFragment());
-
                                 Toast.makeText(getApplicationContext(), "Dashboard", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.action_favorites:
@@ -412,6 +454,7 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
         for(Fragment f : fragments){
             if(f != null && (f instanceof upload_video)) {
                 ((upload_video) f).onBackPressed();
+                super.onBackPressed();
             }
 
             if(f != null && (f instanceof form_contest)) {

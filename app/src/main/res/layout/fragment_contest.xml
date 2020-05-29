@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:text="Host Contest"
         android:id="@+id/host_contest"
+        android:textColor="@color/black"
         ></Button>
 
     <androidx.viewpager.widget.ViewPager

@@ -29,7 +29,9 @@ public class SplashScreen_Activity extends AppCompatActivity {
         if(getIntent().hasCategory("Chat"))
         {
             Intent intent = new Intent(SplashScreen_Activity.this, ChatWithInstructor.class);
-
+            intent.putExtra("category","Instructor");
+            intent.putExtra("routineId",getIntent().getStringExtra("routineId"));
+            intent.putExtra("peopleId",getIntent().getStringExtra("peopleId"));
             startActivity(intent);
         }
 

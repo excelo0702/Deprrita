@@ -228,7 +228,6 @@ public class upload_video extends Fragment implements onBackPressed {
     private void FullScreen() {
         if(fullScreen)
         {
-            fullScreenButton.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.ic_fullscreen_black_24dp));
 
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)playerView.getLayoutParams();
             params.width = params.MATCH_PARENT;
@@ -268,7 +267,6 @@ public class upload_video extends Fragment implements onBackPressed {
             fullScreen = false;
         }
         else{
-            fullScreenButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_fullscreen_black_24dp));
             ((AppCompatActivity)getActivity()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
             ((AppCompatActivity)getActivity()).getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
@@ -389,15 +387,25 @@ public class upload_video extends Fragment implements onBackPressed {
     public void onPause() {
         super.onPause();
         if (Util.SDK_INT <= 23) {
-            releasePlayer();
-        }
+           // releasePlayer();
+            if(player!=null){
+                player.setPlayWhenReady(false);
+
+            }        }
     }
+
+
 
     @Override
     public void onStop() {
         super.onStop();
         if (Util.SDK_INT > 23) {
-            releasePlayer();
+          //  releasePlayer();
+            if(player!=null){
+                player.setPlayWhenReady(false);
+
+            }
+
         }
     }
 
@@ -441,23 +449,6 @@ public class upload_video extends Fragment implements onBackPressed {
                 }
             });
 
-            if(subCategory.equals("NormalVideos"))
-            {
-                price.setText("-1");
-                sub_category = "Normal";
-
-
-            }
-            else if(subCategory.equals("RoutineVideos"))
-            {
-                sub_category="ROUTINE";
-            }
-            else
-            {
-                sub_category="ROUTINE";
-
-            }
-            final String Price = price.getText().toString();
             if(title.equals(""))
             {
                 Toast.makeText(getContext(),"Title cant be null",Toast.LENGTH_SHORT).show();
@@ -500,7 +491,7 @@ public class upload_video extends Fragment implements onBackPressed {
                                                                         }
                                                                     },100);
 
-                                                                    VideoModel model = new VideoModel(user.getUid(),title,"",descriptio,videouri.toString(),imageuri.toString(),"NONE","NONE",Price,upload,"0","0","0",sub_category);
+                                                                    VideoModel model = new VideoModel(user.getUid(),title,"",descriptio,videouri.toString(),imageuri.toString(),"NONE","NONE","0",upload,"0","0","0","Normal");
                                                                     databaseReference.child("VIDEOS").child(upload).setValue(model);
                                                                 }
                                                             });
@@ -509,6 +500,7 @@ public class upload_video extends Fragment implements onBackPressed {
                                     Toast.makeText(getContext(),"uploaded",Toast.LENGTH_LONG).show();
                                     uploadBtn.setEnabled(true);
                                     choosebtn.setEnabled(true);
+                                    onBackPressed();
                                 }
                             });
                         }
@@ -526,6 +518,7 @@ public class upload_video extends Fragment implements onBackPressed {
                         public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
                             double progress = (100.0* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
                             progress_seekBar.setProgress((int) progress);
+                            Toast.makeText(getContext(),String.valueOf((int)progress),Toast.LENGTH_SHORT).show();
                         }
                     });
             uploadBtn.setEnabled(true);
@@ -536,7 +529,9 @@ public class upload_video extends Fragment implements onBackPressed {
     @Override
     public void onBackPressed() {
         ((AppCompatActivity)getActivity()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        player.setPlayWhenReady(false);
-        player.release();
+        if(player!=null){
+            player.setPlayWhenReady(false);
+            player.release();
+        }
     }
 }

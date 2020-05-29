@@ -365,8 +365,9 @@ public class See_Video extends Fragment {
         playerView.setPlayer(player);
 
         MediaSource mediaSource = buildMediaSource(videouri);
-
         player.setPlayWhenReady(playWhenReady);
+        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+        player.setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT);
         //  player.seekTo(currentWindow, playbackPosition);
         player.prepare(mediaSource, false, false);
     }

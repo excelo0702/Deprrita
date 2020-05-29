@@ -152,18 +152,8 @@ public class routine_view extends Fragment implements onBackPressed {
             routineId = bundle.getString("courseId");
             fetchCourse();
         }
-
         Log.d("categoryyyy",category);
 
-        chatBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), ChatWithInstructor.class);
-                intent.putExtra("instructorId", instructorId);
-                intent.putExtra("routineId", routineId);
-                getContext().startActivity(intent);
-            }
-        });
 
         fullScreenButton.setOnClickListener(new View.OnClickListener() {
             @Override

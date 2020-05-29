@@ -22,6 +22,7 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.example.chhots.InstructorLogin;
 import com.example.chhots.LoadingDialog;
+import com.example.chhots.Login;
 import com.example.chhots.R;
 import com.example.chhots.UserClass;
 import com.example.chhots.category_view.routine.routine_purchase;
@@ -48,7 +49,8 @@ public class Adapter extends PagerAdapter {
     FirebaseUser user;
 
 
-
+    private String TAG = "ppq";
+    String courseId;
 
 
 
@@ -78,6 +80,7 @@ public class Adapter extends PagerAdapter {
 
         TextView course_name,des;
         ImageView img;
+        final String thumbnail = models.get(position).getCourseImage();
 
 
         course_name = (TextView)view.findViewById(R.id.raw_course_viewpager_name);
@@ -85,6 +88,7 @@ public class Adapter extends PagerAdapter {
         img = (ImageView)view.findViewById(R.id.raw_course_viewpager_image);
         user = FirebaseAuth.getInstance().getCurrentUser();
         instructorId = models.get(position).getInstructorId();
+
 
         course_name.setText(models.get(position).getCourseName());
         des.setText(models.get(position).getCourseName());
@@ -96,48 +100,43 @@ public class Adapter extends PagerAdapter {
             @Override
             public void onClick(View view) {
                 int p=0;
-                String courseId = models.get(position).getCourseId();
-                if(user==null)
-                {
-                    Toast.makeText(context,"Login First",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(context, InstructorLogin.class);
+                courseId = models.get(position).getCourseId();
+                if (user == null) {
+                    Toast.makeText(context, "Login First", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, Login.class);
                     context.startActivity(intent);
                 }
-
-                else if(user.getUid()==models.get(position).getInstructorId())
+                else if(user.getUid()==instructorId)
                 {
                     Fragment fragment = new routine_view();
                     Bundle bundle = new Bundle();
                     bundle.putString("category","Course");
-                    bundle.putString("courseId",models.get(position).getCourseId());
+                    bundle.putString("courseId",courseId);
                     fragment.setArguments(bundle);
                     FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.drawer_layout, fragment);
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                 }
-                else
-                {
+                else {
                     loadingDialog.startLoadingDialog();
-                    //   p = checkSubscription();
-                    if(p==0)
-                    {
-                //        p = checkPurchased(courseId);
+                    if (p == 0) {
+                        //      p = checkPurchased();
                     }
                 }
+                p=1;
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         loadingDialog.DismissDialog();
                     }
                 },3000);
-                p=1;
                 if(p==1)
                 {
                     Fragment fragment = new routine_view();
                     Bundle bundle = new Bundle();
                     bundle.putString("category","Course");
-                    bundle.putString("routineId",courseId);
+                    bundle.putString("courseId",courseId);
                     fragment.setArguments(bundle);
                     FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.drawer_layout, fragment);
@@ -148,15 +147,16 @@ public class Adapter extends PagerAdapter {
                 {
                     Fragment fragment = new course_purchase_view();
                     Bundle bundle = new Bundle();
-                    bundle.putString("routineId", courseId);
-              //      bundle.putString("thumbnail", thumbnail);
-                //    bundle.putString("userId", userId);
+                    bundle.putString("courseId", courseId);
+                    bundle.putString("thumbnail", thumbnail);
+                    bundle.putString("userId", user.getUid());
                     fragment.setArguments(bundle);
                     FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.drawer_layout, fragment);
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                 }
+
             }
         });
 
@@ -164,21 +164,26 @@ public class Adapter extends PagerAdapter {
         return view;
     }
 
-    public int checkPurchased(final String courseId)
+    public int checkPurchased()
     {
+        Log.d(TAG," pqq ");
         final int[] flag = new int[1];
         mDatabaseReference.child("USER_PURCHASED_ROUTINES").child(user.getUid())
                 .addValueEventListener(new ValueEventListener() {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.d(TAG,dataSnapshot.getValue()+"");
 
                         for(DataSnapshot ds: dataSnapshot.getChildren())
                         {
+                            Log.d(TAG,ds.getValue()+"");
                             UserClass model = ds.getValue(UserClass.class);
                             if(model.getVideoId().equals(courseId))
                             {
+                                Log.d(TAG," peee ");
                                 flag[0] =1;
+                                Log.d(TAG,flag[0]+" oo ");
                             }
                         }
                         if(flag[0]==1) {

@@ -1,6 +1,7 @@
 package com.example.chhots.ui.Dashboard.ApproveVideo;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,9 +19,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chhots.R;
 import com.example.chhots.category_view.routine.RoutineThumbnailModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import static android.view.View.GONE;
 
 public class ApproveVideoAdapter extends RecyclerView.Adapter<ApproveVideoAdapter.ApproveVideoHolder>{
 
@@ -44,7 +54,32 @@ public class ApproveVideoAdapter extends RecyclerView.Adapter<ApproveVideoAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ApproveVideoHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ApproveVideoHolder holder, int position) {
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference("NotificationNumber").child(user.getUid()).child("dashboard").child("ApproveVideo").child("Routine");
+        db.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int k = (int)dataSnapshot.getChildrenCount();
+                if(k>0)
+                {
+
+                    holder.notify.setText(String.valueOf(k));
+                    holder.notify.setTextColor(Color.GREEN);
+                    holder.notify.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    holder.notify.setVisibility(GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         holder.title.setText(list.get(position).getTitle());
         Picasso.get().load(Uri.parse(list.get(position).getRoutineThumbnail())).into(holder.thumbnail);
         holder.routineId = list.get(position).getRoutineId();
@@ -64,12 +99,13 @@ public class ApproveVideoAdapter extends RecyclerView.Adapter<ApproveVideoAdapte
     public class ApproveVideoHolder extends RecyclerView.ViewHolder{
 
         ImageView thumbnail;
-        TextView title;
+        TextView title,notify;
         String routineId,instructorId;
         public ApproveVideoHolder(@NonNull View itemView) {
             super(itemView);
             thumbnail = itemView.findViewById(R.id.routine_thumbnail);
             title = itemView.findViewById(R.id.routine_title);
+            notify = itemView.findViewById(R.id.routine_title_notification);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

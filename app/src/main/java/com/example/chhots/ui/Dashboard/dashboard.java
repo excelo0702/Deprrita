@@ -1,6 +1,7 @@
 package com.example.chhots.ui.Dashboard;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,8 +20,15 @@ import com.example.chhots.onBackPressed;
 import com.example.chhots.ui.Dashboard.ApproveVideo.ApproveVideo;
 import com.example.chhots.ui.Dashboard.Favorite.favorite;
 import com.example.chhots.ui.home.HomeFragment;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import static android.view.View.GONE;
 
@@ -38,6 +46,11 @@ public class dashboard extends Fragment implements onBackPressed {
     BottomNavigationView bottomNavigationView;
     String cat="p";
 
+    private FirebaseUser user;
+    private DatabaseReference databaseReference;
+
+    private BadgeDrawable badge_approve;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,6 +63,7 @@ public class dashboard extends Fragment implements onBackPressed {
         Bundle bundle = getArguments();
         cat = bundle.getString("category");
         Log.d("main222p",cat);
+
 
 
 
@@ -69,6 +83,30 @@ public class dashboard extends Fragment implements onBackPressed {
             bottomNavigationView.setEnabled(false);
             bottomNavigationView.setVisibility(GONE);
         }
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        databaseReference = FirebaseDatabase.getInstance().getReference("NotificationNumber").child(user.getUid());
+        databaseReference.child("dashboard").child("ApproveVideo")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        int k = (int)dataSnapshot.getChildrenCount();
+                        if(k>0) {
+                            badge_approve = bottomNavigationView.getOrCreateBadge(R.id.approve_videos_dashboard);
+                            badge_approve.setBackgroundColor(Color.BLUE);
+                            badge_approve.setBadgeTextColor(Color.RED);
+                            badge_approve.setMaxCharacterCount(3);
+                            badge_approve.setNumber(k);
+                            badge_approve.setVisible(true);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

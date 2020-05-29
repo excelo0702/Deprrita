@@ -29,8 +29,9 @@
 
             <com.google.android.exoplayer2.ui.PlayerView
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_margin="15dp"
+                android:layout_height="250dp"
+                app:resize_mode="fit"
+                android:background="@color/black"
                 android:layout_below="@id/video_adapter_title_see"
                 android:id="@+id/video_view_item_see"></com.google.android.exoplayer2.ui.PlayerView>
 

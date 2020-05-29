@@ -31,7 +31,6 @@
             android:text="Classical"
             android:textSize="12dp"
             android:padding="5dp"
-            android:background="#0D111111"
             android:id="@+id/routine_category_classical"
             android:button="@android:color/transparent"></RadioButton>
     </androidx.cardview.widget.CardView>

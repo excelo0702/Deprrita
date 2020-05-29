@@ -2,20 +2,30 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="10dp">
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/dialog_progressBar"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        ></ProgressBar>
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/t"
+        android:layout_width="205dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/text30"
+        android:padding="10dp"
         android:text="Loading"
-        android:textSize="24dp"
-        android:layout_below="@id/dialog_progressBar"></TextView>
+        android:textColor="@color/black"
+        android:textSize="28dp"></TextView>
+
+
+    <com.aseem.versatileprogressbar.ProgBar
+        android:id="@+id/dialog_progressBar"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="65dp"
+        android:layout_toRightOf="@id/t"
+        android:elevation="10dp"
+        app:barType="@drawable/bouncy_balls" />
+
 
 </RelativeLayout>

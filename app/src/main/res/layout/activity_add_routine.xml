@@ -14,13 +14,15 @@
         <com.google.android.exoplayer2.ui.PlayerView
             android:layout_width="match_parent"
             android:layout_height="250dp"
+            android:background="@color/black"
             android:id="@+id/routine_course_video"
-            app:resize_mode="fill">
+            app:resize_mode="fit">
         </com.google.android.exoplayer2.ui.PlayerView>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:text="Choose Video"
             android:id="@+id/choose_routine_video"
             android:layout_below="@id/routine_course_video"></Button>
@@ -65,6 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Upload Video"
+            android:textColor="@color/black"
             android:layout_below="@id/progress_bar_upload_video"
             android:id="@+id/upload_routine_video"></Button>
 
@@ -124,6 +127,7 @@
             android:layout_height="wrap_content"
             android:text="Upload Routine"
             android:id="@+id/upload_routine"
+            android:textColor="@color/black"
             android:layout_below="@id/routine_dscription"
             android:layout_toRightOf="@id/routine_level_spinner"></Button>
 

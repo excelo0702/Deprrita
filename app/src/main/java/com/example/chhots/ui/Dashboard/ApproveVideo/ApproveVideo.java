@@ -109,7 +109,6 @@ public class ApproveVideo extends Fragment {
                         User_model = dataSnapshot.getValue(InstructorInfoModel.class);
 
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 

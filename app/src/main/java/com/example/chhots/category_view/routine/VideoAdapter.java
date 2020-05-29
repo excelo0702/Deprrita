@@ -102,7 +102,7 @@ public class VideoAdapter extends
         holder.sub_category = current.getSub_category();
         holder.thumbnail = current.getThumbnail();
         holder.userId = current.getUser();
-        Picasso.get().load(Uri.parse(current.getThumbnail())).into(holder.videoview);
+        Picasso.get().load(Uri.parse(current.getThumbnail())).placeholder(R.drawable.smurfoo_dp).into(holder.videoview);
         Log.d(TAG,current.getTitle()+"  "+current.getUrl());
     }
 

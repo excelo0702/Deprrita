@@ -4,4 +4,10 @@
     <color name="colorPrimaryDark">#FFFFFF</color>
     <color name="colorAccent">#000000</color>
     <color name ="Smurfogreen">#469749</color>
+    <color name="color1">#424549</color>
+    <color name="color2">#303F9F</color>
+    <color name="color3">#424549</color>
+    <color name="color4">#7e455e</color>
+    <color name="color5">#796e25</color>
+    <color name="textColor">#FFFFFF</color>
 </resources>

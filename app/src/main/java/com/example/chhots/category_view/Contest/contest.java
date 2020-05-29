@@ -124,14 +124,14 @@ public class contest extends Fragment {
     }
 
     private void showContests() {
-        databaseReference.child("ContestThumbnail").addValueEventListener(new ValueEventListener() {
+        databaseReference.child("ContestThumbnail").limitToLast(20).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds: dataSnapshot.getChildren())
                 {
                     Log.d(TAG,ds.getValue()+"\n");
                     HostModel model = ds.getValue(HostModel.class);
-                    list.add(model);
+                    list.add(0,model);
 
                 }
                 contestAdapter = new ContestAdapter(list,getActivity());

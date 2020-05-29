@@ -5,21 +5,23 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single"
+        android:visible="true"
         >
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_dashboard_black_24dp"
             android:title="Dashboard"
-            app:actionViewClass="android.widget.TextView" />
+             />
 
         <item
             android:id="@+id/nav_notification"
             android:icon="@drawable/ic_notifications"
-            app:actionViewClass="android.widget.TextView"
+
             android:title="Notification" />
         <item
             android:id="@+id/nav_subscription"
             android:icon="@drawable/ic_subscriptions_black_24dp"
+
             android:title="Subscription" />
         <item
             android:id="@+id/nav_category"

@@ -394,9 +394,6 @@ public class explore extends Fragment{
                          //   Log.d(TAG, searchlist.size() + " popop  ");
                             srecyclerView.setLayoutManager(sLayoutManager);
                             srecyclerView.setAdapter(searchAdapter);
-
-
-
                         }
 
                         @Override
