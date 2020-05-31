@@ -161,6 +161,8 @@ public class SignUpNextScreen extends AppCompatActivity {
                                                                 public void onSuccess(Uri uri) {
                                                                     InstructorInfoModel model = new InstructorInfoModel(auth.getCurrentUser().getUid(), Semail, profession, level, uri.toString(),name,"","beginner", R1, R2, R3, R4, R5, R6);
                                                                     mDatabaseReference.child("InstructorInfo").child(auth.getCurrentUser().getUid()).setValue(model);
+
+
                                                                     Intent intent = new Intent(SignUpNextScreen.this,MainActivity.class);
                                                                     intent.putExtra("Category","Nope");
                                                                     startActivity(intent);

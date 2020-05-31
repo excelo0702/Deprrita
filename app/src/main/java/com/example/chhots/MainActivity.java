@@ -198,11 +198,6 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
                         setFragment(new category());
                         drawer.closeDrawers();
                         break;
-                    case R.id.nav_setting:
-                        setFragment(new setting());
-                        drawer.closeDrawers();
-                        break;
-
                     case R.id.nav_feedback:
                         setFragment(new feedback());
                         drawer.closeDrawers();

@@ -178,36 +178,6 @@ public class explore extends Fragment{
             });
 
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
-                {
-                    isScrolling=true;
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                currentItems = mLayoutManager.getChildCount();
-                TotalItems = mLayoutManager.getItemCount();
-                scrolloutItems = mLayoutManager.findFirstVisibleItemPosition();
-
-
-                if(isScrolling && currentItems+scrolloutItems==TotalItems)
-                {
-                    isScrolling=false;
-                    progressBar.setVisibility(View.VISIBLE);
-                    datafetch(category);
-
-
-                }
-
-            }
-        });
 
 
             SpannableString content = new SpannableString("Normal");

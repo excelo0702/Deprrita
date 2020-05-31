@@ -85,15 +85,6 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
         holder.thumbnail = list.get(position).getRoutineThumbnail();
         holder.instructorId = list.get(position).getInstructorId();
 
-
-
-        holder.routine_view_image.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                return true;
-            }
-        });
-
     }
 
     @Override
@@ -101,9 +92,7 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
         return list.size();
     }
 
-    public class RoutineView extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
-
-
+    public class RoutineView extends RecyclerView.ViewHolder{
 
         TextView title,instructor_name,routine_views,level;
         ImageView routine_view_image;
@@ -124,7 +113,6 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
             userId = user.getUid();
             loadingDialog = new LoadingDialog(((AppCompatActivity) context));
             fetchUserPoints();
-            itemView.setOnCreateContextMenuListener(this);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -196,38 +184,7 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
             });
         }
 
-        @Override
-        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-            MenuItem delete = contextMenu.add(Menu.NONE,1,1,"Delete");
-            delete.setOnMenuItemClickListener(onDeleteMenu);
-        }
 
-        private final MenuItem.OnMenuItemClickListener onDeleteMenu = new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    case 1:
-                        databaseReference.child("ROUTINE_THUMBNAIL").child(routineId).removeValue();
-                        databaseReference.child("ROUTINEVIDEOS").child(routineId).removeValue();
-                        StorageReference ref = FirebaseStorage.getInstance().getReference("ROUTINEVIDEOS").child(routineId);
-                        StorageReference ref2 = FirebaseStorage.getInstance().getReferenceFromUrl(thumbnail);
-                        ref.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(context,"SuccessFully Deleted",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        ref2.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(context,"SuccessFully Deleted",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        break;
-                }
-                return true;
-            }
-        };
         /*
                 public int checkSubscription()
                 {

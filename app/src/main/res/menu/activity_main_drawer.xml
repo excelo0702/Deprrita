@@ -29,12 +29,6 @@
             android:title="Category" />
 
         <item
-                android:id="@+id/nav_setting"
-                android:icon="@drawable/ic_settings"
-                android:title="Setting" />
-
-
-        <item
                 android:id="@+id/nav_feedback"
                 android:icon="@drawable/ic_feedback"
                 android:title="Feedback" />
