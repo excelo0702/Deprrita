@@ -61,7 +61,7 @@ public class explore extends Fragment{
     private DatabaseReference mDatabaseRef;
     private List<VideoModel> videolist;
     private static final String TAG = "Explore";
-    private TextView NormalVideos,ContestVideos,AddVideos;
+    private TextView NormalVideos,ContestVideos,AddVideos,explore;
 
     int currentItems,scrolloutItems,TotalItems;
     String mLastKey,category,tempkey;
@@ -79,6 +79,8 @@ public class explore extends Fragment{
     private SearchAdapter searchAdapter;
     private SearchView searchView;
     private RecyclerView srecyclerView;
+    Bundle bundle;
+
 
 
     @Override
@@ -93,12 +95,13 @@ public class explore extends Fragment{
         ContestVideos = view.findViewById(R.id.contest_videos);
         AddVideos = view.findViewById(R.id.add_normal_videos);
         progressBar =view.findViewById(R.id.explore_progressbar);
-        mAdapter = new VideoAdapter(videolist,getContext());
+        mAdapter = new VideoAdapter(videolist,getContext(),"Explore");
         category="";
         recyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext());
         user = FirebaseAuth.getInstance().getCurrentUser();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("VIDEOS");
+        explore = view.findViewById(R.id.explore);
 
 
         searchlist = new ArrayList<>();
@@ -108,27 +111,8 @@ public class explore extends Fragment{
         sLayoutManager = new LinearLayoutManager(getContext());
 
 
-        category="Normal";
-        swipeRefreshLayout = view.findViewById(R.id.swipe_explore);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(true);
-                if(flag==0)
-                {
-                    showVideos(category);
-                }
-                else
-                {
-                    showVideos(category);
-                }
-            //    showRoutine(category);
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
 
 
-        showVideos(category);
 
         DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
         presenceRef.onDisconnect().setValue("I disconnected!");
@@ -159,6 +143,39 @@ public class explore extends Fragment{
             }
         });
 
+
+
+        bundle = getArguments();
+        if(bundle!=null)
+        {
+            String category = bundle.getString("category");
+            String contestId = bundle.getString("contestId");
+            explore.setVisibility(GONE);
+            AddVideos.setVisibility(GONE);
+            NormalVideos.setVisibility(GONE);
+            ContestVideos.setVisibility(GONE);
+            category="CONTEST";
+            showContestVideos(category,contestId);
+        }
+        else {
+
+            category = "Normal";
+            swipeRefreshLayout = view.findViewById(R.id.swipe_explore);
+            showVideos(category);
+
+            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    swipeRefreshLayout.setRefreshing(true);
+                    if (flag == 0) {
+                        showVideos(category);
+                    } else {
+                        showVideos(category);
+                    }
+                    //    showRoutine(category);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            });
 
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -192,45 +209,77 @@ public class explore extends Fragment{
             }
         });
 
-        SpannableString content = new SpannableString("Normal");
-        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-        NormalVideos.setText(content);
-        NormalVideos.setTextSize(24);
 
-        NormalVideos.setOnClickListener(new View.OnClickListener() {
+            SpannableString content = new SpannableString("Normal");
+            content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+            NormalVideos.setText(content);
+            NormalVideos.setTextSize(24);
+
+            NormalVideos.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SpannableString content = new SpannableString("Normal");
+                    content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                    NormalVideos.setText(content);
+                    ContestVideos.setText("Contest");
+                    NormalVideos.setTextSize(24);
+                    ContestVideos.setTextSize(22);
+                    flag = 0;
+                    category = "Normal";
+                    showVideos(category);
+                }
+            });
+
+            ContestVideos.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SpannableString content = new SpannableString("Contest");
+                    content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                    ContestVideos.setText(content);
+                    ContestVideos.setTextSize(24);
+                    NormalVideos.setText("Normal");
+                    NormalVideos.setTextSize(22);
+                    flag = 1;
+                    category = "CONTEST";
+                    showVideos(category);
+                }
+            });
+
+            AddVideos.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addVideos();
+                }
+            });
+        }
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onClick(View view) {
-                SpannableString content = new SpannableString("Normal");
-                content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-                NormalVideos.setText(content);
-                ContestVideos.setText("Contest");
-                NormalVideos.setTextSize(24);
-                ContestVideos.setTextSize(22);
-                flag=0;
-                category="Normal";
-                showVideos(category);
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
+                {
+                    isScrolling=true;
+                    progressBar.setVisibility(GONE);
+                }
             }
-        });
 
-        ContestVideos.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                SpannableString content = new SpannableString("Contest");
-                content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-                ContestVideos.setText(content);
-                ContestVideos.setTextSize(24);
-                NormalVideos.setText("Normal");
-                NormalVideos.setTextSize(22);
-                flag=1;
-                category="CONTEST";
-                showVideos(category);
-            }
-        });
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                currentItems = mLayoutManager.getChildCount();
+                TotalItems = mLayoutManager.getItemCount();
+                scrolloutItems = mLayoutManager.findFirstVisibleItemPosition();
 
-        AddVideos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addVideos();
+
+                if(isScrolling && currentItems+scrolloutItems==TotalItems)
+                {
+                    isScrolling=false;
+                    progressBar.setVisibility(View.VISIBLE);
+                    datafetch(category);
+
+
+                }
+
             }
         });
 
@@ -261,42 +310,42 @@ public class explore extends Fragment{
             @Override
             public void run() {
                 if (mLastKey == null) {
-                    progressBar.setVisibility(View.GONE);
+                    progressBar.setVisibility(GONE);
                     return;
                 }
                 final int k = videolist.size();
                 recyclerView.smoothScrollToPosition(videolist.size() - 1);
                 mDatabaseRef.child("VIDEOS").orderByKey().endAt(mLastKey).limitToLast(10).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            int p=0;
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                VideoModel model = ds.getValue(VideoModel.class);
-                                Log.d(TAG, model.getVideoId() + " p p p ");
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        int p=0;
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            VideoModel model = ds.getValue(VideoModel.class);
+                            Log.d(TAG, model.getVideoId() + " p p p ");
 
-                                if (model.getSub_category() != null && model.getSub_category().equals(category)) {
-                                    videolist.add(k - 1, model);
-                                }
-                                if (videolist.size() == 6 + k) {
-                                    mLastKey = videolist.get(k).getVideoId();
-                                    break;
-                                }
-                                if(p==0) {
-                                    tempkey = model.getVideoId();
-                                }
-                                p++;
+                            if (model.getSub_category() != null && model.getSub_category().equals(category)) {
+                                videolist.add(k - 1, model);
                             }
-                            if (videolist.size() < 6 + k) {
-                                mLastKey = tempkey;
+                            if (videolist.size() == 6 + k) {
+                                mLastKey = videolist.get(k).getVideoId();
+                                break;
                             }
-                            mAdapter.setData(videolist);
-                            recyclerView.setLayoutManager(mLayoutManager);
-                            recyclerView.setAdapter(mAdapter);
+                            if(p==0) {
+                                tempkey = model.getVideoId();
+                            }
+                            p++;
                         }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) { }
-                    });
-                mDatabaseRef.keepSynced(true);
+                        if (videolist.size() < 6 + k) {
+                            mLastKey = tempkey;
+                        }
+                        mAdapter.setData(videolist);
+                        recyclerView.setLayoutManager(mLayoutManager);
+                        recyclerView.setAdapter(mAdapter);
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
+
 
             }
         },2000);
@@ -346,8 +395,35 @@ public class explore extends Fragment{
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-        mDatabaseRef.keepSynced(true);
     }
+
+
+    private void showContestVideos(final String category,final String contestId) {
+        videolist.clear();
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+                int k=0;
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                {
+
+                    VideoModel model = ds.getValue(VideoModel.class);
+                    if (model.getSub_category() != null && model.getSub_category().equals(category) && model.getContestId().equals(contestId)) {
+                        videolist.add(0, model);
+                    }
+                }
+                mAdapter.setData(videolist);
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setAdapter(mAdapter);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+    }
+
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

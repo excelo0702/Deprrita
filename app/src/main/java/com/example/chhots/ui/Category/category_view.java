@@ -75,43 +75,8 @@ public class category_view extends Fragment {
 
         title.setText(category);
 
-        showVideos(category);
 
         return view;
-    }
-
-    private void showVideos(final String category) {
-        videolist.clear();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("videos");
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-//                Log.d(TAG,dataSnapshot.getValue().toString()+"");
-                for(DataSnapshot ds: dataSnapshot.getChildren())
-                {
-                    VideoModel model = ds.getValue(VideoModel.class);
-                    if(model.getCategory()!=null && model.getCategory().equals(category))
-                    {
-                        videolist.add(model);
-                    }
-                }
-                if(videolist.size()==0)
-                {
-                    Toast.makeText(getContext(),"No category has been added",Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    mAdapter = new VideoAdapter(videolist, getContext());
-                    recyclerView.setLayoutManager(mLayoutManager);
-                    recyclerView.setAdapter(mAdapter);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
     }
 
 }

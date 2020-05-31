@@ -108,7 +108,7 @@ public class favorite extends Fragment {
                         videolist.add(model);
                 }
                 Collections.reverse(videolist);
-                mAdapter = new VideoAdapter(videolist,getContext());
+                mAdapter = new VideoAdapter(videolist,getContext(),"Favourite");
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(mAdapter);
             }

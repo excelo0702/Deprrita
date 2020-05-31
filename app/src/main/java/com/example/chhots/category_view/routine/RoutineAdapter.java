@@ -6,7 +6,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -23,6 +26,8 @@ import com.example.chhots.InstructorLogin;
 import com.example.chhots.LoadingDialog;
 import com.example.chhots.R;
 import com.example.chhots.UserClass;
+import com.example.chhots.ui.Dashboard.PointModel;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +35,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -42,12 +49,16 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
 
     private List<RoutineThumbnailModel> list;
     private Context context;
+    private String activity;
     private final String TAG = "RoutineAdapter1";
     int selected=-1;
+    int points=0;
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
-    public RoutineAdapter(List<RoutineThumbnailModel> list, Context context) {
+    public RoutineAdapter(List<RoutineThumbnailModel> list, Context context, String activity) {
         this.list = list;
         this.context = context;
+        this.activity = activity;
     }
 
     @NonNull
@@ -65,9 +76,6 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
     @Override
     public void onBindViewHolder(@NonNull RoutineView holder, int position) {
 
-
-
-
         holder.title.setText(list.get(position).getTitle());
         holder.instructor_name.setText(list.get(position).getInstructor_name());
         holder.level.setText(list.get(position).getRoutine_level());
@@ -76,6 +84,16 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
         Picasso.get().load(Uri.parse(list.get(position).routineThumbnail)).placeholder(R.drawable.smurfoo_dp).into(holder.routine_view_image);
         holder.thumbnail = list.get(position).getRoutineThumbnail();
         holder.instructorId = list.get(position).getInstructorId();
+
+
+
+        holder.routine_view_image.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return true;
+            }
+        });
+
     }
 
     @Override
@@ -83,7 +101,7 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
         return list.size();
     }
 
-    public class RoutineView extends RecyclerView.ViewHolder{
+    public class RoutineView extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
 
 
 
@@ -105,6 +123,8 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
             mDatabaseReference = FirebaseDatabase.getInstance().getReference();
             userId = user.getUid();
             loadingDialog = new LoadingDialog(((AppCompatActivity) context));
+            fetchUserPoints();
+            itemView.setOnCreateContextMenuListener(this);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -146,6 +166,9 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
                     },3000);
                     if(p==1)
                     {
+
+                        PointModel popo = new PointModel(instructorId,points+2);
+                        databaseReference.child("PointsInstructor").child(user.getUid()).setValue(popo);
                         Fragment fragment = new routine_view();
                         Bundle bundle = new Bundle();
                         bundle.putString("category","Routine");
@@ -173,7 +196,38 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
             });
         }
 
+        @Override
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+            MenuItem delete = contextMenu.add(Menu.NONE,1,1,"Delete");
+            delete.setOnMenuItemClickListener(onDeleteMenu);
+        }
 
+        private final MenuItem.OnMenuItemClickListener onDeleteMenu = new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case 1:
+                        databaseReference.child("ROUTINE_THUMBNAIL").child(routineId).removeValue();
+                        databaseReference.child("ROUTINEVIDEOS").child(routineId).removeValue();
+                        StorageReference ref = FirebaseStorage.getInstance().getReference("ROUTINEVIDEOS").child(routineId);
+                        StorageReference ref2 = FirebaseStorage.getInstance().getReferenceFromUrl(thumbnail);
+                        ref.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(context,"SuccessFully Deleted",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        ref2.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(context,"SuccessFully Deleted",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                }
+                return true;
+            }
+        };
         /*
                 public int checkSubscription()
                 {
@@ -222,6 +276,30 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
                     return 0;
                 }
         */
+
+
+
+        private void fetchUserPoints() {
+           /* databaseReference.child("PointsInstructor").child(instructorId).addValueEventListener(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot!=null){
+                           //     PointModel model = dataSnapshot.getValue(PointModel.class);
+                             //   points = model.getPoints();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    }
+            );*/
+        }
+
+
+
         public int checkPurchased()
         {
             Log.d(TAG," pqq ");
@@ -245,6 +323,10 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
                                 }
                             }
                             if(flag[0]==1) {
+
+                                PointModel popo = new PointModel(instructorId,points+2);
+                                databaseReference.child("PointsInstructor").child(user.getUid()).setValue(popo);
+
                                 Fragment fragment = new routine_view();
                                 Bundle bundle = new Bundle();
                                 bundle.putString("routineId", routineId);

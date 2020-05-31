@@ -111,7 +111,7 @@ public class routine extends Fragment {
         user = auth.getCurrentUser();
         mDatabaseRef =FirebaseDatabase.getInstance().getReference();
         progressBar =view.findViewById(R.id.routine_progressbar);
-        mAdapter = new RoutineAdapter(videolist,getContext());
+        mAdapter = new RoutineAdapter(videolist,getContext(),"routine");
         searchlist = new ArrayList<>();
         searchAdapter = new SearchAdapter(searchlist,getContext());
         srecyclerView = view.findViewById(R.id.search_recycle_routine_view);
@@ -186,16 +186,21 @@ public class routine extends Fragment {
                 TotalItems = mLayoutManager.getItemCount();
                 scrolloutItems = mLayoutManager.findFirstVisibleItemPosition();
 
+
                 if(isScrolling && currentItems+scrolloutItems==TotalItems)
                 {
                     isScrolling=false;
                     progressBar.setVisibility(View.VISIBLE);
                     if(so==0)
-                    datafetch(l,u);
+                        datafetch(l,u);
                     else if(so==1)
                     {
-                        datafetchOld("");
+                        datafetchOld(l,u);
                     }
+                    else {
+                        datafetchRecommened(l,u);
+                    }
+
 
                 }
             }
@@ -217,11 +222,16 @@ public class routine extends Fragment {
                         {
                             case R.id.latest:
                                 so=0;
-                                showRoutine(0,18);
+                                showRoutine(l,u);
                                 break;
                             case R.id.old:
                                 so=1;
                                 showRoutineOld(l,u);
+                                break;
+
+                            case R.id.mostly_viewed:
+                                so=2;
+                                showRoutineView(l,u);
                                 break;
                         }
                         return true;
@@ -262,7 +272,14 @@ public class routine extends Fragment {
                                 u=18;
                                 showRoutine(l,u);
                                 break;
-                            default:
+                            case R.id.ClearAll:
+                                l=0;
+                                u=18;
+                                showRoutine(l,u);
+                                break;
+                            case R.id.recommended:
+                                l=0;
+                                u=18;
                                 showRoutine(l,u);
                                 break;
                         }
@@ -275,6 +292,112 @@ public class routine extends Fragment {
         return view;
     }
 
+    private void datafetchRecommened(final int l,final int u) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mLastKey == null) {
+                    progressBar.setVisibility(GONE);
+                    return;
+                }
+                final int k = videolist.size();
+                recyclerView.smoothScrollToPosition(videolist.size() - 1);
+                mDatabaseRef.child("ROUTINE_THUMBNAIL").orderByChild("views").startAt(mLastKey).limitToFirst(10).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
+//                                Log.d(TAG, model.getVideoId() + " p p p ");
+                            String news = model.getCategory().substring(l,u);
+                            int flag=0;
+                            for(int i=0;i<news.length();i++)
+                            {
+                                if(news.charAt(i)=='1')
+                                {
+                                    flag=1;
+                                    break;
+                                }
+                            }
+                            if(flag==1)
+                            {
+                                videolist.add( model);
+                            }
+                            if (videolist.size() == 8 + k) {
+                                mLastKey = videolist.get(k).getRoutineId();
+                                break;
+                            }
+                        }
+                        if (videolist.size() < 6 + k) {
+                            mLastKey = null;
+                        }
+                        mAdapter.setData(videolist);
+                        recyclerView.setLayoutManager(mLayoutManager);
+                        recyclerView.setAdapter(mAdapter);
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
+
+            }
+        },500);
+    }
+
+    private void showRoutineView(final int l,final int u) {
+        videolist.clear();
+
+        mDatabaseRef.child("ROUTINE_THUMBNAIL").orderByChild("views").limitToFirst(14).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                int p=0;
+//                Log.d(TAG,dataSnapshot.getValue().toString()+"");
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    Log.d(TAG,ds.getValue()+"");
+                    RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
+                    String news = model.getCategory().substring(l,u);
+                    int flag=0;
+                    for(int i=0;i<news.length();i++)
+                    {
+                        if(news.charAt(i)=='1')
+                        {
+                            flag=1;
+                            break;
+                        }
+                    }
+                    if(flag==1)
+                    {
+                        videolist.add( model);
+                    }
+                    if(p==0) {
+                        tempkey = model.getRoutineId();
+                    }
+                    p++;
+                }
+                if(videolist.size()==0)
+                {
+                    mLastKey=null;
+                }
+                else
+                {
+                    mLastKey = videolist.get(videolist.size() - 1).getRoutineId();
+                }
+                mAdapter.setData(videolist);
+                Log.d(TAG, videolist.size() + "  mmm  ");
+                Log.d(TAG, mLastKey + " ooo ");
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setAdapter(mAdapter);
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
     private void datafetch(final int l,final int u) {
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -285,43 +408,43 @@ public class routine extends Fragment {
                 }
                 final int k = videolist.size();
                 recyclerView.smoothScrollToPosition(videolist.size() - 1);
-                    mDatabaseRef.child("ROUTINE_THUMBNAIL").orderByKey().endAt(mLastKey).limitToLast(10).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
+                mDatabaseRef.child("ROUTINE_THUMBNAIL").orderByKey().endAt(mLastKey).limitToLast(10).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
                             //    Log.d(TAG, model.getVideoId() + " p p p ");
 
-                                int flag=0;
-                                String news = model.getCategory().substring(l,u);
+                            int flag=0;
+                            String news = model.getCategory().substring(l,u);
 
-                                for(int i=0;i<news.length();i++)
+                            for(int i=0;i<news.length();i++)
+                            {
+                                if(news.charAt(i)=='1')
                                 {
-                                    if(news.charAt(i)=='1')
-                                    {
-                                        flag=1;
-                                        break;
-                                    }
-                                }
-                                if(flag==1)
-                                {
-                                    videolist.add(0, model);
-                                }
-                                if (videolist.size() == 8 + k) {
-                                    mLastKey = videolist.get(k).getRoutineId();
+                                    flag=1;
                                     break;
                                 }
                             }
-                            if (videolist.size() < 8+ k) {
-                                mLastKey = null;
+                            if(flag==1)
+                            {
+                                videolist.add(0, model);
                             }
-                            mAdapter.setData(videolist);
-                            recyclerView.setLayoutManager(mLayoutManager);
-                            recyclerView.setAdapter(mAdapter);
+                            if (videolist.size() == 8 + k) {
+                                mLastKey = videolist.get(k).getRoutineId();
+                                break;
+                            }
                         }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) { }
-                    });
+                        if (videolist.size() < 8+ k) {
+                            mLastKey = null;
+                        }
+                        mAdapter.setData(videolist);
+                        recyclerView.setLayoutManager(mLayoutManager);
+                        recyclerView.setAdapter(mAdapter);
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
 
 
             }
@@ -329,7 +452,7 @@ public class routine extends Fragment {
     }
 
 
-    private void datafetchOld(final String category) {
+    private void datafetchOld(final int l,final int u) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -339,102 +462,99 @@ public class routine extends Fragment {
                 }
                 final int k = videolist.size();
                 recyclerView.smoothScrollToPosition(videolist.size() - 1);
-                    mDatabaseRef.child("ROUTINE_THUMBNAIL").orderByKey().startAt(mLastKey).limitToFirst(10).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
+                mDatabaseRef.child("ROUTINE_THUMBNAIL").orderByKey().startAt(mLastKey).limitToFirst(10).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
 //                                Log.d(TAG, model.getVideoId() + " p p p ");
-
-                                if (model.category.equals(category)) {
-                                    videolist.add(model);
-                                }
-                                if (videolist.size() == 8 + k) {
-                                    mLastKey = videolist.get(k).getRoutineId();
+                            String news = model.getCategory().substring(l,u);
+                            int flag=0;
+                            for(int i=0;i<news.length();i++)
+                            {
+                                if(news.charAt(i)=='1')
+                                {
+                                    flag=1;
                                     break;
                                 }
                             }
-                            if (videolist.size() < 6 + k) {
-                                mLastKey = null;
+                            if(flag==1)
+                            {
+                                videolist.add( model);
                             }
-                            mAdapter.setData(videolist);
-                            recyclerView.setLayoutManager(mLayoutManager);
-                            recyclerView.setAdapter(mAdapter);
+                            if (videolist.size() == 8 + k) {
+                                mLastKey = videolist.get(k).getRoutineId();
+                                break;
+                            }
                         }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) { }
-                    });
-
+                        if (videolist.size() < 6 + k) {
+                            mLastKey = null;
+                        }
+                        mAdapter.setData(videolist);
+                        recyclerView.setLayoutManager(mLayoutManager);
+                        recyclerView.setAdapter(mAdapter);
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
             }
-        },2000);
-    }
-
-    private void addVideos() {
-
-        if(user==null)
-        {
-            Toast.makeText(getContext(),"You have to Sign in First",Toast.LENGTH_SHORT).show();
-        }
-        else {
-            Intent intent = new Intent(getContext(),addRoutine.class);
-            getContext().startActivity(intent);
-        }
+        },500);
     }
 
 
     private void showRoutine(final int l,final int u) {
         videolist.clear();
 
-            mDatabaseRef.child("ROUTINE_THUMBNAIL").limitToLast(14).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        mDatabaseRef.child("ROUTINE_THUMBNAIL").limitToLast(14).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    int p=0;
+                int p=0;
 //                Log.d(TAG,dataSnapshot.getValue().toString()+"");
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                        Log.d(TAG,ds.getValue()+"");
-                        RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
-                        String news = model.getCategory().substring(l,u);
-                        int flag=0;
-                        for(int i=0;i<news.length();i++)
-                        {
-                            if(news.charAt(i)=='1')
-                            {
-                                flag=1;
-                                break;
-                            }
-                        }
-                        if(flag==1)
-                        {
-                            videolist.add(0, model);
-                        }
-                        if(p==0) {
-                            tempkey = model.getRoutineId();
-                        }
-                        p++;
-                    }
-                    if(videolist.size()==0)
+                    Log.d(TAG,ds.getValue()+"");
+                    RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
+                    String news = model.getCategory().substring(l,u);
+                    int flag=0;
+                    for(int i=0;i<news.length();i++)
                     {
-                        mLastKey=null;
+                        if(news.charAt(i)=='1')
+                        {
+                            flag=1;
+                            break;
+                        }
                     }
-                    else
+                    if(flag==1)
                     {
-                        mLastKey = videolist.get(videolist.size() - 1).getRoutineId();
+                        videolist.add(0, model);
                     }
-                    mAdapter.setData(videolist);
-                    Log.d(TAG, videolist.size() + "  mmm  ");
-                    Log.d(TAG, mLastKey + " ooo ");
-                    recyclerView.setLayoutManager(mLayoutManager);
-                    recyclerView.setAdapter(mAdapter);
+                    if(p==0) {
+                        tempkey = model.getRoutineId();
                     }
-
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    p++;
                 }
-            });
+                if(videolist.size()==0)
+                {
+                    mLastKey=null;
+                }
+                else
+                {
+                    mLastKey = videolist.get(videolist.size() - 1).getRoutineId();
+                }
+                mAdapter.setData(videolist);
+                Log.d(TAG, videolist.size() + "  mmm  ");
+                Log.d(TAG, mLastKey + " ooo ");
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setAdapter(mAdapter);
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -489,6 +609,10 @@ public class routine extends Fragment {
         });
 
     }
+
+
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -551,6 +675,19 @@ public class routine extends Fragment {
                 }
             });
 
+        }
+    }
+
+
+    private void addVideos() {
+
+        if(user==null)
+        {
+            Toast.makeText(getContext(),"You have to Sign in First",Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Intent intent = new Intent(getContext(),addRoutine.class);
+            getContext().startActivity(intent);
         }
     }
 

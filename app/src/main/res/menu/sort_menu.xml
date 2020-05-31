@@ -8,5 +8,13 @@
     <item android:id="@+id/old"
         android:title="DateFollowed:Earliest"
         ></item>
+    <item android:id="@+id/rating"
+        android:title="Rating"
+        ></item>
+
+    <item android:id="@+id/mostly_viewed"
+        android:title="Mostly Viewed"
+        ></item>
+
 
 </menu>

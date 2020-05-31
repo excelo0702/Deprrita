@@ -7,34 +7,72 @@
 
 
 
-  <RelativeLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-      <androidx.recyclerview.widget.RecyclerView
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:id="@+id/search_all_courses_view"></androidx.recyclerview.widget.RecyclerView>
-
-      <androidx.recyclerview.widget.RecyclerView
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:id="@+id/recycler_all_course_view"
-          android:layout_below="@id/search_all_courses_view"
-          android:layout_marginTop="10dp"
-          ></androidx.recyclerview.widget.RecyclerView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_all_courses_view"></androidx.recyclerview.widget.RecyclerView>
 
 
-      <ProgressBar
-          android:layout_width="30dp"
-          android:layout_height="30dp"
-          android:id="@+id/progress_bar_all_course"
-          android:layout_centerHorizontal="true"
-          android:layout_alignParentBottom="true"
-          android:visibility="gone"
-          ></ProgressBar>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All Courses"
+            android:layout_below="@id/search_all_courses_view"
+            android:id="@+id/all_course"
+            android:textSize="22dp"
+            android:textColor="#000000"></TextView>
 
-  </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filter"
+            android:textSize="18dp"
+            android:layout_toLeftOf="@id/sort_course"
+            android:layout_below="@id/search_all_courses_view"
+
+            android:layout_marginRight="10dp"
+            android:id="@+id/fliter_course"
+            android:textColor="#000000"></TextView>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sort"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/sort_course"
+            android:layout_below="@id/search_all_courses_view"
+
+            android:layout_alignParentRight="true"
+            android:textSize="18dp"
+            android:textColor="#000000"></TextView>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recycler_all_course_view"
+            android:layout_below="@id/sort_course"
+            android:layout_marginTop="10dp"
+            ></androidx.recyclerview.widget.RecyclerView>
+
+
+        <ProgressBar
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/progress_bar_all_course"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            ></ProgressBar>
+
+    </RelativeLayout>
 
 
 </ScrollView>

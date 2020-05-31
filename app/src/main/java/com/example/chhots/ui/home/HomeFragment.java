@@ -70,13 +70,10 @@ public class HomeFragment extends Fragment {
         };
 
 
-
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
                         viewPager.setBackground(image_temp[position]);
-
             }
 
             @Override

@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -24,6 +27,7 @@ import com.example.chhots.bottom_navigation_fragments.Explore.See_Video;
 import com.example.chhots.SubscriptionModel;
 import com.example.chhots.UserClass;
 import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +35,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -48,6 +54,7 @@ public class VideoAdapter extends
 
     private List<VideoModel> localVideoTracks;
     private Context context;
+    private String activity;
 
 
     public interface OnItemClickListener{
@@ -59,9 +66,10 @@ public class VideoAdapter extends
         mListener = listener;
     }
 
-    public VideoAdapter(List<VideoModel> localVideoTracks, Context context) {
+    public VideoAdapter(List<VideoModel> localVideoTracks, Context context, String activity) {
         this.localVideoTracks = localVideoTracks;
         this.context = context;
+        this.activity = activity;
     }
 
     @Override
@@ -104,6 +112,12 @@ public class VideoAdapter extends
         holder.userId = current.getUser();
         Picasso.get().load(Uri.parse(current.getThumbnail())).placeholder(R.drawable.smurfoo_dp).into(holder.videoview);
         Log.d(TAG,current.getTitle()+"  "+current.getUrl());
+        holder.videoview.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return true;
+            }
+        });
     }
 
 
@@ -116,6 +130,10 @@ public class VideoAdapter extends
         this.localVideoTracks =localVideoTracks;
     }
 
+
+
+
+
     @Override
     public int getItemCount() {
         Log.d(TAG, "getItemCount");
@@ -124,7 +142,7 @@ public class VideoAdapter extends
     /*
      * View holder that hosts the video view proxy and a text view
      */
-    public class VideoViewHolder extends RecyclerView.ViewHolder {
+    public class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
 
         public TextView title,upvote,comments,share,views;
         public ImageView upvote_icon,comment_icon,share_icon;
@@ -137,6 +155,7 @@ public class VideoAdapter extends
 
         VideoViewHolder(View view, final OnItemClickListener listener) {
             super(view);
+            view.setOnCreateContextMenuListener(this);
 
             title = view.findViewById(R.id.video_adapter_title);
             upvote = view.findViewById(R.id.video_likess);
@@ -151,6 +170,15 @@ public class VideoAdapter extends
 
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
+            videoview.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    return false;
+                }
+            });
+
+
             videoview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -215,6 +243,33 @@ public class VideoAdapter extends
             });
 
         }
+
+
+
+        @Override
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+            if(activity.equals("MyBookmarks")|| activity.equals("MyExplore")) {
+                MenuItem delete = contextMenu.add(Menu.NONE, 1, 1, "Delete");
+                delete.setOnMenuItemClickListener(onDeleteMenu);
+            }
+        }
+
+        private final MenuItem.OnMenuItemClickListener onDeleteMenu = new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if(activity.equals("MyBookmarks")|| activity.equals("MyExplore")) {
+                    switch (menuItem.getItemId()) {
+                        case 1:
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                            databaseReference.child("Bookmarks").child(userId).child(value).removeValue();
+                            break;
+                    }
+                }
+                return true;
+            }
+        };
+
+
 
         public int checkSubscription()
         {

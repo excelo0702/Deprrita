@@ -4,11 +4,15 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +24,12 @@ import com.example.chhots.R;
 import com.example.chhots.bottom_navigation_fragments.Explore.See_Video;
 import com.example.chhots.category_view.routine.routine_view;
 import com.example.chhots.ui.Dashboard.dashboard;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -55,6 +64,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.value = historylist.get(position).getId();
         holder.date.setText(historylist.get(position).getDate());
         holder.category = historylist.get(position).getCategory();
+        holder.dexription.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return true;
+            }
+        });
     //    Picasso.get().load(Uri.parse(historylist.get(position).getUrl())).into(holder.image);
     }
 
@@ -63,7 +78,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         return historylist.size();
     }
 
-    public class HistoryViewHolder extends RecyclerView.ViewHolder{
+    public class HistoryViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
 
         public TextView title,dexription,date;
         ImageView image;
@@ -75,6 +90,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             dexription = itemView.findViewById(R.id.history_video_title);
             image = itemView.findViewById(R.id.history_image);
             date = itemView.findViewById(R.id.history_date);
+            itemView.setOnCreateContextMenuListener(this);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -98,6 +114,31 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                 }
             });
         }
+
+
+
+        @Override
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+                MenuItem delete = contextMenu.add(Menu.NONE, 1, 1, "Delete");
+                delete.setOnMenuItemClickListener(onDeleteMenu);
+
+        }
+
+        private final MenuItem.OnMenuItemClickListener onDeleteMenu = new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case 1:
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                        databaseReference.child("History").child(value).removeValue();
+                        break;
+                }
+
+                return true;
+            }
+        };
+
+
 
         public void setFragment(Fragment fragment,Bundle bundle)
         {

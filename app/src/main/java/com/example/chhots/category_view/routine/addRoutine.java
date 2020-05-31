@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.example.chhots.R;
 import com.example.chhots.InstructorInfoModel;
+import com.example.chhots.ui.Dashboard.PointModel;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -113,6 +114,8 @@ public class addRoutine extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 2;
     HashMap<String,String> mm;
+    int points=0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,6 +149,7 @@ public class addRoutine extends AppCompatActivity {
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
+        fetchUserPoints();
 
         choose_category.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -832,6 +836,27 @@ public class addRoutine extends AppCompatActivity {
     }
 
 
+    private void fetchUserPoints() {
+        mDatabaseReference.child("PointsInstructor").child(user.getUid()).addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot!=null){
+                            PointModel model = dataSnapshot.getValue(PointModel.class);
+                            points = model.getPoints();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                }
+        );
+    }
+
+
+
 
     private void fetchUserInfo()
     {
@@ -883,6 +908,9 @@ public class addRoutine extends AppCompatActivity {
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override
                                                         public void onSuccess(Void aVoid) {
+
+                                                            PointModel popo = new PointModel(user.getUid(),points+100);
+                                                            mDatabaseReference.child("PointsInstructor").child(user.getUid()).setValue(popo);
                                                             Toast.makeText(getApplicationContext(), "Course Created", Toast.LENGTH_SHORT).show();
                                                             onBackPressed();
                                                         }

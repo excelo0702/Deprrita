@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.example.chhots.User_Profile.edit_profile;
 import com.example.chhots.bottom_navigation_fragments.Calendar.calendar;
 import com.example.chhots.bottom_navigation_fragments.Explore.explore;
 import com.example.chhots.bottom_navigation_fragments.Explore.upload_video;
@@ -95,14 +96,10 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
     int k=0;
     NavigationView navigationView;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
 
         //firebase offline capabilities
         Intent intent = getIntent();
@@ -142,11 +139,12 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
                     Toast.makeText(getApplicationContext(),"Connected",Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "connected");
                 } else {
-
                     Toast.makeText(getApplicationContext(),"Not Connected",Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "not connected");
                 }
             }
+
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -285,10 +283,12 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
                 @Override
                 public void onClick(View view) {
 
-                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction().replace(R.id.drawer_layout,new userprofile(),"1");
+
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction().replace(R.id.drawer_layout,new edit_profile(),"1");
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                     drawer.closeDrawers();
+
 
                 }
             });

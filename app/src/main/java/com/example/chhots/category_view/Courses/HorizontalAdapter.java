@@ -26,6 +26,7 @@ import com.example.chhots.bottom_navigation_fragments.Explore.See_Video;
 import com.example.chhots.SubscriptionModel;
 import com.example.chhots.UserClass;
 import com.example.chhots.category_view.routine.routine_view;
+import com.example.chhots.ui.Dashboard.PointModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,13 +36,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.MyView> {
 
     private List<CourseThumbnail> list;
     private Context context;
     private final String TAG = "HorizontalAdapter";
+    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+    CourseThumbnail model;
+    int a1=0,a2=0,a3=0;
+    int points=0;
 
     public HorizontalAdapter(List<CourseThumbnail> list, Context context) {
         this.list = list;
@@ -104,20 +112,46 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDatabaseReference = FirebaseDatabase.getInstance().getReference();
             loadingDialog = new LoadingDialog(((AppCompatActivity) context));
-
+            fetchUserPoints();
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     int p=0;
+                    final String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
                     if (user == null) {
+                        loadingDialog.startLoadingDialog();
                         Toast.makeText(context, "Login First", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(context, Login.class);
                         context.startActivity(intent);
                     }
                     else if(user.getUid()==instructorId)
                     {
+
+                        loadingDialog.startLoadingDialog();
+
+
+                        databaseReference.child("CoursesThumbnail").child(courseId).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                model = dataSnapshot.getValue(CourseThumbnail.class);
+                                model.setViews(model.getViews()+1);
+                                int k = dataDifference(date,model.getDate());
+                                model.setTrending((double)((1.0*model.getViews())/k));
+                                if(a1==0){
+                                    a1=1;
+                                    databaseReference.child("CourseHistory").child(courseId).setValue(model);
+                                    databaseReference.child("CoursesThumbnail").child(user.getUid()).child(courseId).setValue(model);
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+
                         Fragment fragment = new routine_view();
                         Bundle bundle = new Bundle();
                         bundle.putString("category","Course");
@@ -143,6 +177,30 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                     },3000);
                     if(p==1)
                     {
+
+                        PointModel popo = new PointModel(instructorId,points+25);
+                        databaseReference.child("PointsInstructor").child(user.getUid()).setValue(popo);
+
+                        databaseReference.child("CoursesThumbnail").child(courseId).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                model = dataSnapshot.getValue(CourseThumbnail.class);
+                                model.setViews(model.getViews()+1);
+                                int k = dataDifference(date,model.getDate());
+                                model.setTrending((double)((1.0*model.getViews())/k));
+                                if(a2==0){
+                                    a2=1;
+                                    databaseReference.child("CourseHistory").child(courseId).setValue(model);
+
+                                    databaseReference.child("CoursesThumbnail").child(courseId).setValue(model);
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
                         Fragment fragment = new routine_view();
                         Bundle bundle = new Bundle();
                         bundle.putString("category","Course");
@@ -176,13 +234,56 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
 
         }
 
+
+        private void fetchUserPoints() {
+           /* databaseReference.child("PointsInstructor").child(instructorId).addValueEventListener(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot!=null){
+                           //     PointModel model = dataSnapshot.getValue(PointModel.class);
+                             //   points = model.getPoints();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    }
+            );*/
+        }
+
+
+        public int dataDifference(String date1,String date2)
+        {
+            int k=0;
+
+            String sy1 = date1.substring(0,4);
+            String sy2 = date2.substring(0,4);
+
+            int y = 365*(Integer.parseInt(sy1)-Integer.parseInt(sy2));
+
+
+            String sm1 = date1.substring(5,7);
+            String sm2 = date2.substring(5,7);
+            int m = 30*(Integer.parseInt(sm1)-Integer.parseInt(sm2));
+
+            String sd1 = date1.substring(8,10);
+            String sd2 =  date2.substring(8,10);
+            int d = Integer.parseInt(sd1)-Integer.parseInt(sd2);
+            k = y+m+d+1;
+            return k;
+        }
+
+
         public int checkPurchased()
         {
             Log.d(TAG," pqq ");
             final int[] flag = new int[1];
             mDatabaseReference.child("USER_PURCHASED_ROUTINES").child(user.getUid())
                     .addValueEventListener(new ValueEventListener() {
-
+                        final String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             Log.d(TAG,dataSnapshot.getValue()+"");
@@ -199,6 +300,28 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                                 }
                             }
                             if(flag[0]==1) {
+                                PointModel popo = new PointModel(instructorId,points+25);
+                                databaseReference.child("PointsInstructor").child(user.getUid()).setValue(popo);
+
+                                databaseReference.child("CoursesThumbnail").child(courseId).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        model = dataSnapshot.getValue(CourseThumbnail.class);
+                                        model.setViews(model.getViews()+1);
+                                        int k = dataDifference(date,model.getDate());
+                                        model.setTrending((double)((1.0*model.getViews())/k));
+                                        if(a3==0){
+                                            databaseReference.child("CourseHistory").child(courseId).setValue(model);
+                                            a3=1;
+                                            databaseReference.child("CoursesThumbnail").child(courseId).setValue(model);
+                                        }
+
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
                                 Fragment fragment = new routine_view();
                                 Bundle bundle = new Bundle();
                                 bundle.putString("routineId", courseId);

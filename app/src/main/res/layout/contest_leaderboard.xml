@@ -1,13 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_margin="60dp"
     android:background="#FFFFFF"
     android:layout_height="500dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/close_leaderboard"
+        android:id="@+id/pp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:id="@+id/weekly"
+            android:textSize="16dp"
+            android:padding="5dp"
+            android:text="Weekly"></TextView>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textColor="@color/black"
+            android:textSize="16dp"
+            android:id="@+id/Overall"
+            android:padding="5dp"
+            android:text="OverAll"></TextView>
+    </LinearLayout>
 
     <ImageView
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:src="@mipmap/ic_logo"
+        android:src="@drawable/ic_close"
         android:id="@+id/close_leaderboard"
         android:layout_alignParentRight="true"></ImageView>
 
@@ -16,7 +49,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Name"
-        android:layout_below="@id/close_leaderboard"
+        android:textSize="18dp"
+        android:textColor="@color/black"
+        android:padding="10dp"
+        android:layout_below="@id/pp"
         android:layout_alignParentLeft="true"
         android:id="@+id/uuuu"
         ></TextView>
@@ -26,17 +62,58 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Points"
-        android:layout_below="@id/close_leaderboard"
+        android:textSize="18dp"
+        android:textColor="@color/black"
+        android:layout_below="@id/pp"
+        android:padding="10dp"
         android:layout_alignParentRight="true"
         ></TextView>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@id/uuuu"
+        android:background="@color/black"></FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/contest_leaderboard"
+        android:layout_width="match_parent"
+        android:padding="10dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/contest_leaderboard"
         android:layout_below="@id/uuuu"
-    android:scrollbars="vertical">
-</androidx.recyclerview.widget.RecyclerView>
+        android:scrollbars="vertical">
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contest_leaderboard"
+        android:background="#252C2424"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:padding="5dp"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/userName_leaderboard_user"
+            ></TextView>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Points"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:padding="5dp"
+            android:layout_alignParentRight="true"
+            android:id="@+id/points_leaderboard_user"
+            ></TextView>
+
+    </RelativeLayout>
 
 </RelativeLayout>

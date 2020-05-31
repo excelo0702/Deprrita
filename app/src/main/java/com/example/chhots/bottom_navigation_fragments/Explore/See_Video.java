@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.example.chhots.R;
 import com.example.chhots.InstructorInfoModel;
 import com.example.chhots.ui.Dashboard.HistoryPackage.HistoryModel;
+import com.example.chhots.ui.Dashboard.PointModel;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -101,6 +102,7 @@ public class See_Video extends Fragment {
     private long playbackPosition = 0;
     ImageView fullScreenButton;
     boolean fullScreen = false;
+    int points=0;
 
     public See_Video() {
         // Required empty public constructor
@@ -213,6 +215,9 @@ public class See_Video extends Fragment {
                 upvote.setText(String.valueOf(Integer.parseInt(upvote.getText().toString())+1));
                 upvote_icon.setEnabled(false);
                 downvote_icon.setEnabled(true);
+
+
+
                 mDatabaseRef.child("FAVORITE").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -240,6 +245,7 @@ public class See_Video extends Fragment {
                 //enable downvote and disable upvote
                 upvote_icon.setEnabled(true);
                 downvote_icon.setEnabled(false);
+
                 upvote.setText(String.valueOf(Integer.parseInt(upvote.getText().toString())-1));
 
                 mDatabaseRef.child("FAVORITE").child(user.getUid()).child(videoId).removeValue();
@@ -287,6 +293,28 @@ public class See_Video extends Fragment {
         HistoryModel model = new HistoryModel(htitle,hvideoName,hthumbnail,"date","Normal",videoId);
         mDatabaseRef.child("HISTORY").child(user.getUid()).child(time).setValue(model);
     }
+
+
+    private void fetchUserPoints() {
+        mDatabaseRef.child("PointsInstructor").child(user.getUid()).addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot!=null){
+                            PointModel model = dataSnapshot.getValue(PointModel.class);
+                            points = model.getPoints();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                }
+        );
+    }
+
+
 
 
     private void FullScreen() {
@@ -396,6 +424,7 @@ public class See_Video extends Fragment {
         //  player.seekTo(currentWindow, playbackPosition);
         player.prepare(mediaSource, false, false);
     }
+
 
     private MediaSource buildMediaSource(Uri uri) {
         DataSource.Factory dataSourceFactory =

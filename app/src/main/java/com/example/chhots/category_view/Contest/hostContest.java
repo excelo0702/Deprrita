@@ -34,13 +34,17 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.chhots.R;
 import com.example.chhots.bottom_navigation_fragments.Calendar.CalendarModel;
+import com.example.chhots.ui.Dashboard.PointModel;
 import com.example.chhots.ui.notifications.NotificationModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -51,7 +55,10 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
@@ -81,6 +88,7 @@ public class hostContest extends Fragment {
     private PopupWindow mPopupWindow;
     String date_text;
     RelativeLayout relativeLayout;
+    int points=0;
 
 
     private RequestQueue mRequestQueue;
@@ -151,6 +159,7 @@ public class hostContest extends Fragment {
 
         mRequestQueue = Volley.newRequestQueue(getContext());
         FirebaseMessaging.getInstance().subscribeToTopic("contest");
+        fetchUserPoints();
         return view;
     }
 
@@ -260,12 +269,17 @@ public class hostContest extends Fragment {
                                                     getFragmentManager().beginTransaction().replace(R.id.drawer_layout, new contest()).commit();
                                                 }
                                             });
-
-                                    NotificationModel notify = new NotificationModel(time,"category",user.getUid(),"description",uri.toString());
+                                    String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+                                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                                    String Time = currentDate+"  "+currentTime;
+                                    NotificationModel notify = new NotificationModel(Time,"category",user.getUid(),"description",uri.toString());
                                     databaseReference.child("NOTIFICATION").child(time).setValue(notify);
 
-                                    CalendarModel calendar = new CalendarModel("Contest",date_text,info,info,uri.toString(),time);
+                                    CalendarModel calendar = new CalendarModel("Contest",date_text,info,info,uri.toString(),Time);
                                     databaseReference.child("CALENDAR").child(date_text).child(time).setValue(calendar);
+
+                                    PointModel popo = new PointModel(user.getUid(),points+50);
+                                    databaseReference.child("PointsInstructor").child(user.getUid()).setValue(popo);
 
                                 }
                             });
@@ -302,5 +316,27 @@ public class hostContest extends Fragment {
         select_date = v.findViewById(R.id.select_date);
         relativeLayout = v.findViewById(R.id.rrr);
     }
+
+
+    private void fetchUserPoints() {
+        databaseReference.child("PointsInstructor").child(user.getUid()).addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot!=null){
+                     //       PointModel model = dataSnapshot.getValue(PointModel.class);
+                       //     points = model.getPoints();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                }
+        );
+    }
+
+
 
 }

@@ -39,8 +39,6 @@ public class userprofile extends Fragment {
     public userprofile() {
         // Required empty public constructor
     }
-
-
     FirebaseUser user;
     TextView user_name;
     FirebaseAuth firebaseAuth;

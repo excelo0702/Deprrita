@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.Dashboard.dashboard_bottom">
+    tools:context=".ui.Dashboard.dashboard_bottom"
+    android:id="@+id/rr6">
 
 
 
@@ -59,16 +60,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/learderboard"
-        android:textColor="@color/black"
         android:text="Leaderboard"
         android:layout_alignParentRight="true"
+
         />
+
+
     <Button
         android:layout_width="123dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@id/learderboard"
-        android:textColor="@color/black"
         android:id="@+id/history"
         android:text="History" />
 
@@ -80,12 +82,11 @@
         app:cpb_background_progressbar_width="2dp"
         android:layout_below="@id/user_dashboard_profile"
         app:cpb_progressbar_color="#F44336"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="30dp"
         android:id="@+id/progress_bar_chart"
+        android:padding="10dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="35dp"
         app:cpb_progressbar_width="5dp" />
-
-
 
     <com.mikhaellopez.circularprogressbar.CircularProgressBar
         android:layout_width="170dp"
@@ -94,33 +95,12 @@
         app:cpb_background_progressbar_width="2dp"
         android:layout_below="@id/user_dashboard_profile"
         app:cpb_progressbar_color="#F44336"
-        android:layout_toRightOf="@id/progress_bar_chart"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="30dp"
         android:id="@+id/progress_bar_chart2"
-        app:cpb_progressbar_width="5dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Progress1"
-        android:textSize="20dp"
-        android:layout_below="@id/progress_bar_chart"
-        android:layout_marginTop="5dp"
-        android:textColor="@color/black"
-        android:layout_marginLeft="70dp"></TextView>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Progress2"
-        android:textSize="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_below="@id/progress_bar_chart2"
         android:layout_toRightOf="@id/progress_bar_chart"
-        android:textColor="@color/black"
-        android:layout_marginLeft="70dp"></TextView>
-
+        android:padding="10dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="35dp"
+        app:cpb_progressbar_width="5dp" />
 
 
 

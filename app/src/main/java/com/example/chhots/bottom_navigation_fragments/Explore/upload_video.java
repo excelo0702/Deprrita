@@ -51,6 +51,7 @@ import com.example.chhots.R;
 import com.example.chhots.Services.FloatingWidgetService;
 import com.example.chhots.onBackPressed;
 import com.example.chhots.ui.Category.category;
+import com.example.chhots.ui.Dashboard.PointModel;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -65,8 +66,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -119,6 +123,7 @@ public class upload_video extends Fragment implements onBackPressed {
     private String subCategory,descriptio;
     private static final int PICK_IMAGE_REQUEST = 2;
 
+    int points=0;
 
     public upload_video() {
         // Required empty public constructor
@@ -162,6 +167,7 @@ public class upload_video extends Fragment implements onBackPressed {
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
+        fetchUserPoints();
 
 
         Toast.makeText(getContext(),subCategory,Toast.LENGTH_LONG).show();
@@ -178,13 +184,6 @@ public class upload_video extends Fragment implements onBackPressed {
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-         /*       try {
-                    String filePath = SiliCompressor.with(getContext()).compressVideo(videouri, "/");
-                    Log.d("filePath",filePath);
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                }*/
 
                 if(user==null)
                 {
@@ -219,11 +218,29 @@ public class upload_video extends Fragment implements onBackPressed {
             }
         });
 
-
-
-
         return view;
     }
+
+    private void fetchUserPoints() {
+        databaseReference.child("PointsInstructor").child(user.getUid()).addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot!=null){
+                            PointModel model = dataSnapshot.getValue(PointModel.class);
+                            points = model.getPoints();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                }
+        );
+    }
+
+
 
     private void FullScreen() {
         if(fullScreen)
@@ -395,7 +412,6 @@ public class upload_video extends Fragment implements onBackPressed {
     }
 
 
-
     @Override
     public void onStop() {
         super.onStop();
@@ -491,8 +507,10 @@ public class upload_video extends Fragment implements onBackPressed {
                                                                         }
                                                                     },100);
 
-                                                                    VideoModel model = new VideoModel(user.getUid(),title,"",descriptio,videouri.toString(),imageuri.toString(),"NONE","NONE","0",upload,"0","0","0","Normal");
+                                                                    VideoModel model = new VideoModel(user.getUid(),title,"Normal",descriptio,videouri.toString(),imageuri.toString(),"NONE","NONE","0",upload,"0","0","0","Normal");
                                                                     databaseReference.child("VIDEOS").child(upload).setValue(model);
+                                                                    PointModel popo = new PointModel(user.getUid(),points+25);
+                                                                    databaseReference.child("PointsInstructor").child(user.getUid()).setValue(popo);
                                                                 }
                                                             });
                                                 }

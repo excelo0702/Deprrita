@@ -21,6 +21,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -28,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -35,6 +38,8 @@ import android.widget.VideoView;
 import com.example.chhots.R;
 import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
 import com.example.chhots.category_view.routine.RoutineModel;
+import com.example.chhots.ui.Category.category;
+import com.example.chhots.ui.Dashboard.PointModel;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -51,8 +56,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -60,6 +68,9 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import static android.view.View.GONE;
 
@@ -69,7 +80,7 @@ public class upload_course extends AppCompatActivity {
     private Button choosebtn;
     private Button uploadBtn;
     private Button Done;
-    private EditText video_title;
+    private EditText video_title,course_title;
     private EditText video_sequence;
     private Uri videouri;
     private DatabaseReference databaseReference;
@@ -82,6 +93,8 @@ public class upload_course extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 2;
     private static final int PICK_VIDEO_REQUEST = 1;
     private ProgressBar progress_seekBar,progress_seekBar2;
+    Spinner spinner;
+    String category;
 
     //exoplayer implementation
     PlayerView playerView;
@@ -92,6 +105,7 @@ public class upload_course extends AppCompatActivity {
     ImageView fullScreenButton;
     boolean fullScreen = false;
 
+    int points=0;
 
 
     private static final String TAG = "Upload_Course";
@@ -100,8 +114,8 @@ public class upload_course extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_course);
-
         init();
+
 
         image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,9 +123,6 @@ public class upload_course extends AppCompatActivity {
                 openFileChooser();
             }
         });
-
-
-
 
         fullScreenButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +132,11 @@ public class upload_course extends AppCompatActivity {
 
             }
         });
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(),R.array.category_list,android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
 
 
         choosebtn.setOnClickListener(new View.OnClickListener() {
@@ -145,13 +161,39 @@ public class upload_course extends AppCompatActivity {
                 CreateCourse();
             }
         });
-
+        fetchUserPoints();
 
     }
 
     private void CreateCourse() {
-        if(mImageUri!=null)
+        final String CourseName = course_title.getText().toString();
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                category = adapterView.getItemAtPosition(i).toString();
+                if(category.equals("Street"))
+                {
+                    category="1111111110000000000";
+                }
+                else if(category.equals("Classical"))
+                {
+                    category="0000000001111100000";
+                }
+                else
+                {
+                    category="0000000000000011111";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                category="Street";
+            }
+        });
+        if(mImageUri!=null && CourseName!=null)
         {
+            final String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
             final StorageReference reference = storageReference.child("CoursesThumbnail").child(System.currentTimeMillis()+"."+getFileExtension(mImageUri));
             reference.putFile(mImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -162,12 +204,15 @@ public class upload_course extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(Uri uri) {
                                             Log.d(TAG,mImageUri.toString());
-                                            CourseThumbnail thumbnail = new CourseThumbnail("course Name",time,uri.toString(),user.getUid());
+                                            CourseThumbnail thumbnail = new CourseThumbnail(CourseName,time,uri.toString(),user.getUid(),0,0.0,0,date,category,"descrip");
                                             databaseReference.child("CoursesThumbnail").child(time).setValue(thumbnail)
                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override
                                                         public void onSuccess(Void aVoid) {
                                                             Toast.makeText(getApplicationContext(), "Course Created", Toast.LENGTH_SHORT).show();
+
+                                                            PointModel popo = new PointModel(user.getUid(),points+100);
+                                                            databaseReference.child("PointsInstructor").child(user.getUid()).setValue(popo);
                                                             onBackPressed();
                                                         }
                                                     });
@@ -204,6 +249,27 @@ public class upload_course extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent,1);
     }
+
+
+    private void fetchUserPoints() {
+        databaseReference.child("PointsInstructor").child(user.getUid()).addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot!=null){
+                            PointModel model = dataSnapshot.getValue(PointModel.class);
+                            points = model.getPoints();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                }
+        );
+    }
+
 
 
 
@@ -449,7 +515,8 @@ public class upload_course extends AppCompatActivity {
         image = findViewById(R.id.upload_course_image);
         progress_seekBar = findViewById(R.id.progress_bar_upload_course);
         progress_seekBar2 = findViewById(R.id.progress_bar_upload_course_image);
-
+        course_title = findViewById(R.id.course_title);
+        spinner = findViewById(R.id.category_spinner);
         playerView = findViewById(R.id.video_course);
         fullScreenButton = playerView.findViewById(R.id.exo_fullscreen_icon);
         playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);

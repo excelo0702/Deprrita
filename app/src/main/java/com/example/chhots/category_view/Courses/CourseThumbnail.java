@@ -4,6 +4,11 @@ public class CourseThumbnail {
 
     private String CourseName,CourseId,CourseImage;
     private String instructorId;
+    private int views;
+    private double rating,trending;
+    private String date;
+    private String category,description;
+
 
     public String getCourseName() {
         return CourseName;
@@ -37,11 +42,66 @@ public class CourseThumbnail {
         this.instructorId = instructorId;
     }
 
-    public CourseThumbnail(String courseName, String courseId, String courseImage, String instructorId) {
+    public int getViews() {
+        return views;
+    }
+
+    public void setViews(int views) {
+        this.views = views;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public CourseThumbnail(String courseName, String courseId, String courseImage, String instructorId, int views, double rating, double trending, String date, String category, String description) {
         CourseName = courseName;
         CourseId = courseId;
         CourseImage = courseImage;
         this.instructorId = instructorId;
+        this.views = views;
+        this.rating = rating;
+        this.trending = trending;
+        this.date = date;
+        this.category = category;
+        this.description = description;
+    }
+
+    public double getTrending() {
+        return trending;
+    }
+
+    public void setTrending(double trending) {
+        this.trending = trending;
     }
 
     public CourseThumbnail() {

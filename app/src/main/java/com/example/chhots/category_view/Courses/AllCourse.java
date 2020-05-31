@@ -13,11 +13,14 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chhots.R;
@@ -32,6 +35,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.view.View.GONE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,6 +71,11 @@ public class AllCourse extends Fragment {
 
     String mLastKey;
 
+    private TextView filter,sort,allCourses;
+    int l=0,u=18,so=0;
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -79,14 +89,21 @@ public class AllCourse extends Fragment {
         progressBar= view.findViewById(R.id.progress_bar_all_course);
         user = auth.getCurrentUser();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
-        mAdapter = new AllCourseAdapter(list, getContext());
-
+        mAdapter = new AllCourseAdapter(list, getContext(),"allCourse");
+        allCourses = view.findViewById(R.id.all_course);
 
         srecyclerview = view.findViewById(R.id.search_all_courses_view);
         srecyclerview.setHasFixedSize(true);
         srecyclerview.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         searchlist = new ArrayList<>();
         searchAdapter = new SearchAdapter(searchlist,getContext());
+
+
+        filter = view.findViewById(R.id.fliter_course);
+        sort = view.findViewById(R.id.sort_course);
+
+
+
 
 
         DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
@@ -119,8 +136,20 @@ public class AllCourse extends Fragment {
         });
 
 
-        showAllCourse();
         mDatabaseRef.child("CoursesThumbnail").keepSynced(true);
+
+
+        Bundle bundle = getArguments();
+        if(bundle!=null)
+        {
+            String categ = bundle.getString("category");
+            l=bundle.getInt("lower",0);
+            u=bundle.getInt("upper",18);
+            filter.setVisibility(GONE);
+            allCourses.setText(categ);
+        }
+        showAllCourse(l,u);
+
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -129,7 +158,7 @@ public class AllCourse extends Fragment {
                 if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
                 {
                     isScrolling=true;
-                    progressBar.setVisibility(View.GONE);
+                    progressBar.setVisibility(GONE);
                 }
             }
 
@@ -141,13 +170,99 @@ public class AllCourse extends Fragment {
                 scrolloutItems = mLayoutManager.findFirstVisibleItemPosition();
 
                 if(isScrolling && currentItems+scrolloutItems==TotalItems) {
-                    datafetch();
+        //            datafetch();
                 }
 
             }
         });
 
 
+
+        sort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popupMenu = new PopupMenu(getContext(),view);
+                MenuInflater inflater = popupMenu.getMenuInflater();
+                inflater.inflate(R.menu.sort_menu,popupMenu.getMenu());
+                popupMenu.show();
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+
+                        switch (menuItem.getItemId())
+                        {
+                            case R.id.latest:
+                                so=0;
+                                showAllCourse(l,u);
+                                break;
+                            case R.id.old:
+                                so=1;
+                                showCourseOld(l,u);
+                                break;
+                            case R.id.rating:
+                                so=2;
+                                showCourseRating(l,u);
+                                break;
+                            case R.id.mostly_viewed:
+                                so=3;
+                                showCourseMostlyViewed(l,u);
+                                break;
+
+                        }
+                        return true;
+                    }
+                });
+            }
+        });
+
+
+
+        filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popupMenu = new PopupMenu(getContext(),view);
+                MenuInflater inflater = popupMenu.getMenuInflater();
+                inflater.inflate(R.menu.filter_menu,popupMenu.getMenu());
+                popupMenu.show();
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+
+                        switch (menuItem.getItemId())
+                        {
+                            case R.id.street:
+                                l = 0;
+                                u=8;
+                                showAllCourse(l,u);
+                                break;
+
+                            case R.id.classical:
+                                l=9;
+                                u=13;
+                                showAllCourse(l,u);
+                                break;
+                            case R.id.other:
+                                l=13;
+                                u=18;
+                                showAllCourse(l,u);
+                                break;
+                            case R.id.ClearAll:
+                                l=0;
+                                u=18;
+                                showAllCourse(l,u);
+                                break;
+                            case R.id.recommended:
+                                //TODO:l and u are of users
+                                l=0;
+                                u=18;
+                                showAllCourse(l,u);
+                                break;
+                        }
+                        return true;
+                    }
+                });
+            }
+        });
 
 
         return view;
@@ -159,7 +274,7 @@ public class AllCourse extends Fragment {
             @Override
             public void run() {
                 if (mLastKey == null) {
-                    progressBar.setVisibility(View.GONE);
+                    progressBar.setVisibility(GONE);
                     return;
                 }
                 final int k = list.size();
@@ -196,9 +311,131 @@ public class AllCourse extends Fragment {
         },2000);
     }
 
+    private void showRecommended() {
+        list.clear();
+
+        mDatabaseRef.child("CoursesThumbnail").orderByChild("rating").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                int p = 0;
+//                Log.d(TAG,dataSnapshot.getValue().toString()+"");
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    CourseThumbnail model = ds.getValue(CourseThumbnail.class);
+                    String news = model.getCategory().substring(l,u);
+                    int flag=0;
+                    for(int i=0;i<news.length();i++)
+                    {
+                        if(news.charAt(i)=='1')
+                        {
+                            flag=1;
+                            break;
+                        }
+                    }
+                    if(flag==1)
+                    {
+                        list.add(0, model);
+                    }
+                }
+                mAdapter.setData(list);
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setAdapter(mAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+    }
+
+    private void showCourseMostlyViewed(final int l,final int u) {
+        list.clear();
+
+        mDatabaseRef.child("CoursesThumbnail").orderByChild("views").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int p = 0;
+//                Log.d(TAG,dataSnapshot.getValue().toString()+"");
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    CourseThumbnail model = ds.getValue(CourseThumbnail.class);
+                    String news = model.getCategory().substring(l,u);
+                    int flag=0;
+                    for(int i=0;i<news.length();i++)
+                    {
+                        if(news.charAt(i)=='1')
+                        {
+                            flag=1;
+                            break;
+                        }
+                    }
+                    if(flag==1)
+                    {
+                        list.add(0, model);
+                    }
+                }
+                mAdapter.setData(list);
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setAdapter(mAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
 
 
-    private void showAllCourse() {
+    }
+
+    private void showCourseRating(final int l,final int u) {
+        list.clear();
+
+        mDatabaseRef.child("CoursesThumbnail").orderByChild("rating").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                int p = 0;
+//                Log.d(TAG,dataSnapshot.getValue().toString()+"");
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    CourseThumbnail model = ds.getValue(CourseThumbnail.class);
+                    String news = model.getCategory().substring(l,u);
+                    int flag=0;
+                    for(int i=0;i<news.length();i++)
+                    {
+                        if(news.charAt(i)=='1')
+                        {
+                            flag=1;
+                            break;
+                        }
+                    }
+                    if(flag==1)
+                    {
+                        list.add(0, model);
+                    }
+                }
+                mAdapter.setData(list);
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setAdapter(mAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+
+    }
+
+    private void showCourseOld(final int l,final  int u) {
+
+        list.clear();
 
         mDatabaseRef.child("CoursesThumbnail").addValueEventListener(new ValueEventListener() {
             @Override
@@ -209,18 +446,64 @@ public class AllCourse extends Fragment {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
                     CourseThumbnail model = ds.getValue(CourseThumbnail.class);
-                    list.add(0, model);
+                    String news = model.getCategory().substring(l,u);
+                    int flag=0;
+                    for(int i=0;i<news.length();i++)
+                    {
+                        if(news.charAt(i)=='1')
+                        {
+                            flag=1;
+                            break;
+                        }
+                    }
+                    if(flag==1)
+                    {
+                        list.add( model);
+                    }
                 }
-                if (list.size() == 0) {
-                    mLastKey = null;
-                } else {
-                    mLastKey = list.get(list.size() - 1).getCourseId();
-                }
-
-                //    Collections.reverse(videolist);
                 mAdapter.setData(list);
-                Log.d(TAG, mAdapter.getItemCount() + "  mmm  ");
-                Log.d(TAG, mLastKey + " ooo ");
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setAdapter(mAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+
+
+
+    }
+
+    private void showAllCourse(final int l,final int u) {
+        list.clear();
+        mDatabaseRef.child("CoursesThumbnail").limitToLast(50).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                int p = 0;
+//                Log.d(TAG,dataSnapshot.getValue().toString()+"");
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    CourseThumbnail model = ds.getValue(CourseThumbnail.class);
+                    String news = model.getCategory().substring(l,u);
+                    int flag=0;
+                    for(int i=0;i<news.length();i++)
+                    {
+                        if(news.charAt(i)=='1')
+                        {
+                            flag=1;
+                            break;
+                        }
+                    }
+                    if(flag==1)
+                    {
+                        list.add(0, model);
+                    }
+                }
+                mAdapter.setData(list);
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(mAdapter);
             }

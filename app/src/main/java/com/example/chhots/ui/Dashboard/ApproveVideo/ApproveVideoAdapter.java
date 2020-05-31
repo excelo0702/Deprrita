@@ -5,11 +5,16 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chhots.R;
 import com.example.chhots.category_view.routine.RoutineThumbnailModel;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +32,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -57,6 +65,7 @@ public class ApproveVideoAdapter extends RecyclerView.Adapter<ApproveVideoAdapte
     public void onBindViewHolder(@NonNull final ApproveVideoHolder holder, int position) {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        holder.userId = user.getUid();
         DatabaseReference db = FirebaseDatabase.getInstance().getReference("NotificationNumber").child(user.getUid()).child("dashboard").child("ApproveVideo").child("Routine");
         db.addValueEventListener(new ValueEventListener() {
             @Override
@@ -84,6 +93,13 @@ public class ApproveVideoAdapter extends RecyclerView.Adapter<ApproveVideoAdapte
         Picasso.get().load(Uri.parse(list.get(position).getRoutineThumbnail())).into(holder.thumbnail);
         holder.routineId = list.get(position).getRoutineId();
         holder.instructorId=list.get(position).getInstructorId();
+        holder.imageURL = list.get(position).getRoutineThumbnail();
+        holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return true;
+            }
+        });
     }
 
     public void setData(List<RoutineThumbnailModel> list)
@@ -96,17 +112,19 @@ public class ApproveVideoAdapter extends RecyclerView.Adapter<ApproveVideoAdapte
         return list.size();
     }
 
-    public class ApproveVideoHolder extends RecyclerView.ViewHolder{
+    public class ApproveVideoHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
         ImageView thumbnail;
         TextView title,notify;
-        String routineId,instructorId;
+        String routineId,instructorId,imageURL,userId;
+        RelativeLayout relativeLayout;
         public ApproveVideoHolder(@NonNull View itemView) {
             super(itemView);
             thumbnail = itemView.findViewById(R.id.routine_thumbnail);
             title = itemView.findViewById(R.id.routine_title);
             notify = itemView.findViewById(R.id.routine_title_notification);
-
+            relativeLayout = itemView.findViewById(R.id.routine_raw_view);
+            itemView.setOnCreateContextMenuListener(this);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -126,5 +144,55 @@ public class ApproveVideoAdapter extends RecyclerView.Adapter<ApproveVideoAdapte
 
 
         }
+
+
+        @Override
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+                MenuItem delete = contextMenu.add(Menu.NONE, 1, 1, "Delete");
+                delete.setOnMenuItemClickListener(onDeleteMenu);
+
+        }
+
+        private final MenuItem.OnMenuItemClickListener onDeleteMenu = new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                switch (menuItem.getItemId()){
+                    case 1:
+
+                        StorageReference ref = FirebaseStorage.getInstance().getReference("ROUTINEVIDEOS").child(routineId);
+                        final StorageReference ref2 = FirebaseStorage.getInstance().getReferenceFromUrl(imageURL);
+                        ref.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                ref2.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        databaseReference.child("ROUTINE_THUMBNAIL").child(routineId).removeValue();
+                                        databaseReference.child("ROUTINEVIDEOS").child(routineId).removeValue();
+                                        databaseReference.child("Instructor").child(userId).child(routineId).removeValue();
+                                       notifyDataSetChanged();
+                                        Toast.makeText(context,"SuccessFully Deleted",Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                Toast.makeText(context,"SuccessFully Deleted",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        ref2.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(context,"SuccessFully Deleted",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                }
+
+                return true;
+            }
+        };
+
+
+
+
     }
 }

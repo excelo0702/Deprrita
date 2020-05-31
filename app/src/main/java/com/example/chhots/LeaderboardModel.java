@@ -1,7 +1,8 @@
 package com.example.chhots;
 
+
 public class LeaderboardModel {
-    private String name,points;
+    private String name,points,userId;
 
     public String getName() {
         return name;
@@ -19,9 +20,18 @@ public class LeaderboardModel {
         this.points = points;
     }
 
-    public LeaderboardModel(String name, String points) {
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public LeaderboardModel(String name, String points, String userId) {
         this.name = name;
         this.points = points;
+        this.userId = userId;
     }
 
     public LeaderboardModel() {
