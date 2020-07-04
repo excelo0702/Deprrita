@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chhots.R;
+import com.example.chhots.bottom_navigation_fragments.InstructorPackage.InstructorInfoModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -54,10 +55,11 @@ public class AllCourse extends Fragment {
     private List<CourseThumbnail> list;
     private ProgressBar progressBar;
 
+    InstructorInfoModel mode;
 
     private List<CourseThumbnail> searchlist;
     private RecyclerView srecyclerview;
-    private com.example.chhots.category_view.Courses.SearchAdapter searchAdapter;
+    private SearchAdapter searchAdapter;
     SearchView searchView;
 
 
@@ -72,6 +74,7 @@ public class AllCourse extends Fragment {
     String mLastKey;
 
     private TextView filter,sort,allCourses;
+    String interest;
     int l=0,u=18,so=0;
 
 
@@ -149,6 +152,7 @@ public class AllCourse extends Fragment {
             allCourses.setText(categ);
         }
         showAllCourse(l,u);
+        fetchUserInfo();
 
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -170,7 +174,7 @@ public class AllCourse extends Fragment {
                 scrolloutItems = mLayoutManager.findFirstVisibleItemPosition();
 
                 if(isScrolling && currentItems+scrolloutItems==TotalItems) {
-        //            datafetch();
+                    //            datafetch();
                 }
 
             }
@@ -255,7 +259,7 @@ public class AllCourse extends Fragment {
                                 //TODO:l and u are of users
                                 l=0;
                                 u=18;
-                                showAllCourse(l,u);
+                                showRecommended();
                                 break;
                         }
                         return true;
@@ -269,52 +273,10 @@ public class AllCourse extends Fragment {
     }
 
 
-    private void datafetch() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mLastKey == null) {
-                    progressBar.setVisibility(GONE);
-                    return;
-                }
-                final int k = list.size();
-                recyclerView.smoothScrollToPosition(list.size() - 1);
-
-                    mDatabaseRef.child("VIDEOS").orderByKey().endAt(mLastKey).limitToLast(10).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                CourseThumbnail model = ds.getValue(CourseThumbnail.class);
-                                Log.d(TAG, model.getCourseId() + " p p p ");
-
-
-                                    list.add(k - 1, model);
-
-                                if (list.size() == 6 + k) {
-                                    mLastKey = list.get(k).getCourseId();
-                                    break;
-                                }
-                            }
-                            if (list.size() < 6 + k) {
-                                mLastKey = null;
-                            }
-                            mAdapter.setData(list);
-                            recyclerView.setLayoutManager(mLayoutManager);
-                            recyclerView.setAdapter(mAdapter);
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) { }
-                    });
-                }
-
-
-        },2000);
-    }
-
     private void showRecommended() {
         list.clear();
 
-        mDatabaseRef.child("CoursesThumbnail").orderByChild("rating").addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.child(getResources().getString(R.string.CoursesThumbnail)).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -325,9 +287,9 @@ public class AllCourse extends Fragment {
                     CourseThumbnail model = ds.getValue(CourseThumbnail.class);
                     String news = model.getCategory().substring(l,u);
                     int flag=0;
-                    for(int i=0;i<news.length();i++)
+                    for(int i=l;i<u && i<interest.length();i++)
                     {
-                        if(news.charAt(i)=='1')
+                        if(news.charAt(i)==interest.charAt(i) && interest.charAt(i)=='1')
                         {
                             flag=1;
                             break;
@@ -354,7 +316,7 @@ public class AllCourse extends Fragment {
     private void showCourseMostlyViewed(final int l,final int u) {
         list.clear();
 
-        mDatabaseRef.child("CoursesThumbnail").orderByChild("views").addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.child(getResources().getString(R.string.CoursesThumbnail)).orderByChild("views").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 int p = 0;
@@ -395,7 +357,7 @@ public class AllCourse extends Fragment {
     private void showCourseRating(final int l,final int u) {
         list.clear();
 
-        mDatabaseRef.child("CoursesThumbnail").orderByChild("rating").addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.child(getResources().getString(R.string.CoursesThumbnail)).orderByChild("rating").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -437,7 +399,7 @@ public class AllCourse extends Fragment {
 
         list.clear();
 
-        mDatabaseRef.child("CoursesThumbnail").addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.child(getResources().getString(R.string.CoursesThumbnail)).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -479,7 +441,7 @@ public class AllCourse extends Fragment {
 
     private void showAllCourse(final int l,final int u) {
         list.clear();
-        mDatabaseRef.child("CoursesThumbnail").limitToLast(50).addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.child(getResources().getString(R.string.CoursesThumbnail)).limitToLast(50).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -516,7 +478,21 @@ public class AllCourse extends Fragment {
         });
     }
 
+    private void fetchUserInfo()
+    {
+        mDatabaseRef.child(getResources().getString(R.string.InstructorInfo)).child(user.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mode = dataSnapshot.getValue(InstructorInfoModel.class);
+                interest = mode.getInterest();
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -537,13 +513,13 @@ public class AllCourse extends Fragment {
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
+                    //TODO: YHA PR SEARCH KRNA H
                     return true;
                 }
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     searchlist.clear();
-                    Toast.makeText(getContext(),"hhhh",Toast.LENGTH_SHORT).show();
-                    Query firebasequery = mDatabaseRef.child("CoursesThumbnail").orderByChild("courseName").startAt(newText).endAt(newText+"\uf8ff");
+                    Query firebasequery = mDatabaseRef.child("CoursesThumbnail").orderByChild("courseName").startAt(newText.toLowerCase()).endAt(newText.toLowerCase()+"\uf8ff");
                     firebasequery.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -565,6 +541,5 @@ public class AllCourse extends Fragment {
         }
     }
 
-
-
 }
+

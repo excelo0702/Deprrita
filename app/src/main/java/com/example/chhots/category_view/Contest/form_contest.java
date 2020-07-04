@@ -36,7 +36,7 @@ import android.widget.Toast;
 
 import com.example.chhots.PaymentListener;
 import com.example.chhots.R;
-import com.example.chhots.InstructorInfoModel;
+import com.example.chhots.bottom_navigation_fragments.InstructorPackage.InstructorInfoModel;
 import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
 import com.example.chhots.onBackPressed;
 import com.google.android.exoplayer2.ExoPlayerFactory;

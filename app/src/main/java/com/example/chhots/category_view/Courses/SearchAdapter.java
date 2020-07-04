@@ -17,11 +17,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chhots.InstructorLogin;
+import com.example.chhots.LoadingDialog;
 import com.example.chhots.Login;
 import com.example.chhots.R;
 import com.example.chhots.bottom_navigation_fragments.Explore.See_Video;
 import com.example.chhots.SubscriptionModel;
 import com.example.chhots.UserClass;
+import com.example.chhots.category_view.routine.routine_view;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,7 +33,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder>{
     public SearchAdapter() {
@@ -80,6 +86,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         String courseId,instructorId,thumbnail;
         FirebaseUser user;
         DatabaseReference mDatabaseReference;
+        LoadingDialog loadingDialog;
 
 
         public SearchViewHolder(@NonNull View itemView) {
@@ -88,146 +95,42 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+            loadingDialog = new LoadingDialog(((AppCompatActivity) context));
 
             courseName = itemView.findViewById(R.id.search_text);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (user == null) {
-                        Toast.makeText(context, "Login First", Toast.LENGTH_SHORT).show();
+                    int p=0;
+                    if(user==null)
+                    {
+                        Toast.makeText(context,"Login First",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(context, Login.class);
                         context.startActivity(intent);
-                    } else {
-
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                //p=checkSubscription();
-                                p = 0;
-                                if (p == 0) {
-                                    p = checkPurchased();
-                                }
-                            }
-                        }, 2000);
-
                     }
-                    if (p == 0) {
-                        Fragment fragment = new course_purchase_view();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("courseId", courseId);
-                        fragment.setArguments(bundle);
-                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.commit();
+                    else
+                    {
+                        //        p = checkSubscription();
                     }
+                    coursePurchase();
                 }
             });
-
-
         }
 
 
-        public int checkSubscription()
+
+        public void coursePurchase()
         {
-            Log.d(TAG," pqq ");
-            final int[] flag = new int[1];
-            mDatabaseReference.child("COURSESUBSCRIPTION").child(user.getUid())
-                    .addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds: dataSnapshot.getChildren())
-                            {
-                                Log.d(TAG,ds.getValue()+"");
-
-                                SubscriptionModel model = ds.getValue(SubscriptionModel.class);
-                                if(model.getVideoId().equals(courseId))
-                                {
-                                    Log.d(TAG," pqq ");
-                                    flag[0] =1;
-                                    return;
-                                }
-
-                            }
-                            if(flag[0]==1)
-                            {
-                                Fragment fragment = new See_Video();
-                                Bundle bundle = new Bundle();
-                                bundle.putString("videoId", courseId);
-                                fragment.setArguments(bundle);
-                                FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                                fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-            if(flag[0]==1)
-                return 1;
-
-
-            return 0;
-        }
-
-        public int checkPurchased()
-        {
-            Log.d(TAG," pqq ");
-            final int[] flag = new int[1];
-            mDatabaseReference.child("USERS").child(user.getUid()).child("courses")
-                    .addValueEventListener(new ValueEventListener() {
-
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Log.d(TAG,dataSnapshot.getValue()+"");
-
-                            for(DataSnapshot ds: dataSnapshot.getChildren())
-                            {
-                                Log.d(TAG,ds.getValue()+"");
-
-                                UserClass model = ds.getValue(UserClass.class);
-                                if(model.getCourseId().equals(courseId))
-                                {
-                                    Log.d(TAG," peee ");
-                                    flag[0] =1;
-                                    Log.d(TAG,flag[0]+" oo ");
-                                }
-                            }
-                            if(flag[0]==1) {
-                                Fragment fragment = new course_view();
-                                Bundle bundle = new Bundle();
-                                bundle.putString("courseId", courseId);
-                                bundle.putString("thumbnail",thumbnail);
-                                bundle.putString("instructorId",instructorId);
-                                fragment.setArguments(bundle);
-                                FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                                fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();
-                                return;
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-            if(flag[0]==1)
-            {
-                return 1;
-            }
-
-            //TODO: handler for wait
-
-            return 0;
+            Log.d("popop","popop111");
+            Fragment fragment = new course_purchase_view();
+            Bundle bundle = new Bundle();
+            bundle.putString("instructorId", instructorId);
+            bundle.putString("courseId", courseId);
+            bundle.putString("thumbnail", thumbnail);
+            fragment.setArguments(bundle);
+            FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.drawer_layout, fragment);
+            fragmentTransaction.commit();
         }
 
 

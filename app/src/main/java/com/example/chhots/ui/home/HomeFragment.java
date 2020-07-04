@@ -63,10 +63,10 @@ public class HomeFragment extends Fragment {
 
         final Drawable[] image_temp ={
                 ContextCompat.getDrawable(getContext(),R.drawable.q1),
-                ContextCompat.getDrawable(getContext(),R.drawable.q3),
-                ContextCompat.getDrawable(getContext(),R.drawable.q7),
-                ContextCompat.getDrawable(getContext(),R.drawable.q4),
-                ContextCompat.getDrawable(getContext(),R.drawable.q2)
+                ContextCompat.getDrawable(getContext(),R.drawable.p1),
+                ContextCompat.getDrawable(getContext(),R.drawable.p2),
+                ContextCompat.getDrawable(getContext(),R.drawable.p3),
+                ContextCompat.getDrawable(getContext(),R.drawable.p4)
         };
 
 

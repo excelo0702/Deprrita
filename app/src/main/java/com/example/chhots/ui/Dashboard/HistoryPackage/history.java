@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.chhots.LoadingDialog;
 import com.example.chhots.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,6 +41,7 @@ public class history extends Fragment {
     private HistoryAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<HistoryModel> list;
+    private LoadingDialog loadingDialog;
 
 
     private DatabaseReference mDatabaseRef;
@@ -55,6 +57,8 @@ public class history extends Fragment {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
 
         list = new ArrayList<>();
+        loadingDialog = new LoadingDialog(getActivity());
+        loadingDialog.startLoadingDialog();
         recyclerView = view.findViewById(R.id.recycler_history_view);
         recyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -111,6 +115,7 @@ public class history extends Fragment {
                 mAdapter = new HistoryAdapter(list,getContext());
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(mAdapter);
+                loadingDialog.DismissDialog();
 
             }
 

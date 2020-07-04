@@ -11,20 +11,32 @@
     <androidx.cardview.widget.CardView
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:paddingTop="15dp"
+
+        app:cardCornerRadius="15dp"
         android:layout_height="wrap_content">
 
-        <LinearLayout
+
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             >
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_marginTop="15dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/image_smurfo"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/instructor_routine_photo"
+                ></de.hdodenhof.circleimageview.CircleImageView>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Title"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@id/instructor_routine_photo"
                 android:textColor="#000000"
                 android:textSize="20dp"
                 android:layout_marginTop="10dp"
@@ -35,7 +47,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Instructor Name"
-                android:layout_marginLeft="5dp"
+                android:layout_below="@id/routine_view_title"
+                android:layout_toRightOf="@id/instructor_routine_photo"
+
+                android:layout_marginLeft="15dp"
                 android:textSize="16dp"
                 android:id="@+id/routine_instructor_name"></TextView>
 
@@ -44,6 +59,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:src="@drawable/smurfooo"
+                android:layout_below="@id/routine_instructor_name"
+                android:layout_marginTop="2dp"
                 android:background="@color/black"
                 android:paddingRight="5dp"
                 android:id="@+id/routine_view_item"></ImageView>
@@ -53,6 +70,7 @@
                 android:layout_height="wrap_content"
                 android:text="21035"
                 android:id="@+id/routine_views"
+                android:layout_below="@id/routine_view_item"
                 android:layout_marginLeft="5dp"
                 android:textSize="14dp"
                 ></TextView>
@@ -63,11 +81,12 @@
                 android:text="Level"
                 android:id="@+id/routine_level"
                 android:layout_marginLeft="5dp"
+                android:layout_below="@id/routine_views"
                 android:textSize="14dp"
                 ></TextView>
 
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
     </androidx.cardview.widget.CardView>

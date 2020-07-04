@@ -32,6 +32,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.chhots.MainActivity;
 import com.example.chhots.R;
 import com.example.chhots.bottom_navigation_fragments.Calendar.CalendarModel;
 import com.example.chhots.ui.Dashboard.PointModel;
@@ -101,13 +102,13 @@ public class hostContest extends Fragment {
         View view = inflater.inflate(R.layout.fragment_host_contest, container, false);
         init(view);
 
-
         contest_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openFileChooser();
             }
         });
+
 
         select_date.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,7 +160,6 @@ public class hostContest extends Fragment {
 
         mRequestQueue = Volley.newRequestQueue(getContext());
         FirebaseMessaging.getInstance().subscribeToTopic("contest");
-        fetchUserPoints();
         return view;
     }
 
@@ -278,8 +278,10 @@ public class hostContest extends Fragment {
                                     CalendarModel calendar = new CalendarModel("Contest",date_text,info,info,uri.toString(),Time);
                                     databaseReference.child("CALENDAR").child(date_text).child(time).setValue(calendar);
 
-                                    PointModel popo = new PointModel(user.getUid(),points+50);
-                                    databaseReference.child("PointsInstructor").child(user.getUid()).setValue(popo);
+                            //        PointModel popo = new PointModel(user.getUid(), MainActivity.pointsO+25);
+                              //      databaseReference.child("PointsInstructor").child("OverAll").child(user.getUid()).setValue(popo);
+                                //    popo = new PointModel(user.getUid(),MainActivity.pointsW+25);
+                                 //   databaseReference.child("PointsInstructor").child("weekly").child(user.getUid()).setValue(popo);
 
                                 }
                             });
@@ -315,26 +317,6 @@ public class hostContest extends Fragment {
         progress_seekBar = v.findViewById(R.id.progress_bar_creating_contest);
         select_date = v.findViewById(R.id.select_date);
         relativeLayout = v.findViewById(R.id.rrr);
-    }
-
-
-    private void fetchUserPoints() {
-        databaseReference.child("PointsInstructor").child(user.getUid()).addValueEventListener(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot!=null){
-                     //       PointModel model = dataSnapshot.getValue(PointModel.class);
-                       //     points = model.getPoints();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                }
-        );
     }
 
 

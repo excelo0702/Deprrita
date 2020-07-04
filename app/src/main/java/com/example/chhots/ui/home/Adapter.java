@@ -57,7 +57,7 @@ public class Adapter extends PagerAdapter {
         txt1 = (TextView)view.findViewById(R.id.text);
         img = view.findViewById(R.id.viewpager_image);
         txt1.setText(models.get(position).getName());
-        img.setImageResource(models.get(position).getImage());
+     //   img.setImageResource(models.get(position).getImage());
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override

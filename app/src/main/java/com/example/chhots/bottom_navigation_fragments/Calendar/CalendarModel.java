@@ -6,7 +6,7 @@ public class CalendarModel {
     public CalendarModel() {
     }
 
-    private String category,date,title,description,url,id;
+    private String category,date,title,description,time,url;
 
     public String getCategory() {
         return category;
@@ -40,6 +40,14 @@ public class CalendarModel {
         this.description = description;
     }
 
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     public String getUrl() {
         return url;
     }
@@ -48,20 +56,12 @@ public class CalendarModel {
         this.url = url;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public CalendarModel(String category, String date, String title, String description, String url, String id) {
+    public CalendarModel(String category, String date, String title, String description, String time, String url) {
         this.category = category;
         this.date = date;
         this.title = title;
         this.description = description;
+        this.time = time;
         this.url = url;
-        this.id = id;
     }
 }

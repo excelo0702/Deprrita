@@ -64,8 +64,6 @@ public class Login extends AppCompatActivity {
     private static final String EMAIL = "email";
     String id;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,18 +97,17 @@ public class Login extends AppCompatActivity {
                 showRecoverPasswordDialog();
             }
         });
-
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 final String email,password;
                 email = email_login.getText().toString();
                 password = password_login.getText().toString();
-
+                loginBtn.setEnabled(false);
                 if (TextUtils.isEmpty(email)) {
                     email_login_ttl.setFocusable(true);
                     email_login_ttl.setError("Enter Email Address");
+                    loginBtn.setEnabled(true);
                     Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -118,11 +115,10 @@ public class Login extends AppCompatActivity {
                 if (TextUtils.isEmpty(password)) {
                     password_login_ttl.setFocusable(true);
                     password_login_ttl.setError("Enter Password");
-
+                    loginBtn.setEnabled(true);
                     Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
 
                 auth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -134,12 +130,12 @@ public class Login extends AppCompatActivity {
                                     Intent intent = new Intent(Login.this,MainActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
+                                    loginBtn.setEnabled(true);
                                     Login.this.finish();
                                 }
                                 else
                                 {
-                                    Toast.makeText(getApplicationContext(),"Logoooo",Toast.LENGTH_SHORT).show();
-
+                                    Toast.makeText(getApplicationContext(),"Wrong Password",Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });

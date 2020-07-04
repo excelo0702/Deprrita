@@ -126,8 +126,6 @@ public class dashboard extends Fragment implements onBackPressed {
                         fragment.setArguments(bundle1);
                         Log.d("main222o","fragment");
                         fragmentTransaction.commit();
-
-                       // setFragment(new dashboard_bottom());
                         break;
 
                     case R.id.favorite_dashboard:

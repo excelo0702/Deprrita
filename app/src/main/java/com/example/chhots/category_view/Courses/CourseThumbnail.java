@@ -7,8 +7,52 @@ public class CourseThumbnail {
     private int views;
     private double rating,trending;
     private String date;
-    private String category,description;
+    private String category,learn,description,time;
 
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public CourseThumbnail(String courseName, String courseId, String courseImage, String instructorId, int views, double rating, double trending, String date, String category, String learn, String description, String time) {
+        CourseName = courseName;
+        CourseId = courseId;
+        CourseImage = courseImage;
+        this.instructorId = instructorId;
+        this.views = views;
+        this.rating = rating;
+        this.trending = trending;
+        this.date = date;
+        this.category = category;
+        this.learn = learn;
+        this.description = description;
+        this.time = time;
+    }
+
+    public String getLearn() {
+        return learn;
+    }
+
+    public void setLearn(String learn) {
+        this.learn = learn;
+    }
+
+    public CourseThumbnail(String courseName, String courseId, String courseImage, String instructorId, int views, double rating, double trending, String date, String category, String learn, String description) {
+        CourseName = courseName;
+        CourseId = courseId;
+        CourseImage = courseImage;
+        this.instructorId = instructorId;
+        this.views = views;
+        this.rating = rating;
+        this.trending = trending;
+        this.date = date;
+        this.category = category;
+        this.learn = learn;
+        this.description = description;
+    }
 
     public String getCourseName() {
         return CourseName;
@@ -80,19 +124,6 @@ public class CourseThumbnail {
     }
 
     public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public CourseThumbnail(String courseName, String courseId, String courseImage, String instructorId, int views, double rating, double trending, String date, String category, String description) {
-        CourseName = courseName;
-        CourseId = courseId;
-        CourseImage = courseImage;
-        this.instructorId = instructorId;
-        this.views = views;
-        this.rating = rating;
-        this.trending = trending;
-        this.date = date;
-        this.category = category;
         this.description = description;
     }
 

@@ -5,18 +5,24 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
+    android:layout_marginTop="100dp"
     tools:context=".InstructorLogin">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="For Instructors Only"
+        android:textColor="@color/black"
+        android:textSize="25dp"></TextView>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:layout_marginStart="@dimen/margin15"
         android:layout_marginEnd="@dimen/margin15"
         android:layout_marginTop="@dimen/margin20"
-        android:background="@drawable/buttonbackground"
-        android:id="@+id/email_instructor_login_TIL"
-        >
+        android:id="@+id/email_instructor_login_TIL">
 
         <EditText
             android:layout_width="match_parent"
@@ -24,11 +30,10 @@
             android:id="@+id/email_instructor_login"
             android:hint="@string/mail"
             android:textStyle="bold"
+            android:background="#FFFFFF"
             android:layout_marginStart="@dimen/margin10"
             android:layout_marginEnd="@dimen/margin10"
-            android:textColorHint="@color/black"
-
-            />
+            android:textColorHint="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -39,10 +44,7 @@
         android:layout_marginTop="@dimen/margin20"
         android:layout_marginLeft="@dimen/margin10"
         android:layout_marginRight="@dimen/margin10"
-        android:id="@+id/password_instructor_login_TIL"
-        android:background="@drawable/buttonbackground"
-
-        >
+        android:id="@+id/password_instructor_login_TIL">
 
         <EditText
             android:textStyle="bold"
@@ -50,6 +52,7 @@
             android:textColorHint="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#FFFFFF"
             android:id="@+id/password_instructor_login"
             android:inputType="textPassword"
             android:hint="@string/pass"

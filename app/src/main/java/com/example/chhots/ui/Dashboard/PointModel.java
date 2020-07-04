@@ -1,9 +1,9 @@
 package com.example.chhots.ui.Dashboard;
 
-
 public class PointModel {
-    String id;
-    int points;
+    private String id,name;
+    private int points;
+
 
     public String getId() {
         return id;
@@ -21,8 +21,19 @@ public class PointModel {
         this.points = points;
     }
 
-    public PointModel(String id, int points) {
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public PointModel(String id, String name, int points) {
         this.id = id;
+        this.name = name;
         this.points = points;
     }
 

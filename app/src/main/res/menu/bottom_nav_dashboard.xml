@@ -2,6 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+
     <item
         android:id="@+id/dashboard_dashboard"
         android:enabled="true"
@@ -9,29 +11,34 @@
         android:icon="@drawable/ic_dashboard_black_24dp"
         app:showAsAction="always"></item>
 
+
     <item
-        android:id="@+id/favorite_dashboard"
+        android:id="@+id/approve_videos_dashboard"
         android:enabled="true"
-        android:title="My Bookmarks"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/ic_my_routines"
+        android:title="My Routines"
         app:showAsAction="always"></item>
+
     <item
         android:id="@+id/community_dashboard"
         android:enabled="true"
         android:title="My Course"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/ic_my_course"
         app:showAsAction="always"></item>
     <item
         android:id="@+id/certificates_dashboard"
         android:enabled="true"
         android:title="Certificates"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/ic_certificate"
         app:showAsAction="always"></item>
+
+
+
     <item
-        android:id="@+id/approve_videos_dashboard"
+        android:id="@+id/favorite_dashboard"
         android:enabled="true"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="My Routines"
+        android:title="My Bookmarks"
+        android:icon="@drawable/ic_bookmark"
         app:showAsAction="always"></item>
 
 </menu>

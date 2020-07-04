@@ -47,6 +47,7 @@
         android:layout_height="wrap_content"
         android:text="Choose Video"
         android:id="@+id/choose_video_form"
+        android:textColor="@color/black"
         ></Button>
 
 

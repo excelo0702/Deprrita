@@ -3,36 +3,87 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_marginTop="25dp"
-    android:layout_marginBottom="10dp"
+    android:layout_margin="10dp"
+    android:padding="5dp"
     android:layout_height="wrap_content">
 
+    <androidx.cardview.widget.CardView
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:paddingTop="15dp"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/user_explore_image"
+                    android:src="@drawable/smurfooo"></de.hdodenhof.circleimageview.CircleImageView>
+
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="30"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:text="User Name"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="20dp"
+                        android:id="@+id/video_username"></TextView>
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:text="Video Title"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        android:id="@+id/video_adapter_title"></TextView>
+
+                </LinearLayout>
+
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_weight="1"
+                    android:layout_height="22dp"
+                    android:src="@drawable/three_dot1"
+                    android:outlineSpotShadowColor="@color/black"
+                    android:layout_margin="10dp"
+                    android:id="@+id/three_dot1_bookmarks"
+                    ></ImageView>
+            </LinearLayout>
 
             <ImageView
-                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:background="@color/black"
-                android:src="@drawable/smurfooo"
+                android:src="@drawable/ic_baseline_bookmark_24"
                 android:id="@+id/video_view_item"></ImageView>
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:text="Title"
-                android:textColor="@color/black"
-                android:textSize="18dp"
-                android:layout_marginBottom="5dp"
-                android:id="@+id/video_adapter_title"></TextView>
-
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="21035"
                 android:id="@+id/video_views"
-                android:visibility="gone"
                 android:layout_marginLeft="5dp"
                 android:textSize="14dp"
                 ></TextView>
@@ -41,23 +92,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:visibility="gone"
                 android:layout_marginLeft="10dp"
                 android:gravity="fill_horizontal"
                 android:padding="10dp"
+                android:visibility="gone"
                 >
 
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:id="@+id/video_likes"
                     android:layout_marginLeft="15dp"
                     android:layout_weight="1"
                     app:srcCompat="@drawable/ic_thumb_up"
+                    android:visibility="gone"
                     ></ImageView>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberSigned"
                     android:textSize="20dp"
@@ -65,28 +117,29 @@
                     android:layout_marginRight="15dp"
                     android:layout_weight="1"
                     android:text="21"
+                    android:visibility="gone"
                     ></TextView>
 
 
 
 
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:id="@+id/video_share"
                     android:layout_weight="1"
-
+                    android:visibility="gone"
                     app:srcCompat="@drawable/ic_share_black_24dp"
                     android:layout_marginLeft="15dp"
                     ></ImageView>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberSigned"
                     android:textSize="20dp"
                     android:layout_weight="1"
-
+                    android:visibility="gone"
                     android:layout_marginRight="16dp"
                     android:id="@+id/video_sharee"
 
@@ -95,27 +148,39 @@
 
 
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:id="@+id/video_comment"
                     android:layout_marginLeft="18dp"
                     android:layout_weight="1"
-
+                    android:visibility="gone"
                     app:srcCompat="@drawable/ic_comment_black_24dp"
                     ></ImageView>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberSigned"
                     android:textSize="16dp"
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
-
                     android:id="@+id/video_commentt"
-                    android:text="Comment"
+                    android:text="Commentnkmm"
                     ></TextView>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"></FrameLayout>
 
 
             </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
 </LinearLayout>

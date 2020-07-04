@@ -5,12 +5,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chhots.R;
 import com.example.chhots.ui.Dashboard.dashboard;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,19 +37,24 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder>{
 
 
     private Context context;
     private List<CommentModel> list;
+    private String videoUserID,videoId;
     private String TAG = "CommentAdapter";
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-    public CommentAdapter(Context context, List<CommentModel> list) {
+    //userId of video
+
+
+    public CommentAdapter(Context context, List<CommentModel> list, String videoUserID, String videoId) {
         this.context = context;
         this.list = list;
+        this.videoUserID = videoUserID;
+        this.videoId = videoId;
     }
-
 
     @NonNull
     @Override
@@ -56,50 +65,45 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Log.d(TAG,"vddddbn");
 
         CommentModel model = list.get(position);
 
         holder.comment_user_name.setText(model.getUserName());
         holder.comment.setText(model.getComment());
-        holder.userVideoId = list.get(position).getUserId();
+        holder.comment_date.setText(model.getTime());
         Picasso.get().load(Uri.parse(list.get(position).getUserImage())).into(holder.image);
+        holder.commentId = model.getCommentId();
 
-        holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                list.remove(position);
-                notifyDataSetChanged();
-                return true;
-            }
-        });
+        if(!user.getUid().equals(model.getUserId()) && !user.getUid().equals(videoUserID))
+        {
+            holder.three_dot.setVisibility(View.GONE);
+        }
 
 
     }
     @Override
     public int getItemCount() {
         Log.d(TAG,"vbnssssss");
+
         return list.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+    public class ViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView comment,comment_user_name;
-        private ImageView image;
-        RelativeLayout relativeLayout;
-        String userVideoId,userId;
+        public TextView comment,comment_user_name,comment_date;
+        private ImageView image,three_dot;
+        private String commentId;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             Log.d(TAG,"vaaabn");
 
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            userId = user.getUid();
-            itemView.setOnCreateContextMenuListener(this);
             comment = itemView.findViewById(R.id.comment_text);
             comment_user_name = itemView.findViewById(R.id.comment_user);
             image = itemView.findViewById(R.id.comment_user_photo);
-            relativeLayout = itemView.findViewById(R.id.comment_raw_view);
+            comment_date = itemView.findViewById(R.id.comment_date);
+            three_dot = itemView.findViewById(R.id.three_dot_comment);
 
             comment_user_name.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -117,52 +121,78 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             });
 
 
+            three_dot.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showPopupMenu(three_dot);
+                }
+            });
+
+
 
         }
 
 
-        @Override
-        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        private void showPopupMenu(View view)
+        {
+            PopupMenu popup = new PopupMenu(context, view, Gravity.END);
+            MenuInflater inflater = popup.getMenuInflater();
 
-            if(userVideoId.equals(userId)) {
+            inflater.inflate(R.menu.delete_menu, popup.getMenu());
 
-                MenuItem delete = contextMenu.add(Menu.NONE, 1, 1, "Delete");
-               // delete.setOnMenuItemClickListener(onDeleteMenu);
+            //set menu item click listener here
+            popup.setOnMenuItemClickListener(new MyMenuItemClickListener(getAdapterPosition()));
+            popup.show();
+        }
+
+        class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
+            int position;
+
+            /**
+             * @param position
+             */
+            MyMenuItemClickListener(int position) {
+
+                this.position = position;
             }
 
-        }
+            /**
+             * Click listener for popup menu items
+             */
 
-      /*  private final MenuItem.OnMenuItemClickListener onDeleteMenu = new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-                switch (menuItem.getItemId()){
-                    case 1:
-                        databaseReference.child("ROUTINE_THUMBNAIL").child(routineId).removeValue();
-                        databaseReference.child("ROUTINEVIDEOS").child(routineId).removeValue();
-                        databaseReference.child("Instructor").child(userId).child(routineId).removeValue();
+                switch (menuItem.getItemId()) {
+                    case R.id.delete:
 
-                        StorageReference ref = FirebaseStorage.getInstance().getReference("ROUTINEVIDEOS").child(routineId);
-                        StorageReference ref2 = FirebaseStorage.getInstance().getReferenceFromUrl(imageURL);
-                        ref.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(context,"SuccessFully Deleted",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        ref2.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(context,"SuccessFully Deleted",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        break;
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                        databaseReference.child("COMMENTS").child(videoId).child(commentId).removeValue()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+
+                                        if(position>0) {
+                                            list.remove(position);
+                                            notifyItemRemoved(position + 1);
+                                            notifyItemRangeChanged(position + 1, list.size());
+                                        }
+
+                                        Toast.makeText(context,"Deleted ",Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(context,"Failed ",Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                        return true;
                 }
-
-                return true;
+                return false;
             }
-        };
-*/
+        }
+
+
 
     }
 }

@@ -60,6 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/learderboard"
+        android:textColor="@color/black"
         android:text="Leaderboard"
         android:layout_alignParentRight="true"
 
@@ -72,36 +73,162 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/learderboard"
         android:id="@+id/history"
+        android:textColor="@color/black"
         android:text="History" />
 
 
-    <com.mikhaellopez.circularprogressbar.CircularProgressBar
-        android:layout_width="170dp"
-        android:layout_height="170dp"
-        app:cpb_background_progressbar_color="#FFCDD2"
-        app:cpb_background_progressbar_width="2dp"
-        android:layout_below="@id/user_dashboard_profile"
-        app:cpb_progressbar_color="#F44336"
-        android:id="@+id/progress_bar_chart"
-        android:padding="10dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="35dp"
-        app:cpb_progressbar_width="5dp" />
 
     <com.mikhaellopez.circularprogressbar.CircularProgressBar
         android:layout_width="170dp"
         android:layout_height="170dp"
-        app:cpb_background_progressbar_color="#FFCDD2"
-        app:cpb_background_progressbar_width="2dp"
+        app:cpb_background_progressbar_color="#800000"
+        app:cpb_background_progressbar_width="5dp"
         android:layout_below="@id/user_dashboard_profile"
-        app:cpb_progressbar_color="#F44336"
+        app:cpb_progressbar_color="@color/Smurfogreen"
+        android:id="@+id/progress_bar_chart_full"
+        android:padding="10dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="35dp"
+        app:cpb_progressbar_width="7dp" />
+
+    <com.mikhaellopez.circularprogressbar.CircularProgressBar
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:cpb_background_progressbar_color="#FF0000"
+        app:cpb_background_progressbar_width="5dp"
+        android:layout_below="@id/user_dashboard_profile"
+        app:cpb_progressbar_color="@color/Smurfogreen"
+        android:id="@+id/progress_bar_chart_course"
+        android:padding="15dp"
+        android:layout_marginLeft="34dp"
+        android:layout_marginTop="45dp"
+        app:cpb_progressbar_width="7dp" />
+
+
+    <com.mikhaellopez.circularprogressbar.CircularProgressBar
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        app:cpb_background_progressbar_color="#6A0DAD"
+        app:cpb_background_progressbar_width="5dp"
+        android:layout_below="@id/user_dashboard_profile"
+        app:cpb_progressbar_color="@color/Smurfogreen"
+        android:id="@+id/progress_bar_chart_routine"
+        android:padding="15dp"
+        android:layout_marginLeft="43dp"
+        android:layout_marginTop="55dp"
+        app:cpb_progressbar_width="7dp" />
+
+
+    <com.mikhaellopez.circularprogressbar.CircularProgressBar
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        app:cpb_background_progressbar_color="#000000"
+        app:cpb_background_progressbar_width="5dp"
+        android:layout_below="@id/user_dashboard_profile"
+        app:cpb_progressbar_color="@color/Smurfogreen"
+        android:id="@+id/progress_bar_chart_individual"
+        android:padding="15dp"
+        android:layout_marginLeft="52dp"
+        android:layout_marginTop="65dp"
+        app:cpb_progressbar_width="7dp" />
+
+
+    <com.mikhaellopez.circularprogressbar.CircularProgressBar
+        android:layout_width="170dp"
+        android:layout_height="170dp"
+        app:cpb_background_progressbar_color="#000000"
+        app:cpb_background_progressbar_width="5dp"
+        android:layout_below="@id/user_dashboard_profile"
+        app:cpb_progressbar_color="@color/Smurfogreen"
         android:id="@+id/progress_bar_chart2"
-        android:layout_toRightOf="@id/progress_bar_chart"
+        android:layout_toRightOf="@id/progress_bar_chart_full"
         android:padding="10dp"
         android:layout_marginLeft="25dp"
         android:layout_marginTop="35dp"
-        app:cpb_progressbar_width="5dp" />
+        app:cpb_progressbar_width="7dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Live Schedule "
+        android:textColor="@color/black"
+        android:layout_below="@id/progress_bar_chart2"
+        android:layout_marginTop="20dp"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:id="@+id/dashboard_live"
+        android:layout_marginLeft="20dp"></TextView>
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:src="#D92121"
+        android:layout_below="@id/progress_bar_chart2"
+        android:layout_toRightOf="@id/dashboard_live"
+        android:layout_marginTop="35dp"></de.hdodenhof.circleimageview.CircleImageView>
+
+    <androidx.cardview.widget.CardView
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:paddingTop="15dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dashboard_live">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:layout_marginLeft="5dp"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/routine_view_title"></TextView>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Instructor Name"
+                android:layout_marginLeft="5dp"
+                android:textSize="16dp"
+                android:id="@+id/routine_instructor_name"></TextView>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/black"
+                android:paddingRight="5dp"
+                android:id="@+id/routine_view_item"></ImageView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="21035"
+                android:id="@+id/routine_views"
+                android:layout_marginLeft="5dp"
+                android:textSize="14dp"
+                ></TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Level"
+                android:id="@+id/routine_level"
+                android:layout_marginLeft="5dp"
+                android:textSize="14dp"
+                ></TextView>
+
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
 
 
 </RelativeLayout>

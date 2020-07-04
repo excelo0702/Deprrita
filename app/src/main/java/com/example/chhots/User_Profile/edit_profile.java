@@ -12,9 +12,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.provider.MediaStore;
 import android.util.Log;
@@ -31,16 +29,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chhots.BuildConfig;
-import com.example.chhots.InstructorInfoModel;
+import com.example.chhots.LoadingDialog;
+import com.example.chhots.bottom_navigation_fragments.InstructorPackage.InstructorInfoModel;
 import com.example.chhots.MainActivity;
 import com.example.chhots.R;
-import com.example.chhots.SignUpNextScreen;
-import com.example.chhots.category_view.routine.RoutineThumbnailModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,7 +46,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -67,8 +63,8 @@ import static android.app.Activity.RESULT_OK;
 public class edit_profile extends Fragment {
 
 
-    private ImageView userImage_signup;
-    private EditText user_name_signup,user_profession_signup;
+    private ImageView userImage_signup,cover_photo,choose_cover_photo,save_cover_photo;
+    private EditText user_name_signup,user_profession_signup,phoneE,statusE,aboutE;
     private Spinner user_dancer_level;
     private RadioButton r1,r2,r3,r4,r5,r6;
     private Button finalsignUp;
@@ -79,10 +75,11 @@ public class edit_profile extends Fragment {
     private String Semail,Spassword,profession,level,name,user_name;
     private int R1=0,R2=0,R3=0,R4=0,R5=0,R6=0;
     private static final int PICK_IMAGE_REQUEST = 2;
-    private Uri mImageUri;
+    private Uri mImageUri,mCoverUri;
     private StorageReference storageReference;
 
     Spinner spinner;
+    StringBuffer category=new StringBuffer("00000000000000000000");
 
 
     private StorageReference mStorageRef;
@@ -94,6 +91,8 @@ public class edit_profile extends Fragment {
     private StorageTask mUploadTask;
 
     InstructorInfoModel model;
+    int flag=0;
+    LoadingDialog loadingDialog;
 
 
 
@@ -101,13 +100,12 @@ public class edit_profile extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_edit_profile, container, false);
-
+        loadingDialog = new LoadingDialog(getActivity());
         init(view);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -118,10 +116,23 @@ public class edit_profile extends Fragment {
         user = FirebaseAuth.getInstance().getCurrentUser();
 
 
+        choose_cover_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                flag=0;
+                save_cover_photo.setVisibility(View.VISIBLE);
+                openFileChooser();
+            }
+        });
+
+        save_cover_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uploadCoverPhoto();
+            }
+        });
 
         fetchUserInfo();
-
-
 
         userImage_signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,20 +148,46 @@ public class edit_profile extends Fragment {
             }
         });
 
-
         return view;
+    }
+
+    private void uploadCoverPhoto() {
+        loadingDialog.startLoadingDialog();
+        final StorageReference reference = storageReference.child("InstructorCoverPhoto").child(auth.getCurrentUser().getUid()+getfilterExt(mCoverUri));
+        reference.putFile(mCoverUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        reference.getDownloadUrl()
+                                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        loadingDialog.DismissDialog();
+                                        InstructorInfoModel mode = new InstructorInfoModel(auth.getCurrentUser().getUid(),model.getUserName(),uri.toString());
+                                        if(mode!=null)
+                                            mDatabaseReference.child("InstructorCoverPhoto").child(auth.getCurrentUser().getUid()).setValue(mode);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        loadingDialog.DismissDialog();
+                                    }
+                                });
+                    }
+                });
+
     }
 
     private void UpdateProfile() {
         if(mImageUri==null)
         {
 
-            InstructorInfoModel mode = new InstructorInfoModel(auth.getCurrentUser().getUid(), model.getUserEmail(), user_profession_signup.getText().toString(), level, model.getUserImageurl(),user_name_signup.getText().toString(),"",model.getBadge(), R1, R2, R3, R4, R5, R6);
+            InstructorInfoModel mode = new InstructorInfoModel(auth.getCurrentUser().getUid(),user_name_signup.getText().toString(),model.getUserEmail(), user_profession_signup.getText().toString(),phoneE.getText().toString().trim(), statusE.getText().toString(),aboutE.getText().toString(),level, mImageUri.toString(),model.getPoints(),model.getBadge(),String.valueOf(category),model.getEarn());
             mDatabaseReference.child("InstructorInfo").child(auth.getCurrentUser().getUid()).setValue(mode);
         }
         else
         {
-
             final StorageReference reference = storageReference.child("UserProfileImage").child(auth.getCurrentUser().getUid()+getfilterExt(mImageUri));
 
             reference.putFile(mImageUri)
@@ -161,7 +198,7 @@ public class edit_profile extends Fragment {
                                     .addOnSuccessListener(new OnSuccessListener<Uri>() {
                                         @Override
                                         public void onSuccess(Uri uri) {
-                                            InstructorInfoModel mode = new InstructorInfoModel(auth.getCurrentUser().getUid(), model.getUserEmail(), user_profession_signup.getText().toString(), level, uri.toString(),user_name_signup.getText().toString(),"",model.getBadge(), R1, R2, R3, R4, R5, R6);
+                                            InstructorInfoModel mode = new InstructorInfoModel(auth.getCurrentUser().getUid(),user_name_signup.getText().toString(),model.getUserEmail(), user_profession_signup.getText().toString(),phoneE.getText().toString().trim(), statusE.getText().toString(),aboutE.getText().toString(),level, uri.toString(),model.getPoints(),model.getBadge(),String.valueOf(category),model.getEarn());
                                             mDatabaseReference.child("InstructorInfo").child(auth.getCurrentUser().getUid()).setValue(mode);
                                             Toast.makeText(getContext(),"Updated",Toast.LENGTH_LONG).show();
                                         }
@@ -172,17 +209,32 @@ public class edit_profile extends Fragment {
         }
     }
 
-
     private void fetchUserInfo()
     {
-        databaseReference.child(getString(R.string.InstructorInfo)).child(user.getUid()).addValueEventListener(new ValueEventListener() {
+        databaseReference.child(getString(R.string.InstructorInfo)).child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("pop pop ",dataSnapshot.getValue()+" pop ");
                 model = dataSnapshot.getValue(InstructorInfoModel.class);
                 user_name_signup.setText( model.getUserName());
                 Picasso.get().load(Uri.parse(model.getUserImageurl())).into(userImage_signup);
                 user_profession_signup.setText(model.getUserProfession());
+                statusE.setText(model.getUserStatus());
+                phoneE.setText(model.getUserPhone());
+                aboutE.setText(model.getUserAbout());
+                databaseReference.child("InstructorCoverPhoto").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        InstructorInfoModel mode = dataSnapshot.getValue(InstructorInfoModel.class);
+                        if(mode!=null)
+                            Picasso.get().load(Uri.parse(mode.getCoverPhoto())).into(cover_photo);
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
@@ -190,26 +242,28 @@ public class edit_profile extends Fragment {
 
             }
         });
+//        String interest = model.getInterest();
+  //      String temp = interest.substring(0,3);
+        //put check on radio Button
     }
-
 
     private void init(View view) {
         userImage_signup = view.findViewById(R.id.userImage_signupp);
         user_name_signup = view.findViewById(R.id.user_name_signupp);
         user_profession_signup = view.findViewById(R.id.user_profession_signupp);
-        r1 = view.findViewById(R.id.r11);
-        r2 = view.findViewById(R.id.r22);
-        r3 = view.findViewById(R.id.r33);
-        r4 = view.findViewById(R.id.r44);
-        r5 = view.findViewById(R.id.r55);
-        r6 = view.findViewById(R.id.r66);
+        phoneE = view.findViewById(R.id.user_phone_no);
+        statusE = view.findViewById(R.id.user_status);
+        aboutE = view.findViewById(R.id.user_about);
+        choose_cover_photo = view.findViewById(R.id.pencil_cover_photo);
+        cover_photo = view.findViewById(R.id.cover_photo);
+        save_cover_photo = view.findViewById(R.id.save_cover_photo);
+
         finalsignUp = view.findViewById(R.id.signup_next_submitt);
         progressBar = view.findViewById(R.id.progressBar_signup_nextt);
         auth = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
     }
-
 
     private String getfilterExt(Uri videoUri)
     {
@@ -218,49 +272,90 @@ public class edit_profile extends Fragment {
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(videoUri));
     }
 
-
-    public void onRadioButtonClicked(View view) {
+    public void onRadioButtonClick(View view) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
 
         // Check which radio button was clicked
         switch(view.getId()) {
-            case R.id.r1:
-                if (checked)
-                    R1=1;
+            case R.id.r11:
+                if (checked) {
+                    category.setCharAt(0, '1');
+                    category.setCharAt(1, '1');
+                    category.setCharAt(2, '1');
+                }
                 else
-                    R1=0;
-                break;
-            case R.id.r2:
-                if (checked)
-                    R2=1;
+                {
+                    category.setCharAt(0, '0');
+                    category.setCharAt(1, '0');
+                    category.setCharAt(2, '0');
+                    break;
+                }
+            case R.id.r22:
+                if (checked) {
+                    category.setCharAt(3, '1');
+                    category.setCharAt(4, '1');
+                    category.setCharAt(5, '1');
+                }
                 else
-                    R2=0;
-                break;
-            case R.id.r3:
-                if (checked)
-                    R2=1;
+                {
+                    category.setCharAt(3, '0');
+                    category.setCharAt(4, '0');
+                    category.setCharAt(5, '0');
+                    break;
+                }
+            case R.id.r33:
+                if (checked) {
+                    category.setCharAt(6, '1');
+                    category.setCharAt(7, '1');
+                    category.setCharAt(8, '1');
+                }
                 else
-                    R3=0;
-                break;
-            case R.id.r4:
-                if (checked)
-                    R4=1;
+                {
+                    category.setCharAt(6, '0');
+                    category.setCharAt(7, '0');
+                    category.setCharAt(8, '0');
+                    break;
+                }
+            case R.id.r44:
+                if (checked) {
+                    category.setCharAt(9, '1');
+                    category.setCharAt(10, '1');
+                    category.setCharAt(11, '1');
+                }
                 else
-                    R4=0;
-                break;
-            case R.id.r5:
-                if (checked)
-                    R5=1;
+                {
+                    category.setCharAt(9, '0');
+                    category.setCharAt(10, '0');
+                    category.setCharAt(11, '0');
+                    break;
+                }
+            case R.id.r55:
+                if (checked) {
+                    category.setCharAt(12, '1');
+                    category.setCharAt(13, '1');
+                    category.setCharAt(14, '1');
+                }
                 else
-                    R5=0;
-                break;
-            case R.id.r6:
-                if (checked)
-                    R6=1;
+                {
+                    category.setCharAt(12, '0');
+                    category.setCharAt(13, '0');
+                    category.setCharAt(14, '0');
+                    break;
+                }
+            case R.id.r66:
+                if (checked) {
+                    category.setCharAt(15, '1');
+                    category.setCharAt(16, '1');
+                    category.setCharAt(17, '1');
+                }
                 else
-                    R6=0;
-                break;
+                {
+                    category.setCharAt(15, '0');
+                    category.setCharAt(16, '0');
+                    category.setCharAt(17, '0');
+                    break;
+                }
 
         }
     }
@@ -286,16 +381,19 @@ public class edit_profile extends Fragment {
         Log.d("2323232","111111");
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null) {
+                && data != null && data.getData() != null) {if(flag==0)
+        {
+            mCoverUri = data.getData();
+            Picasso.get().load(mCoverUri).placeholder(R.mipmap.ic_logo).into(cover_photo);
+        }
+        else
+        {
             mImageUri = data.getData();
             Picasso.get().load(mImageUri).placeholder(R.mipmap.ic_logo).into(userImage_signup);
         }
+        }
 
     }
-
-
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -377,4 +475,7 @@ public class edit_profile extends Fragment {
         }
         return true;
     }
+
+
+
 }

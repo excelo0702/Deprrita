@@ -4,115 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/course_vvv"
     tools:context=".category_view.Courses.upload_course">
 
 
-        <com.google.android.exoplayer2.ui.PlayerView
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:id="@+id/video_course"
-            app:resize_mode="fill">
-        </com.google.android.exoplayer2.ui.PlayerView>
 
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/video_course">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_height="40dp"
-            android:text="Choose Video"
-            android:textColor="@color/black"
-            android:id="@+id/choose_video_course"
-            ></Button>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:hint="Video Title"
-            android:layout_below="@id/choose_video_course"
-            android:id="@+id/video_title_course"
-            ></EditText>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:hint="Video Sequence no."
-            android:layout_below="@id/video_title_course"
-            android:id="@+id/video_sequence_course"
-            ></EditText>
-
-        <ProgressBar
-            android:id="@+id/progress_bar_upload_course"
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:layout_below="@id/video_sequence_course"
-            android:layout_margin="10dp"
-            android:progress="0"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="Upload Video"
-            android:layout_below="@id/progress_bar_upload_course"
-            android:id="@+id/upload_video_course"
-            ></Button>
-
-        <ImageView
-            android:layout_width="300dp"
-            android:layout_height="100dp"
-            android:layout_below="@id/upload_video_course"
-            android:id="@+id/upload_course_image"
-            android:src="@mipmap/ic_launcher_round"></ImageView>
-
-
-                <androidx.appcompat.widget.AppCompatSpinner
-                    android:layout_width="170dp"
-                    android:layout_height="45dp"
-                    android:id="@+id/category_spinner"
-                    android:layout_toRightOf="@id/upload_course_image"
-                    android:layout_below="@id/upload_video_course"
-                    ></androidx.appcompat.widget.AppCompatSpinner>
-
-<EditText
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Course Title"
-    android:id="@+id/course_title"
-    android:layout_below="@id/upload_course_image"></EditText>
-
-        <ProgressBar
-            android:id="@+id/progress_bar_upload_course_image"
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:layout_below="@id/course_title"
-            android:layout_margin="10dp"
-            android:progress="0"/>
-
-
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_height="40dp"
-            android:textColor="@color/black"
-            android:text="Create Course"
-            android:layout_below="@id/progress_bar_upload_course_image"
-            android:id="@+id/done"
-            ></Button>
-        </RelativeLayout>
-        </ScrollView>
 
 </RelativeLayout>

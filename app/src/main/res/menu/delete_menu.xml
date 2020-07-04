@@ -6,4 +6,11 @@
         android:title="Delete">
     </item>
 
+
+    <item
+        android:id="@+id/chat_with_user"
+        android:title="Chat        1">
+
+    </item>
+
 </menu>

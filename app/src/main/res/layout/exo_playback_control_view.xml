@@ -1,49 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
+    android:id="@+id/exoplayback"
     android:layoutDirection="ltr"
     android:background="#CC000000"
     android:orientation="vertical"
+
     tools:targetApi="28">
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:id="@+id/mmmm"
         android:paddingTop="2dp"
         android:orientation="horizontal">
 
-        <ImageButton android:id="@id/exo_prev"
-            style="@style/ExoMediaButton.Previous"/>
-
         <ImageButton android:id="@id/exo_rew"
-            style="@style/ExoMediaButton.Rewind"/>
+            style="@style/ExoMediaButton.Rewind" />
 
-        <ImageButton android:id="@id/exo_repeat_toggle"
-            style="@style/ExoMediaButton"/>
+
 
         <ImageButton android:id="@id/exo_play"
-            style="@style/ExoMediaButton.Play"/>
+            style="@style/ExoMediaButton.Play"
+            />
 
         <ImageButton android:id="@id/exo_pause"
-            style="@style/ExoMediaButton.Pause"/>
+            style="@style/ExoMediaButton.Pause"
+            />
 
         <ImageButton android:id="@id/exo_ffwd"
-            style="@style/ExoMediaButton.FastForward"/>
-
-        <ImageButton android:id="@id/exo_next"
-            style="@style/ExoMediaButton.Next"/>
+            style="@style/ExoMediaButton.FastForward"
+            />
 
 
     </LinearLayout>
+
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:switchMinWidth="56dp"
+        android:background="#FFFFFF"
+        android:id="@+id/mirror"
+        android:checked="false"
+        android:layout_margin="10dp"
+        android:layout_alignParentRight="true"
+        android:textOff="OFF"
+        android:textColor="#FFFFFF"
+        android:textOn="ON"></Switch>
+
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
+        android:layout_below="@id/mmmm"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -82,8 +102,8 @@
 
             <ImageView
                 android:id="@+id/exo_fullscreen_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
 
                 android:adjustViewBounds="true"
@@ -94,4 +114,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

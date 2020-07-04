@@ -35,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/ContestInfo"
         android:id="@+id/select_date"
+        android:textColor="@color/black"
         android:text="Select Date"></Button>
 
 
@@ -51,6 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Create Contest"
+        android:textColor="@color/black"
         android:layout_below="@id/progress_bar_creating_contest"
         android:id="@+id/contest_upload"></Button>
 

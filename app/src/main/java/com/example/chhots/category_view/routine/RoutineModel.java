@@ -2,7 +2,15 @@ package com.example.chhots.category_view.routine;
 
 public class RoutineModel {
 
-    private String title,sequenceNo,instructorId,routineId,videoUrl,thumbnail;
+    private String title,sequenceNo,instructorId,routineId,videoUrl,thumbnail,description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public RoutineModel() {
     }
@@ -55,20 +63,17 @@ public class RoutineModel {
         this.videoUrl = videoUrl;
     }
 
-    public RoutineModel(String title, String sequenceNo, String instructorId, String routineId, String videoUrl, String thumbnail) {
+    public RoutineModel(String title, String sequenceNo, String instructorId, String routineId, String videoUrl, String description) {
         this.title = title;
         this.sequenceNo = sequenceNo;
         this.instructorId = instructorId;
         this.routineId = routineId;
         this.videoUrl = videoUrl;
-        this.thumbnail = thumbnail;
+        this.description = description;
     }
 
-    public RoutineModel(String title, String sequenceNo, String instructorId, String routineId, String videoUrl) {
-        this.title = title;
-        this.sequenceNo = sequenceNo;
-        this.instructorId = instructorId;
-        this.routineId = routineId;
-        this.videoUrl = videoUrl;
-    }
+
+
+
+
 }

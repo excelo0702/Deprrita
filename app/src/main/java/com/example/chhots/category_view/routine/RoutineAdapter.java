@@ -25,8 +25,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.chhots.InstructorLogin;
 import com.example.chhots.LoadingDialog;
 import com.example.chhots.R;
+import com.example.chhots.SubscriptionModel;
 import com.example.chhots.UserClass;
+import com.example.chhots.bottom_navigation_fragments.Explore.See_Video;
 import com.example.chhots.ui.Dashboard.PointModel;
+import com.example.chhots.ui.Subscription.subscription;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,7 +42,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineView>{
 
@@ -53,6 +59,7 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
     private final String TAG = "RoutineAdapter1";
     int selected=-1;
     int points=0;
+    int flag=0;
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
     public RoutineAdapter(List<RoutineThumbnailModel> list, Context context, String activity) {
@@ -92,6 +99,7 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
         return list.size();
     }
 
+
     public class RoutineView extends RecyclerView.ViewHolder{
 
         TextView title,instructor_name,routine_views,level;
@@ -112,196 +120,41 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
             mDatabaseReference = FirebaseDatabase.getInstance().getReference();
             userId = user.getUid();
             loadingDialog = new LoadingDialog(((AppCompatActivity) context));
-            fetchUserPoints();
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int p=0;
-                    //TODO: add handler
                     if(user==null)
                     {
                         Toast.makeText(context,"Login First",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(context, InstructorLogin.class);
                         context.startActivity(intent);
                     }
-                     else if(userId==instructorId)
-                     {
-                         Fragment fragment = new routine_view();
-                         Bundle bundle = new Bundle();
-                         bundle.putString("category","Routine");
-                         bundle.putString("routineId",routineId);
-                         fragment.setArguments(bundle);
-                         FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                         fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                         fragmentTransaction.addToBackStack(null);
-                         fragmentTransaction.commit();
-                     }
                     else
-                    {
-                        loadingDialog.startLoadingDialog();
-                        //   p = checkSubscription();
-                        if(p==0)
-                        {
-                            p = checkPurchased();
-                        }
-                    }
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            loadingDialog.DismissDialog();
-                        }
-                    },3000);
-                    if(p==1)
-                    {
+                        routinePurchase();
 
-                        PointModel popo = new PointModel(instructorId,points+2);
-                        databaseReference.child("PointsInstructor").child(user.getUid()).setValue(popo);
-                        Fragment fragment = new routine_view();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("category","Routine");
-                        bundle.putString("routineId",routineId);
-                        fragment.setArguments(bundle);
-                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.commit();
-                    }
-                    else
-                    {
-                        Fragment fragment = new routine_purchase();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("routineId", routineId);
-                        bundle.putString("thumbnail", thumbnail);
-                        bundle.putString("userId", userId);
-                        fragment.setArguments(bundle);
-                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.commit();
-                    }
                 }
             });
+
+
         }
 
 
-        /*
-                public int checkSubscription()
-                {
-                    Log.d(TAG," pqq ");
-                    final int[] flag = new int[1];
-                    mDatabaseReference.child("SUBSCRIPTION").child(user.getUid())
-                            .addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot ds: dataSnapshot.getChildren())
-                                    {
-                                        Log.d(TAG,ds.getValue()+"");
+        public void routinePurchase(){
 
-                                        SubscriptionModel model = ds.getValue(SubscriptionModel.class);
-                                        if(model.getVideoId().equals(value))
-                                        {
-                                            Log.d(TAG," pqq ");
-                                            flag[0] =1;
-                                            return;
-                                        }
+            Fragment fragment = new routine_purchase();
+            Bundle bundle = new Bundle();
+            bundle.putString("routineId",routineId);
+            bundle.putString("userId",instructorId);
+            fragment.setArguments(bundle);
+            FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.drawer_layout, fragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
 
-                                    }
-                                    if(flag[0]==1)
-                                    {
-                                        Fragment fragment = new See_Video();
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("videoId", value);
-                                        fragment.setArguments(bundle);
-                                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                                        fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                                        fragmentTransaction.addToBackStack(null);
-                                        fragmentTransaction.commit();
-                                    }
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-                    if(flag[0]==1)
-                        return 1;
-
-
-                    return 0;
-                }
-        */
-
-
-
-        private void fetchUserPoints() {
-           /* databaseReference.child("PointsInstructor").child(instructorId).addValueEventListener(
-                    new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if(dataSnapshot!=null){
-                           //     PointModel model = dataSnapshot.getValue(PointModel.class);
-                             //   points = model.getPoints();
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    }
-            );*/
         }
-
-
-
-        public int checkPurchased()
-        {
-            Log.d(TAG," pqq ");
-            final int[] flag = new int[1];
-            mDatabaseReference.child("USER_PURCHASED_ROUTINES").child(userId)
-                    .addValueEventListener(new ValueEventListener() {
-
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Log.d(TAG,dataSnapshot.getValue()+"");
-
-                            for(DataSnapshot ds: dataSnapshot.getChildren())
-                            {
-                                Log.d(TAG,ds.getValue()+"");
-                                UserClass model = ds.getValue(UserClass.class);
-                                if(model.getVideoId().equals(routineId))
-                                {
-                                    Log.d(TAG," peee ");
-                                    flag[0] =1;
-                                    Log.d(TAG,flag[0]+" oo ");
-                                }
-                            }
-                            if(flag[0]==1) {
-
-                                PointModel popo = new PointModel(instructorId,points+2);
-                                databaseReference.child("PointsInstructor").child(user.getUid()).setValue(popo);
-
-                                Fragment fragment = new routine_view();
-                                Bundle bundle = new Bundle();
-                                bundle.putString("routineId", routineId);
-                                bundle.putString("category","Routine");
-                                fragment.setArguments(bundle);
-                                FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                                fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();
-                            }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) { }
-                    });
-            //TODO: handler for wait
-            return 0;
-        }
-
 
     }
+
 }

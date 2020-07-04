@@ -13,7 +13,7 @@
     <item
     android:id="@+id/action_favorites"
     android:enabled="true"
-    android:title="Favorites"
+    android:title="Explore"
         android:icon="@drawable/ic_explore"
     app:showAsAction="always"
         />
@@ -21,7 +21,7 @@
     <item
     android:id="@+id/action_trending"
     android:enabled="true"
-    android:title="Trending"
+    android:title="Calendar"
         android:icon="@drawable/ic_calendar"
     app:showAsAction="always"
         />

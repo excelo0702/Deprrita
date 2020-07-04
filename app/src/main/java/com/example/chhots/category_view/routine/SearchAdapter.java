@@ -3,6 +3,7 @@ package com.example.chhots.category_view.routine;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chhots.InstructorLogin;
+import com.example.chhots.LoadingDialog;
 import com.example.chhots.Login;
 import com.example.chhots.R;
 import com.example.chhots.UserClass;
@@ -27,7 +30,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder>{
 
@@ -72,67 +78,29 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         String routineId,sub_category,thumbnail,userId,instructorId;
         FirebaseUser user;
         DatabaseReference mDatabaseReference;
+        LoadingDialog loadingDialog;
+
 
         public SearchViewHolder(@NonNull View itemView) {
             super(itemView);
             search_text = itemView.findViewById(R.id.search_text);
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+            loadingDialog = new LoadingDialog(((AppCompatActivity) context));
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int p=0;
-                    //TODO: add handler
                     if(user==null)
                     {
                         Toast.makeText(context,"Login First",Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(context, Login.class);
+                        Intent intent = new Intent(context, InstructorLogin.class);
                         context.startActivity(intent);
                     }
-                    else if(userId==instructorId)
-                    {
-                        Fragment fragment = new routine_view();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("routineId",routineId);
-                        fragment.setArguments(bundle);
-                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.commit();
-                    }
                     else
-                    {
-                        //   p = checkSubscription();
-                        if(p==0)
-                        {
-                            p = checkPurchased();
-                        }
-                    }
-                    if(p==1)
-                    {
-                        Fragment fragment = new routine_view();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("routineId",routineId);
-                        fragment.setArguments(bundle);
-                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.commit();
-                    }
-                    else
-                    {
-                        Fragment fragment = new routine_purchase();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("routineId", routineId);
-                        bundle.putString("thumbnail", thumbnail);
-                        bundle.putString("userId", userId);
-                        fragment.setArguments(bundle);
-                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.commit();
-                    }
+                        routinePurchase();
 
                 }
             });
@@ -142,100 +110,20 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
         }
 
-        /*
-        public int checkSubscription()
-        {
-            Log.d(TAG," pqq ");
-            final int[] flag = new int[1];
-            mDatabaseReference.child("SUBSCRIPTION").child(user.getUid())
-                    .addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds: dataSnapshot.getChildren())
-                            {
-                                Log.d(TAG,ds.getValue()+"");
+        public void routinePurchase(){
 
-                                SubscriptionModel model = ds.getValue(SubscriptionModel.class);
-                                if(model.getVideoId().equals(routineIdId))
-                                {
-                                    Log.d(TAG," pqq ");
-                                    flag[0] =1;
-                                    return;
-                                }
+            Fragment fragment = new routine_purchase();
+            Bundle bundle = new Bundle();
+            //  bundle.putString("category","Routine");
+            bundle.putString("routineId",routineId);
+            bundle.putString("userId",instructorId);
+            //     bundle.putString("cat","Routine");
+            //   bundle.putString("planplan","1month");
+            fragment.setArguments(bundle);
+            FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.drawer_layout, fragment);
+            fragmentTransaction.commit();
 
-                            }
-                            if(flag[0]==1)
-                            {
-                                Fragment fragment = new See_Video();
-                                Bundle bundle = new Bundle();
-                                bundle.putString("videoId", videoId);
-                                fragment.setArguments(bundle);
-                                FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                                fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-            if(flag[0]==1)
-                return 1;
-
-
-            return 0;
-        }
-
-         */
-        public int checkPurchased()
-        {
-            Log.d(TAG," pqq ");
-            final int[] flag = new int[1];
-            mDatabaseReference.child("USERS").child(user.getUid()).child("routines")
-                    .addValueEventListener(new ValueEventListener() {
-
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Log.d(TAG,dataSnapshot.getValue()+"");
-
-                            for(DataSnapshot ds: dataSnapshot.getChildren())
-                            {
-                                Log.d(TAG,ds.getValue()+"");
-
-                                UserClass model = ds.getValue(UserClass.class);
-                                if(model.getVideoId().equals(routineId))
-                                {
-                                    Log.d(TAG," peee ");
-                                    flag[0] =1;
-                                    Log.d(TAG,flag[0]+" oo ");
-                                }
-                            }
-                            if(flag[0]==1) {
-                                Fragment fragment = new routine_view();
-                                Bundle bundle = new Bundle();
-                                bundle.putString("routineId", routineId);
-                                fragment.setArguments(bundle);
-                                FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                                fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-
-            //TODO: handler for wait
-
-            return 0;
         }
 
 

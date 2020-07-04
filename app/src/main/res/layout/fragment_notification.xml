@@ -34,7 +34,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Peronal Notification "
+                    android:text="Personal Notification "
                     android:textSize="20dp"
                     android:layout_below="@id/recycler_notification_global"
                     android:textStyle="bold"

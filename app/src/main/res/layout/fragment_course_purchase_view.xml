@@ -3,60 +3,120 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".category_view.Courses.course_purchase_view">
 
-
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Title"
-            android:textSize="20dp"
-            android:textColor="#000000"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/course_view_title"></TextView>
 
-        <ImageView
+        <com.google.android.exoplayer2.ui.PlayerView
             android:layout_width="match_parent"
-            android:layout_height="230dp"
-            android:layout_below="@id/course_view_title"
-            android:id="@+id/course_view_image"
-            android:layout_margin="5dp"></ImageView>
+            android:layout_height="250dp"
+            android:background="@color/black"
+            android:id="@+id/course_preview_video_purchase"
+            app:surface_type="texture_view"
+            app:resize_mode="fit">
+        </com.google.android.exoplayer2.ui.PlayerView>
 
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/course_view_image"
-            android:text="Buy Now @Price"
-            android:id="@+id/course_buy_now"
-            android:layout_margin="20dp"></Button>
+            android:text="See Course"
+            android:textColor="@color/black"
+            android:id="@+id/see_course_preview"
+            android:layout_margin="10dp"></Button>
 
-        <ImageView
-            android:layout_width="270dp"
-            android:layout_marginLeft="70dp"
-            android:layout_height="300dp"
-            android:layout_below="@id/course_buy_now"
-            android:layout_marginTop="20dp"
-            android:id="@+id/course_user_image"></ImageView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/learn_course_box"
+            android:layout_margin="15dp"
+            android:padding="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/what_you_will_learn"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:layout_marginLeft="10dp"
+                android:padding="5dp"></TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/what"
+                android:textSize="18dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/black"
+                android:padding="5dp"
+                android:inputType="textMultiLine">
+            </TextView>
+        </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/description_area_course"
+            android:layout_margin="15dp"
+            android:padding="5dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description"
-            android:textColor="#000000"
-            android:layout_below="@id/course_user_image"
-            android:id="@+id/course_description"
-            ></TextView>
+            android:textSize="20dp"
+            android:text="@string/Description"
+            android:layout_marginLeft="10dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:padding="5dp"
+            android:inputType="textMultiLine"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/course_description_purchase"
+            android:textSize="18dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/black"
+            android:padding="5dp"
+            android:inputType="textMultiLine">
+        </TextView>
+    </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
 
-    </RelativeLayout>
 
 
 
+
+
+
+    </LinearLayout>
 
 </ScrollView>

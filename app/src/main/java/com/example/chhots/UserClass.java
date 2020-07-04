@@ -5,45 +5,47 @@ public class UserClass {
     }
 
     //videoId====routineId
-    private String videoId;
-    private String time;
-    private String courseId;
+    private String Id;
+    private String date;
+    private String category;
+    private String cat;
 
-
-    public String getCourseId() {
-        return courseId;
+    public String getId() {
+        return Id;
     }
 
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
+    public void setId(String id) {
+        Id = id;
     }
 
-    int k;
-
-    public UserClass(String time, String courseId,int k) {
-        this.time = time;
-        this.courseId = courseId;
-        this.k=k;
+    public String getDate() {
+        return date;
     }
 
-    public String getVideoId() {
-        return videoId;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public void setVideoId(String videoId) {
-        this.videoId = videoId;
+    public String getCategory() {
+        return category;
     }
 
-    public String getTime() {
-        return time;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public String getCat() {
+        return cat;
     }
 
-    public UserClass(String videoId, String time) {
-        this.videoId = videoId;
-        this.time = time;
+    public void setCat(String cat) {
+        this.cat = cat;
+    }
+
+    public UserClass(String id, String date, String category, String cat) {
+        Id = id;
+        this.date = date;
+        this.category = category;
+        this.cat = cat;
     }
 }

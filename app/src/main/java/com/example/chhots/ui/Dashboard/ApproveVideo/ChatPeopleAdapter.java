@@ -47,11 +47,13 @@ public class ChatPeopleAdapter extends RecyclerView.Adapter<ChatPeopleAdapter.My
     private FirebaseUser user;
     int flag=1;
 
+
     public ChatPeopleAdapter(List<ChatPeopleModel> list, Context context,String routineId) {
         this.list = list;
         this.context = context;
         this.routineId = routineId;
     }
+
 
     @NonNull
     @Override
@@ -59,6 +61,7 @@ public class ChatPeopleAdapter extends RecyclerView.Adapter<ChatPeopleAdapter.My
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.raw_chat_people_list,parent,false);
         return new MyView(view);
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull final MyView holder, final int position) {
@@ -72,11 +75,16 @@ public class ChatPeopleAdapter extends RecyclerView.Adapter<ChatPeopleAdapter.My
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         NotificationNumberModel model = dataSnapshot.getValue(NotificationNumberModel.class);
 
-                            if(model!=null) {
+                            if(model!=null && model.getI()!=0) {
+
                                 Log.d("count_notify", dataSnapshot.getValue() + "");
                                 holder.chatlist_notification.setVisibility(View.VISIBLE);
                                 holder.chatlist_notification.setText(String.valueOf(model.getI()));
-                                dataSnapshot.getRef().removeValue();
+
+                            }
+                            else if(model!=null && model.getI()==0)
+                            {
+                                holder.chatlist_notification.setVisibility(GONE);
                             }
                     }
                     @Override
@@ -89,15 +97,18 @@ public class ChatPeopleAdapter extends RecyclerView.Adapter<ChatPeopleAdapter.My
         holder.peopleId = list.get(position).getUserId();
     }
 
+
     public void setData(List<ChatPeopleModel> list)
     {
         this.list = list;
     }
 
+
     @Override
     public int getItemCount() {
         return list.size();
     }
+
 
     public class MyView extends RecyclerView.ViewHolder{
 
@@ -115,7 +126,7 @@ public class ChatPeopleAdapter extends RecyclerView.Adapter<ChatPeopleAdapter.My
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ChatWithInstructor.class);
-                    intent.putExtra("category","INSTRUCTOR");
+                    intent.putExtra("category","Routine");
                     intent.putExtra("routineId",routineId);
                     intent.putExtra("peopleId",peopleId);
 
@@ -127,4 +138,6 @@ public class ChatPeopleAdapter extends RecyclerView.Adapter<ChatPeopleAdapter.My
 
         }
     }
+
+
 }

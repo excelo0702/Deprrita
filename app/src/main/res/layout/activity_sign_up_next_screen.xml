@@ -9,10 +9,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <de.hdodenhof.circleimageview.CircleImageView
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="@dimen/dp150"
         android:layout_height="@dimen/dp150"
-        android:src="@mipmap/ic_logo"
+        android:src="@drawable/people_image"
         android:layout_marginTop="@dimen/dp100"
         android:layout_marginStart="@dimen/dp130"
         android:id="@+id/userImage_signup"
@@ -28,41 +30,86 @@
         android:hint="@string/user_name"
         />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/user_name_signup"
-        android:layout_margin="@dimen/margin10"
-        android:id="@+id/user_profession_signup"
-        android:padding="10dp"
-        android:hint="@string/profession"
-        />
 
-    <Spinner
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_name_signup"
+            android:layout_margin="@dimen/margin10"
+            android:id="@+id/user_profession_signup"
+            android:padding="10dp"
+            android:hint="@string/profession"
+            />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_profession_signup"
+            android:layout_margin="@dimen/margin10"
+            android:id="@+id/user_phone_noo"
+            android:padding="10dp"
+            android:inputType="phone"
+            android:hint="Phone No." />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_phone_noo"
+            android:layout_margin="@dimen/margin10"
+            android:id="@+id/user_statuss"
+            android:padding="10dp"
+            android:hint="Crew Name"
+            />
+
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_statuss"
+            android:layout_margin="@dimen/margin10"
+            android:id="@+id/user_aboutt"
+            android:padding="10dp"
+            android:hint="About"
+            />
+
+
+        <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/user_profession_signup"
+        android:layout_below="@id/user_aboutt"
         android:id="@+id/user_dancer_level"
         android:layout_margin="10dp"
         android:padding="10dp"
         />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose your style"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_below="@id/user_dancer_level"
+            android:id="@+id/style"
+            android:textSize="25dp"
+            android:layout_marginLeft="10dp"></TextView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/radio_button_grp1"
-        android:layout_below="@id/user_dancer_level"
+        android:layout_below="@id/style"
         android:orientation="horizontal"
         >
 
     <RadioButton
+
         android:layout_width="@dimen/dp100"
         android:layout_height="@dimen/dp100"
         android:layout_margin="@dimen/margin10"
         android:padding="@dimen/margin10"
         android:layout_weight="1"
         android:id="@+id/r1"
-        android:background="@mipmap/ic_logo"
+        android:background="@drawable/br1"
         android:onClick="onRadioButtonClicked"/>
 
     <RadioButton
@@ -72,7 +119,7 @@
         android:padding="@dimen/margin10"
         android:layout_weight="1"
         android:id="@+id/r2"
-        android:background="@mipmap/ic_logo"
+        android:background="@drawable/cl1"
         android:onClick="onRadioButtonClicked"/>
 
     <RadioButton
@@ -82,7 +129,7 @@
         android:padding="@dimen/margin10"
         android:layout_weight="1"
         android:id="@+id/r3"
-        android:background="@mipmap/ic_logo"
+        android:background="@drawable/hip1"
         android:onClick="onRadioButtonClicked"/>
     </LinearLayout>
 
@@ -99,7 +146,7 @@
         android:layout_margin="@dimen/margin10"
         android:padding="@dimen/margin10"
         android:id="@+id/r4"
-        android:background="@mipmap/ic_logo"
+        android:background="@drawable/kr1"
         android:layout_weight="1"
         android:onClick="onRadioButtonClicked"/>
 
@@ -109,7 +156,7 @@
         android:layout_margin="@dimen/margin10"
         android:padding="@dimen/margin10"
         android:id="@+id/r5"
-        android:background="@mipmap/ic_logo"
+        android:background="@drawable/w1"
         android:layout_weight="1"
         android:onClick="onRadioButtonClicked"/>
 
@@ -119,7 +166,7 @@
         android:layout_margin="@dimen/margin10"
         android:padding="@dimen/margin10"
         android:id="@+id/r6"
-        android:background="@mipmap/ic_logo"
+        android:background="@drawable/bhr1"
         android:layout_weight="1"
         android:onClick="onRadioButtonClicked"/>
     </LinearLayout>
@@ -131,6 +178,7 @@
         android:layout_height="wrap_content"
         android:text="@string/app_submit"
         android:id="@+id/signup_next_submit"
+        android:textColor="@color/black"
         android:layout_below="@id/radio_button_grp2"/>
     <ProgressBar
         android:id="@+id/progressBar_signup_next"

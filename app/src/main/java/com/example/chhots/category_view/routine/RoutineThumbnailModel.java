@@ -1,7 +1,10 @@
 package com.example.chhots.category_view.routine;
 
-public class RoutineThumbnailModel {
-    String title,instructor_name,routine_views,routine_level,routineId,routineThumbnail,instructorId;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class RoutineThumbnailModel implements Parcelable {
+    String title,instructor_name,routine_views,routine_level,routineId,routineThumbnail,instructorId,routineDescription,learn;
 
     String category;
 
@@ -72,7 +75,23 @@ public class RoutineThumbnailModel {
         this.routineThumbnail = routineThumbnail;
     }
 
-    public RoutineThumbnailModel(String title, String instructor_name, String routine_views, String routine_level, String routineId, String routineThumbnail,String instructorId,String category) {
+    public String getRoutineDescription() {
+        return routineDescription;
+    }
+
+    public void setRoutineDescription(String routineDescription) {
+        this.routineDescription = routineDescription;
+    }
+
+    public String getLearn() {
+        return learn;
+    }
+
+    public void setLearn(String learn) {
+        this.learn = learn;
+    }
+
+    public RoutineThumbnailModel(String title, String instructor_name, String routine_views, String routine_level, String routineId, String routineThumbnail, String instructorId, String routineDescription, String learn, String category) {
         this.title = title;
         this.instructor_name = instructor_name;
         this.routine_views = routine_views;
@@ -80,6 +99,54 @@ public class RoutineThumbnailModel {
         this.routineId = routineId;
         this.routineThumbnail = routineThumbnail;
         this.instructorId = instructorId;
+        this.routineDescription = routineDescription;
+        this.learn = learn;
         this.category = category;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(title);
+        parcel.writeString(instructor_name);
+        parcel.writeString(routine_views);
+        parcel.writeString(routine_level);
+        parcel.writeString(routineId);
+        parcel.writeString(routineThumbnail);
+        parcel.writeString(instructorId);
+        parcel.writeString(routineDescription);
+        parcel.writeString(category);
+    }
+
+    public RoutineThumbnailModel(Parcel in)
+    {
+        title = in.readString();
+        instructor_name = in.readString();
+        routine_views = in.readString();
+        routine_level = in.readString();
+        routineId = in.readString();
+        routineThumbnail = in.readString();
+        instructorId = in.readString();
+        routineDescription = in.readString();
+        category = in.readString();
+
+    }
+
+    public static final Parcelable.Creator<RoutineThumbnailModel> CREATOR = new Parcelable.Creator<RoutineThumbnailModel>()
+    {
+        public RoutineThumbnailModel createFromParcel(Parcel in)
+        {
+            return new RoutineThumbnailModel(in);
+        }
+        public RoutineThumbnailModel[] newArray(int size)
+        {
+            return new RoutineThumbnailModel[size];
+        }
+    };
+
+
 }

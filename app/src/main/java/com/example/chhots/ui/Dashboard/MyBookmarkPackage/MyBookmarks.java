@@ -13,9 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.chhots.LoadingDialog;
 import com.example.chhots.R;
 import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
-import com.example.chhots.category_view.routine.VideoAdapter;
+import com.example.chhots.bottom_navigation_fragments.Explore.VideoAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -45,6 +46,7 @@ public class MyBookmarks extends Fragment {
     private DatabaseReference mDatabaseRef;
     private List<VideoModel> videolist;
     private static final String TAG = "Bookmarks";
+    private LoadingDialog loadingDialog;
     FirebaseUser user;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +57,8 @@ public class MyBookmarks extends Fragment {
 
 
         videolist = new ArrayList<>();
+        loadingDialog = new LoadingDialog(getActivity());
+        loadingDialog.startLoadingDialog();
         recyclerView = view.findViewById(R.id.recycler_my_bookmark_view);
         mAdapter = new VideoAdapter(videolist,getContext(),"MyBookmarks");
 
@@ -101,7 +105,7 @@ public class MyBookmarks extends Fragment {
 
     private void showVideos() {
         videolist.clear();
-        mDatabaseRef.child(user.getUid()).limitToLast(30).addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.child(user.getUid()).limitToLast(30).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
             {
@@ -114,6 +118,7 @@ public class MyBookmarks extends Fragment {
                 mAdapter.setData(videolist);
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(mAdapter);
+                loadingDialog.DismissDialog();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }

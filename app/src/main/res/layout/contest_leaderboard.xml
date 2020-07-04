@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_margin="60dp"
+    android:layout_margin="30dp"
+    android:padding="30dp"
     android:background="#FFFFFF"
     android:layout_height="500dp">
 
@@ -21,6 +22,7 @@
             android:textColor="@color/black"
             android:id="@+id/weekly"
             android:textSize="16dp"
+            android:background="@color/Smurfogreen"
             android:padding="5dp"
             android:text="Weekly"></TextView>
 
@@ -79,7 +81,7 @@
         android:layout_width="match_parent"
         android:padding="10dp"
         android:layout_height="wrap_content"
-        android:id="@+id/contest_leaderboard"
+        android:id="@+id/contest_leaderboards"
         android:layout_below="@id/uuuu"
         android:scrollbars="vertical">
     </androidx.recyclerview.widget.RecyclerView>
@@ -87,8 +89,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/contest_leaderboard"
-        android:background="#252C2424"
+        android:layout_below="@id/contest_leaderboards"
+        android:background="@color/Smurfogreen"
         >
 
         <TextView

@@ -2,12 +2,15 @@ package com.example.chhots.category_view.routine;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,8 +61,7 @@ public class routine extends Fragment {
 
     public routine() {
         // Required empty public constructor
-    }
-
+        }
     RecyclerView recyclerView;
     RoutineAdapter mAdapter;
     LinearLayoutManager mLayoutManager,sLayoutManager;
@@ -68,7 +72,7 @@ public class routine extends Fragment {
     private static final String TAG = "Routine";
     boolean isScrolling=false;
     int currentItems,scrolloutItems,TotalItems;
-    String mLastKey,category,tempkey;
+    String mLastKey,category,tempkey,lastId;
 
     FirebaseAuth auth;
     FirebaseUser user;
@@ -76,13 +80,16 @@ public class routine extends Fragment {
     SwipeRefreshLayout swipeRefreshLayout;
     ProgressBar progressBar;
     int fi=0,so=0;
-    int l=0,u=18;
 
     private List<RoutineThumbnailModel> searchlist;
     private SearchAdapter searchAdapter;
     SearchView searchView;
     private RecyclerView srecyclerView;
     LoadingDialog loadingDialog;
+    int l=0,u=18;
+    RelativeLayout tt;
+    int Flag=0;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -106,7 +113,6 @@ public class routine extends Fragment {
         sort = view.findViewById(R.id.sort_routine);
         recyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext());
-        addRoutine = view.findViewById(R.id.add_routine_video);
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         mDatabaseRef =FirebaseDatabase.getInstance().getReference();
@@ -119,17 +125,24 @@ public class routine extends Fragment {
         sLayoutManager = new LinearLayoutManager(getContext());
         category="111111111111111111";
         swipeRefreshLayout = view.findViewById(R.id.swipe_routine);
+        addRoutine = view.findViewById(R.id.add_routine_video);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
-                so=0;
-                showRoutine(l,u);
-                swipeRefreshLayout.setRefreshing(false);
+                //        so=0;
+                //        showRoutine(l,u);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                },100);
             }
         });
         so=0;
         showRoutine(l,u);
+        fetchLast();
         mDatabaseRef.child("ROUTINE_THUMBNAIL").keepSynced(true);
         DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
         presenceRef.onDisconnect().setValue("I disconnected!");
@@ -153,7 +166,6 @@ public class routine extends Fragment {
                     Log.d(TAG, "not connected");
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.w(TAG, "Listener was cancelled");
@@ -161,12 +173,26 @@ public class routine extends Fragment {
         });
 
 
-        addRoutine.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addVideos();
-            }
-        });
+
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        if (((AppCompatActivity)getActivity()).getSupportActionBar()!=null)
+            ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+
+        View NavBar = getActivity().findViewById(R.id.nav_view);
+        NavBar.setVisibility(View.VISIBLE);
+
+        tt = getActivity().findViewById(R.id.tt);
+        tt.setVisibility(View.VISIBLE);
+
+        View BottomnavBar = getActivity().findViewById(R.id.bottom_navigation);
+        BottomnavBar.setVisibility(View.VISIBLE);
+
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setVisibility(View.VISIBLE);
+
+
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -175,7 +201,6 @@ public class routine extends Fragment {
                 if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
                 {
                     isScrolling=true;
-                    progressBar.setVisibility(GONE);
                 }
             }
 
@@ -189,18 +214,6 @@ public class routine extends Fragment {
 
                 if(isScrolling && currentItems+scrolloutItems==TotalItems)
                 {
-                    isScrolling=false;
-                    progressBar.setVisibility(View.VISIBLE);
-                    if(so==0)
-                        datafetch(l,u);
-                    else if(so==1)
-                    {
-                        datafetchOld(l,u);
-                    }
-                    else {
-                        datafetchRecommened(l,u);
-                    }
-
 
                 }
             }
@@ -289,63 +302,42 @@ public class routine extends Fragment {
             }
         });
 
+
+        addRoutine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addVideos();
+            }
+        });
+
+
         return view;
     }
 
-    private void datafetchRecommened(final int l,final int u) {
-        new Handler().postDelayed(new Runnable() {
+    private void fetchLast() {
+        mDatabaseRef.child("ROUTINE_THUMBNAIL").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void run() {
-                if (mLastKey == null) {
-                    progressBar.setVisibility(GONE);
-                    return;
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds: dataSnapshot.getChildren())
+                {
+                    RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
+                    lastId = model.getRoutineId();
+                    Log.d("pop pop hoh",lastId+" lastId ");
+                    break;
                 }
-                final int k = videolist.size();
-                recyclerView.smoothScrollToPosition(videolist.size() - 1);
-                mDatabaseRef.child("ROUTINE_THUMBNAIL").orderByChild("views").startAt(mLastKey).limitToFirst(10).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
-//                                Log.d(TAG, model.getVideoId() + " p p p ");
-                            String news = model.getCategory().substring(l,u);
-                            int flag=0;
-                            for(int i=0;i<news.length();i++)
-                            {
-                                if(news.charAt(i)=='1')
-                                {
-                                    flag=1;
-                                    break;
-                                }
-                            }
-                            if(flag==1)
-                            {
-                                videolist.add( model);
-                            }
-                            if (videolist.size() == 8 + k) {
-                                mLastKey = videolist.get(k).getRoutineId();
-                                break;
-                            }
-                        }
-                        if (videolist.size() < 6 + k) {
-                            mLastKey = null;
-                        }
-                        mAdapter.setData(videolist);
-                        recyclerView.setLayoutManager(mLayoutManager);
-                        recyclerView.setAdapter(mAdapter);
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) { }
-                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        },500);
+        });
     }
 
     private void showRoutineView(final int l,final int u) {
         videolist.clear();
 
-        mDatabaseRef.child("ROUTINE_THUMBNAIL").orderByChild("views").limitToFirst(14).addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.child("ROUTINE_THUMBNAIL").orderByChild("views").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -369,22 +361,10 @@ public class routine extends Fragment {
                     {
                         videolist.add( model);
                     }
-                    if(p==0) {
-                        tempkey = model.getRoutineId();
-                    }
-                    p++;
-                }
-                if(videolist.size()==0)
-                {
-                    mLastKey=null;
-                }
-                else
-                {
-                    mLastKey = videolist.get(videolist.size() - 1).getRoutineId();
                 }
                 mAdapter.setData(videolist);
-                Log.d(TAG, videolist.size() + "  mmm  ");
-                Log.d(TAG, mLastKey + " ooo ");
+                Log.d("pop pop lol", videolist.size() + "  mmm  ");
+                Log.d("pop pop pop pop ", mLastKey + " ooo ");
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(mAdapter);
             }
@@ -398,122 +378,16 @@ public class routine extends Fragment {
 
     }
 
-    private void datafetch(final int l,final int u) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mLastKey == null) {
-                    progressBar.setVisibility(GONE);
-                    return;
-                }
-                final int k = videolist.size();
-                recyclerView.smoothScrollToPosition(videolist.size() - 1);
-                mDatabaseRef.child("ROUTINE_THUMBNAIL").orderByKey().endAt(mLastKey).limitToLast(10).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
-                            //    Log.d(TAG, model.getVideoId() + " p p p ");
-
-                            int flag=0;
-                            String news = model.getCategory().substring(l,u);
-
-                            for(int i=0;i<news.length();i++)
-                            {
-                                if(news.charAt(i)=='1')
-                                {
-                                    flag=1;
-                                    break;
-                                }
-                            }
-                            if(flag==1)
-                            {
-                                videolist.add(0, model);
-                            }
-                            if (videolist.size() == 8 + k) {
-                                mLastKey = videolist.get(k).getRoutineId();
-                                break;
-                            }
-                        }
-                        if (videolist.size() < 8+ k) {
-                            mLastKey = null;
-                        }
-                        mAdapter.setData(videolist);
-                        recyclerView.setLayoutManager(mLayoutManager);
-                        recyclerView.setAdapter(mAdapter);
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) { }
-                });
-
-
-            }
-        },2000);
-    }
-
-
-    private void datafetchOld(final int l,final int u) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mLastKey == null) {
-                    progressBar.setVisibility(GONE);
-                    return;
-                }
-                final int k = videolist.size();
-                recyclerView.smoothScrollToPosition(videolist.size() - 1);
-                mDatabaseRef.child("ROUTINE_THUMBNAIL").orderByKey().startAt(mLastKey).limitToFirst(10).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
-//                                Log.d(TAG, model.getVideoId() + " p p p ");
-                            String news = model.getCategory().substring(l,u);
-                            int flag=0;
-                            for(int i=0;i<news.length();i++)
-                            {
-                                if(news.charAt(i)=='1')
-                                {
-                                    flag=1;
-                                    break;
-                                }
-                            }
-                            if(flag==1)
-                            {
-                                videolist.add( model);
-                            }
-                            if (videolist.size() == 8 + k) {
-                                mLastKey = videolist.get(k).getRoutineId();
-                                break;
-                            }
-                        }
-                        if (videolist.size() < 6 + k) {
-                            mLastKey = null;
-                        }
-                        mAdapter.setData(videolist);
-                        recyclerView.setLayoutManager(mLayoutManager);
-                        recyclerView.setAdapter(mAdapter);
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) { }
-                });
-            }
-        },500);
-    }
-
-
     private void showRoutine(final int l,final int u) {
         videolist.clear();
 
-        mDatabaseRef.child("ROUTINE_THUMBNAIL").limitToLast(14).addValueEventListener(new ValueEventListener() {
+        Query query = mDatabaseRef.child("ROUTINE_THUMBNAIL");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 int p=0;
-//                Log.d(TAG,dataSnapshot.getValue().toString()+"");
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                    Log.d(TAG,ds.getValue()+"");
                     RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
                     String news = model.getCategory().substring(l,u);
                     int flag=0;
@@ -529,46 +403,27 @@ public class routine extends Fragment {
                     {
                         videolist.add(0, model);
                     }
-                    if(p==0) {
-                        tempkey = model.getRoutineId();
-                    }
-                    p++;
                 }
-                if(videolist.size()==0)
-                {
-                    mLastKey=null;
-                }
-                else
-                {
-                    mLastKey = videolist.get(videolist.size() - 1).getRoutineId();
-                }
+
+
                 mAdapter.setData(videolist);
-                Log.d(TAG, videolist.size() + "  mmm  ");
-                Log.d(TAG, mLastKey + " ooo ");
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(mAdapter);
             }
 
-
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-
     }
-
 
 
     private void showRoutineOld(final int l,final int u) {
         videolist.clear();
-
-        mDatabaseRef.child("ROUTINE_THUMBNAIL").limitToFirst(14).addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.child("ROUTINE_THUMBNAIL").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 int p=0;
-//                Log.d(TAG,dataSnapshot.getValue().toString()+"");
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
                     Log.d(TAG,ds.getValue()+"");
@@ -585,22 +440,12 @@ public class routine extends Fragment {
                     }
                     if(flag==1)
                     {
-                        videolist.add( model);
+                        videolist.add(model);
                     }
-                    if(p==0) {
-                        tempkey = model.getRoutineId();
-                    }
-                    p++;
-                }
-                if(videolist.size()==0)
-                {
-                    mLastKey=null;
-                }
-                else
-                {
-                    mLastKey = videolist.get(videolist.size() - 1).getRoutineId();
                 }
                 mAdapter.setData(videolist);
+                Log.d("pop pop lol ", videolist.size() + "  mmm  ");
+                Log.d("pop pop qoq", mLastKey + " ooo ");
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(mAdapter);
             }
@@ -609,10 +454,6 @@ public class routine extends Fragment {
         });
 
     }
-
-
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -629,7 +470,7 @@ public class routine extends Fragment {
             activitySearchMenu.setVisible(false);
             item.setVisible(true);
 
-             searchView= (SearchView) item.getActionView();
+            searchView= (SearchView) item.getActionView();
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
@@ -639,7 +480,7 @@ public class routine extends Fragment {
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     searchlist.clear();
-                    Toast.makeText(getContext(),"hhhh",Toast.LENGTH_SHORT).show();
+
                     Query firebasequery = mDatabaseRef.child("ROUTINE_THUMBNAIL").orderByChild("title").startAt(newText).endAt(newText+"\uf8ff");
                     firebasequery.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -648,13 +489,10 @@ public class routine extends Fragment {
                             {
                                 RoutineThumbnailModel model = ds.getValue(RoutineThumbnailModel.class);
                                 searchlist.add(model);
-                                Log.d(TAG+"  gggg ::",model.getTitle()+"   ppp ");
 
                             }
                             searchAdapter.setData(searchlist);
                             //    Collections.reverse(videolist);
-                            Log.d(TAG, videolist.size() + "  mmm  ");
-                            Log.d(TAG, mLastKey + " ooo ");
                             srecyclerView.setLayoutManager(sLayoutManager);
                             srecyclerView.setAdapter(searchAdapter);
                         }
@@ -678,7 +516,11 @@ public class routine extends Fragment {
         }
     }
 
-
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("list", (ArrayList<? extends Parcelable>) videolist);
+    }
     private void addVideos() {
 
         if(user==null)

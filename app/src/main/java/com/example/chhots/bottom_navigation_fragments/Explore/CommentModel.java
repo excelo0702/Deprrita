@@ -1,7 +1,7 @@
 package com.example.chhots.bottom_navigation_fragments.Explore;
 
 public class CommentModel {
-    private String comment,time,userId,userImage,userName;
+    private String comment,time,userId,userImage,userName,commentId;
 
     public CommentModel() { }
 
@@ -45,11 +45,21 @@ public class CommentModel {
         this.userName = userName;
     }
 
-    public CommentModel(String comment, String time, String userId, String userImage, String userName) {
+    public String getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(String commentId) {
+        this.commentId = commentId;
+    }
+
+    public CommentModel(String comment, String time, String userId, String userImage, String userName, String commentId) {
         this.comment = comment;
         this.time = time;
         this.userId = userId;
         this.userImage = userImage;
         this.userName = userName;
+        this.commentId = commentId;
     }
 }
+

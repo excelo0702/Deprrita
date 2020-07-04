@@ -13,9 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.chhots.LoadingDialog;
 import com.example.chhots.R;
 import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
-import com.example.chhots.category_view.routine.VideoAdapter;
+import com.example.chhots.bottom_navigation_fragments.Explore.VideoAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,7 +41,7 @@ public class MyExplore extends Fragment {
     RecyclerView recyclerView;
     VideoAdapter mAdapter;
     LinearLayoutManager mLayoutManager;
-
+    private LoadingDialog loadingDialog;
     private DatabaseReference mDatabaseRef;
     private List<VideoModel> videolist;
     private static final String TAG = "Explore";
@@ -55,6 +56,8 @@ public class MyExplore extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_my_explore, container, false);
 
         videolist = new ArrayList<>();
+        loadingDialog = new LoadingDialog(getActivity());
+        loadingDialog.startLoadingDialog();
         recyclerView = view.findViewById(R.id.recycler_my_explore_view);
         mAdapter = new VideoAdapter(videolist,getContext(),"MyExplore");
 
@@ -117,6 +120,7 @@ public class MyExplore extends Fragment {
                 mAdapter.setData(videolist);
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(mAdapter);
+                loadingDialog.DismissDialog();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }

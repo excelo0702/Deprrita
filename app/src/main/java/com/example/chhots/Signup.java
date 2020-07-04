@@ -24,10 +24,9 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
 public class Signup extends AppCompatActivity {
 
-    private EditText email,password;
+    private EditText email,password,cnfpassword;
     Button signup;
     ProgressBar progressBar;
-    TextInputLayout passwordTIL,emailTIL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +35,9 @@ public class Signup extends AppCompatActivity {
 
         email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
+        cnfpassword = (EditText)findViewById(R.id.cnfpassword);
         signup = (Button)findViewById(R.id.signup);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
-        passwordTIL = findViewById(R.id.passwordTIL);
-        emailTIL = findViewById(R.id.emailTIL);
 
 
 
@@ -51,27 +49,37 @@ public class Signup extends AppCompatActivity {
 
                 String Semail = email.getText().toString().trim();
                 String Spassword = password.getText().toString();
+                String Spcnfpassword = cnfpassword.getText().toString();
 
                 if (TextUtils.isEmpty(Semail)) {
-                    emailTIL.setFocusable(true);
-                    emailTIL.setError("Enter Email Address");
+
+                    signup.setEnabled(true);
                     Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (TextUtils.isEmpty(Spassword)) {
-                    passwordTIL.setFocusable(true);
-                    passwordTIL.setError("Enter Password");
 
+
+                    signup.setEnabled(true);
                     Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (Spassword.length() < 7) {
-                    passwordTIL.setError("Password too short");
+
+                    signup.setEnabled(true);
                     Toast.makeText(getApplicationContext(), "Password too short, enter minimum 7 characters!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                if (!Spcnfpassword.equals(Spassword)) {
+                    signup.setEnabled(true);
+
+                    Toast.makeText(getApplicationContext(), "Password does not match!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Intent intent = new Intent(Signup.this,SignUpNextScreen.class);
                 intent.putExtra("email",Semail);
                 intent.putExtra("password",Spassword);

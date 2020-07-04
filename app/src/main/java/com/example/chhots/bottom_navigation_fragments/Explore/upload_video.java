@@ -6,12 +6,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.hardware.Camera;
-import android.media.MediaPlayer;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,33 +20,27 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import android.os.Environment;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
-import android.widget.VideoView;
 
+import com.example.chhots.MainActivity;
 import com.example.chhots.R;
-import com.example.chhots.Services.FloatingWidgetService;
+import com.example.chhots.category_view.routine.routine;
 import com.example.chhots.onBackPressed;
-import com.example.chhots.ui.Category.category;
 import com.example.chhots.ui.Dashboard.PointModel;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -75,15 +65,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.iceteck.silicompressorr.SiliCompressor;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
@@ -91,16 +75,14 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class upload_video extends Fragment implements onBackPressed {
 
+public class upload_video extends Fragment implements onBackPressed {
 
     private Button choosebtn;
     private Button uploadBtn;
-    private ImageView thumb_nail;
-    private Button DemotwoBtn;
     private EditText video_title;
-    private EditText choose_category,description,price;
-    private ImageView thumbnail;
+    private EditText description;
+    private ImageView thumbnail,pencil;
     private Uri videouri,mImageUri;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
@@ -122,14 +104,14 @@ public class upload_video extends Fragment implements onBackPressed {
 
     private String subCategory,descriptio;
     private static final int PICK_IMAGE_REQUEST = 2;
-
     int points=0;
+
+    PointModel modelWeekly,modelOverAll;
+
 
     public upload_video() {
         // Required empty public constructor
     }
-
-
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
@@ -147,6 +129,7 @@ public class upload_video extends Fragment implements onBackPressed {
         video_title = view.findViewById(R.id.video_title);
         description = view.findViewById(R.id.descriptioin_upload_video);
         thumbnail = view.findViewById(R.id.upload_thumbnail);
+        pencil = view.findViewById(R.id.pencil_explore);
         spinner =view.findViewById(R.id.category_spinner);
 
         progress_seekBar = view.findViewById(R.id.progress_bar);
@@ -163,12 +146,10 @@ public class upload_video extends Fragment implements onBackPressed {
         storageReference = FirebaseStorage.getInstance().getReference();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),R.array.category_list,android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-
-        fetchUserPoints();
-
 
         Toast.makeText(getContext(),subCategory,Toast.LENGTH_LONG).show();
 
@@ -188,18 +169,21 @@ public class upload_video extends Fragment implements onBackPressed {
                 if(user==null)
                 {
                     Toast.makeText(getContext(),"user cant be null",Toast.LENGTH_SHORT).show();
+
+                }
+                else if(videouri==null){
+                    Toast.makeText(getContext(),"You didn't choose any video",Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    uploadVideo();
                     uploadBtn.setEnabled(false);
                     choosebtn.setEnabled(false);
                     thumbnail.setEnabled(false);
-
+                    uploadVideo();
                 }
             }
         });
 
-        thumbnail.setOnClickListener(new View.OnClickListener() {
+        pencil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openFileChooser();
@@ -209,42 +193,20 @@ public class upload_video extends Fragment implements onBackPressed {
         fullScreenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 FullScreen();
-          //      Intent intent = new Intent(getContext(), FloatingWidgetService.class);
-            //    intent.putExtra("videoUri",videouri.toString());
-              //  getActivity().startService(intent);
-
             }
         });
+        MainActivity.fetchUserPoints();
+
 
         return view;
     }
-
-    private void fetchUserPoints() {
-        databaseReference.child("PointsInstructor").child(user.getUid()).addValueEventListener(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot!=null){
-                            PointModel model = dataSnapshot.getValue(PointModel.class);
-                            points = model.getPoints();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                }
-        );
-    }
-
 
 
     private void FullScreen() {
         if(fullScreen)
         {
+            fullScreenButton.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.ic_fullscreen_black_24dp));
 
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)playerView.getLayoutParams();
             params.width = params.MATCH_PARENT;
@@ -280,10 +242,10 @@ public class upload_video extends Fragment implements onBackPressed {
             spinner.setVisibility(View.VISIBLE);
             uploadBtn.setVisibility(View.VISIBLE);
 
-
             fullScreen = false;
         }
         else{
+            fullScreenButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_fullscreen_black_24dp));
             ((AppCompatActivity)getActivity()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
             ((AppCompatActivity)getActivity()).getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
@@ -329,7 +291,6 @@ public class upload_video extends Fragment implements onBackPressed {
         }
     }
 
-
     private Uri getImageUri(Context context, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -343,6 +304,7 @@ public class upload_video extends Fragment implements onBackPressed {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         getActivity().startActivityForResult(intent,1);
     }
+
 
     private void openFileChooser() {
         Intent intent = new Intent();
@@ -393,7 +355,7 @@ public class upload_video extends Fragment implements onBackPressed {
 
     @SuppressLint("InlinedApi")
     private void hideSystemUi() {
-         playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+        playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -404,24 +366,15 @@ public class upload_video extends Fragment implements onBackPressed {
     public void onPause() {
         super.onPause();
         if (Util.SDK_INT <= 23) {
-           // releasePlayer();
-            if(player!=null){
-                player.setPlayWhenReady(false);
-
-            }        }
+            releasePlayer();
+        }
     }
-
 
     @Override
     public void onStop() {
         super.onStop();
         if (Util.SDK_INT > 23) {
-          //  releasePlayer();
-            if(player!=null){
-                player.setPlayWhenReady(false);
-
-            }
-
+            releasePlayer();
         }
     }
 
@@ -435,6 +388,7 @@ public class upload_video extends Fragment implements onBackPressed {
         }
     }
 
+
     private String getfilterExt(Uri videoUri)
     {
         ContentResolver contentResolver = getActivity().getContentResolver();
@@ -442,10 +396,9 @@ public class upload_video extends Fragment implements onBackPressed {
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(videoUri));
     }
 
-
     private void uploadVideo()
     {
-        if(videouri!=null)
+        if(videouri!=null )
         {
             //   Toast.makeText(getApplicationContext(),"upl88",Toast.LENGTH_SHORT).show();
 
@@ -465,22 +418,34 @@ public class upload_video extends Fragment implements onBackPressed {
                 }
             });
 
+            if(subCategory.equals("NormalVideos"))
+            {
+                sub_category = "Normal";
+            }
+            else if(subCategory.equals("RoutineVideos"))
+            {
+                sub_category="ROUTINE";
+            }
+            else
+            {
+                sub_category="ROUTINE";
+
+            }
             if(title.equals(""))
             {
-                Toast.makeText(getContext(),"Title cant be null",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),"Song Name can't be null",Toast.LENGTH_SHORT).show();
+                uploadBtn.setEnabled(true);
                 return;
             }
-            Log.d("222222","2222222");
-            if(videouri==null )
-            {
-                Toast.makeText(getContext(),"You didn't choose any video",Toast.LENGTH_SHORT).show();
-            }
+
             if(mImageUri==null)
             {
                 Toast.makeText(getContext(),"Choose thumbnail for dislpayng it",Toast.LENGTH_SHORT).show();
+                uploadBtn.setEnabled(true);
+                return;
             }
             final String upload = System.currentTimeMillis()+"";
-            final StorageReference reference = storageReference.child("VIDEOS").child(user.getUid()).child(upload+getfilterExt(videouri));
+            final StorageReference reference = storageReference.child(getResources().getString(R.string.ExploreVideos)).child(user.getUid()).child(upload+getfilterExt(videouri));
             reference.putFile(videouri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -489,7 +454,7 @@ public class upload_video extends Fragment implements onBackPressed {
                                 @Override
                                 public void onSuccess(final Uri videouri) {
 
-                                    final StorageReference imageReference = storageReference.child("THUMBNAIL").child(upload+getfilterExt(mImageUri));
+                                    final StorageReference imageReference = storageReference.child(getResources().getString(R.string.ExploreThumbnail)).child(upload+getfilterExt(mImageUri));
                                     imageReference.putFile(mImageUri)
                                             .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                                 @Override
@@ -506,19 +471,20 @@ public class upload_video extends Fragment implements onBackPressed {
                                                                             progress_seekBar.setProgress(0);
                                                                         }
                                                                     },100);
+                                                                    Toast.makeText(getContext(),"uploaded",Toast.LENGTH_LONG).show();
+                                                                    Log.d("pop pop pop","wow wow wow");
+                                                                    VideoModel model = new VideoModel(user.getUid(),title,"Normal",descriptio,videouri.toString(),imageuri.toString(),"NONE","NONE","1",upload,"0","0","0",sub_category);
+                                                                    databaseReference.child(getResources().getString(R.string.ExploreVideos)).child(upload).setValue(model);
+                                                                    databaseReference.child(getResources().getString(R.string.UsersExploreVideos)).child(user.getUid()).child(upload).setValue(model);
+                                                                    MainActivity.increaseUserPoints(20);
+                                                                    getFragmentManager().beginTransaction().replace(R.id.drawer_layout,new explore()).commit();
 
-                                                                    VideoModel model = new VideoModel(user.getUid(),title,"Normal",descriptio,videouri.toString(),imageuri.toString(),"NONE","NONE","0",upload,"0","0","0","Normal");
-                                                                    databaseReference.child("VIDEOS").child(upload).setValue(model);
-                                                                    PointModel popo = new PointModel(user.getUid(),points+25);
-                                                                    databaseReference.child("PointsInstructor").child(user.getUid()).setValue(popo);
                                                                 }
                                                             });
                                                 }
                                             });
-                                    Toast.makeText(getContext(),"uploaded",Toast.LENGTH_LONG).show();
                                     uploadBtn.setEnabled(true);
                                     choosebtn.setEnabled(true);
-                                    onBackPressed();
                                 }
                             });
                         }
@@ -536,7 +502,6 @@ public class upload_video extends Fragment implements onBackPressed {
                         public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
                             double progress = (100.0* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
                             progress_seekBar.setProgress((int) progress);
-                            Toast.makeText(getContext(),String.valueOf((int)progress),Toast.LENGTH_SHORT).show();
                         }
                     });
             uploadBtn.setEnabled(true);
@@ -547,9 +512,10 @@ public class upload_video extends Fragment implements onBackPressed {
     @Override
     public void onBackPressed() {
         ((AppCompatActivity)getActivity()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        if(player!=null){
-            player.setPlayWhenReady(false);
+        if (player!=null)
+        {
             player.release();
         }
     }
+
 }

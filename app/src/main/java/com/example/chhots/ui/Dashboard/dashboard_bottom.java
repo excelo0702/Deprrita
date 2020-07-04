@@ -1,18 +1,29 @@
 package com.example.chhots.ui.Dashboard;
 
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.provider.MediaStore;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,11 +35,14 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.chhots.LeaderboardAdapter;
 import com.example.chhots.LeaderboardModel;
+import com.example.chhots.MainActivity;
 import com.example.chhots.R;
-import com.example.chhots.InstructorInfoModel;
+import com.example.chhots.bottom_navigation_fragments.InstructorPackage.InstructorInfoModel;
+import com.example.chhots.UserClass;
 import com.example.chhots.ui.Dashboard.HistoryPackage.history;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,9 +56,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static android.view.View.GONE;
 
@@ -53,10 +72,9 @@ import static android.view.View.GONE;
  */
 public class dashboard_bottom extends Fragment {
 
+    public dashboard_bottom() { }
 
-    public dashboard_bottom() {
-        // Required empty public constructor
-    }
+    private Uri videouri,mImageUri;
 
     private Button history,leaderboard;
     BottomNavigationView bottomNavigationView;
@@ -66,10 +84,9 @@ public class dashboard_bottom extends Fragment {
     private FirebaseAuth auth;
     private FirebaseUser user;
     private DatabaseReference databaseReference;
-    CircularProgressBar circularProgressBar,circularProgressBar2;
+    CircularProgressBar circularProgressBar,circularProgressBar2,circularProgressBarcourse,circularProgressBarroutine,circularProgressBarinidvidual;
     String TAG ="dashboard";
     int points=0;
-
 
     RelativeLayout relativeLayout;
     PopupWindow mPopupWindow;
@@ -78,6 +95,7 @@ public class dashboard_bottom extends Fragment {
     LeaderboardAdapter mAdapter;
     LinearLayoutManager mLayoutManager;
     List<LeaderboardModel> list,list2;
+    private static final int PICK_IMAGE_REQUEST = 2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -94,8 +112,7 @@ public class dashboard_bottom extends Fragment {
         FirebaseOffline();
         init(view);
         int animationDuration = 2500; // 2500ms = 2,5s
-        circularProgressBar.setProgressWithAnimation(65, animationDuration);
-        circularProgressBar2.setProgressWithAnimation(65, animationDuration);
+        circularProgressBarinidvidual.setBackgroundProgressBarWidth(20);
 
 
 
@@ -109,6 +126,7 @@ public class dashboard_bottom extends Fragment {
             }
         });
 
+
         if(!cat.equals("MainActivity"))
         {
             history.setEnabled(false);
@@ -117,8 +135,16 @@ public class dashboard_bottom extends Fragment {
             leaderboard.setEnabled(false);
         }
 
+
         fetchUserInfo();
-        fetchUserPoints();
+        MainActivity.fetchUserPoints();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fetchUserPoints();
+            }
+        },1000);
+
 
         userPoints.setText(String.valueOf(points));
         if(points<200)
@@ -128,11 +154,42 @@ public class dashboard_bottom extends Fragment {
         else if(points<300)
         {
             userBadge.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.ic_star1));
-
         }
         else{
             userBadge.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.ic_star1));
         }
+
+        circularProgressBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(),"Toast",Toast.LENGTH_SHORT).show();
+            }
+        });
+        circularProgressBar2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(),"2 2 2 2 ",Toast.LENGTH_SHORT).show();
+            }
+        });
+        circularProgressBarcourse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(),"course",Toast.LENGTH_SHORT).show();
+            }
+        });
+        circularProgressBarroutine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(),"rout",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        circularProgressBarinidvidual.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(),"indi",Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
         leaderboard.setOnClickListener(new View.OnClickListener() {
@@ -141,69 +198,70 @@ public class dashboard_bottom extends Fragment {
                 showLeaderboardUtil();
             }
         });
-
-
-
-
-
+        checkSubscription();
         return view;
+
     }
 
-
-
+    @SuppressLint("ResourceAsColor")
     private void showLeaderboardUtil() {
         LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         View customView = inflater.inflate(R.layout.contest_leaderboard,null);
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Leaderboard");
+        builder.setView(customView);
+        builder.setCancelable(true);
 
-        mPopupWindow = new PopupWindow(
-                customView,
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
+        final AlertDialog dialog = builder.create();
+        dialog.show();
 
-        if(Build.VERSION.SDK_INT>=21){
-            mPopupWindow.setElevation(5.0f);
-        }
         ImageView close = customView.findViewById(R.id.close_leaderboard);
-        TextView weekly = customView.findViewById(R.id.weekly);
-        TextView overAll = customView.findViewById(R.id.Overall);
+        final TextView weekly = customView.findViewById(R.id.weekly);
+        final TextView overAll = customView.findViewById(R.id.Overall);
+
 
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPopupWindow.dismiss();
-            }
-        });
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setFocusable(true);
-        mPopupWindow.showAtLocation(relativeLayout, Gravity.CENTER,0,0);
-        mPopupWindow.setTouchInterceptor(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
-                    mPopupWindow.dismiss();
-                }
-                return false;
+                dialog.cancel();
             }
         });
 
-        final RecyclerView recyclerView = customView.findViewById(R.id.contest_leaderboard);
-        final LeaderboardAdapter mAdapter;
-        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+
+        userLeaderbardName = customView.findViewById(R.id.userName_leaderboard_user);
+        userPoint = customView.findViewById(R.id.points_leaderboard_user);
+        recyclerView = customView.findViewById(R.id.contest_leaderboards);
+        mLayoutManager = new LinearLayoutManager(getContext());
         final List<LeaderboardModel> list = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         mAdapter = new LeaderboardAdapter(list,getContext());
         recyclerView.setHasFixedSize(true);
 
-        category="Weekly";
+        category="weekly";
         showLeaderboard(category);
         showLeaderboardForUser(category);
 
+        SpannableString content = new SpannableString("Weekly");
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        weekly.setText(content);
+        weekly.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.Smurfogreen));
+        overAll.setText("OverAll");
+        weekly.setTextSize(24);
+        overAll.setTextSize(22);
         weekly.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                category="Weekly";
+                weekly.setTextSize(18);
+                category="weekly";
+                weekly.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.Smurfogreen));
+                overAll.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.white));
+                SpannableString content = new SpannableString("Weekly");
+                content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                weekly.setText(content);
+                overAll.setText("OverAll");
+                weekly.setTextSize(22);
+                overAll.setTextSize(20);
                 showLeaderboard(category);
                 showLeaderboardForUser(category);
             }
@@ -212,26 +270,38 @@ public class dashboard_bottom extends Fragment {
         overAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                overAll.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.Smurfogreen));
+                weekly.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.white));
+                SpannableString content = new SpannableString("OverAll");
+                content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                weekly.setText("Weekly");
+                overAll.setText(content);
+                weekly.setTextSize(20);
+                overAll.setTextSize(22);
                 category="OverAll";
                 showLeaderboardForUser(category);
                 showLeaderboard(category);
             }
         });
-
     }
 
     private void showLeaderboard(String category) {
-
-        Query query = databaseReference.child("PointsInstructor").child(category).orderByChild("points").limitToLast(40);
+        Query query = databaseReference.child(getResources().getString(R.string.PointsInstructor)).child(category).orderByChild("points");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                list.clear();
+                int i=1;
                 for(DataSnapshot ds: dataSnapshot.getChildren())
                 {
+                    if(list.size()>5)
+                    {
+                        break;
+                    }
                     PointModel mode = ds.getValue(PointModel.class);
-                    //TODO: points to int
-                    LeaderboardModel model = new LeaderboardModel(userName.getText().toString(),String.valueOf(mode.getPoints()),mode.getId());
-                    list.add(0,model);
+                    LeaderboardModel model = new LeaderboardModel(i+"."+mode.getName(),String.valueOf(-1*mode.getPoints()),mode.getId());
+                    list.add(model);
+                    i++;
                 }
                 mAdapter.setData(list);
                 recyclerView.setLayoutManager(mLayoutManager);
@@ -240,16 +310,16 @@ public class dashboard_bottom extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-
     }
-
 
     private void showLeaderboardForUser(String category) {
 
-        Query query = databaseReference.child("PointsInstructor").child(category).orderByChild("points").limitToLast(40);
+        Query query = databaseReference.child(getResources().getString(R.string.PointsInstructor)).child(category).orderByChild("points");
+
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                 int pos=0;
                 for(DataSnapshot ds: dataSnapshot.getChildren())
                 {
@@ -257,14 +327,12 @@ public class dashboard_bottom extends Fragment {
                     PointModel mode = ds.getValue(PointModel.class);
                     if(mode.getId().equals(user.getUid()))
                     {
-                        userLeaderbardName.setText(String.valueOf(pos)+". "+userName.getText().toString());
-                        userPoint.setText(mode.getPoints());
+                        userLeaderbardName.setText(pos+". "+userName.getText().toString());
+                        userPoint.setText(String.valueOf(-1*mode.getPoints()));
                         break;
                     }
-                    //TODO: points to int
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -273,22 +341,29 @@ public class dashboard_bottom extends Fragment {
 
     }
 
-
-
-
     private void init(View view) {
         relativeLayout = view.findViewById(R.id.rr6);
 
-        circularProgressBar = (CircularProgressBar)view.findViewById(R.id.progress_bar_chart);
+        circularProgressBar = (CircularProgressBar)view.findViewById(R.id.progress_bar_chart_full);
         circularProgressBar.setColor(ContextCompat.getColor(getContext(), R.color.Smurfogreen));
         circularProgressBar.setBackgroundColor(Color.GRAY);
+
+        circularProgressBarcourse = (CircularProgressBar)view.findViewById(R.id.progress_bar_chart_course);
+        circularProgressBarcourse.setColor(ContextCompat.getColor(getContext(), R.color.Smurfogreen));
+        circularProgressBarcourse.setBackgroundColor(Color.GRAY);
+
+        circularProgressBarroutine = (CircularProgressBar)view.findViewById(R.id.progress_bar_chart_routine);
+        circularProgressBarroutine.setColor(ContextCompat.getColor(getContext(), R.color.Smurfogreen));
+        circularProgressBarroutine.setBackgroundColor(Color.GRAY);
+
+        circularProgressBarinidvidual = (CircularProgressBar)view.findViewById(R.id.progress_bar_chart_individual);
+        circularProgressBarinidvidual.setColor(ContextCompat.getColor(getContext(), R.color.Smurfogreen));
+        circularProgressBarinidvidual.setBackgroundColor(Color.GRAY);
 
 
         circularProgressBar2 = (CircularProgressBar)view.findViewById(R.id.progress_bar_chart2);
         circularProgressBar2.setColor(ContextCompat.getColor(getContext(), R.color.Smurfogreen));
         circularProgressBar2.setBackgroundColor(Color.GRAY);
-        userLeaderbardName = view.findViewById(R.id.userName_leaderboard_user);
-        userPoint = view.findViewById(R.id.points_leaderboard_user);
 
         userPoints = view.findViewById(R.id.user_dashboard_points);
         userBadge = view.findViewById(R.id.user_dashboard_badge);
@@ -296,10 +371,9 @@ public class dashboard_bottom extends Fragment {
         leaderboard = view.findViewById(R.id.learderboard);
         View BottomnavBar = getActivity().findViewById(R.id.bottom_navigation);
         BottomnavBar.setVisibility(GONE);
-
+        list = new ArrayList<>();
         userImage = view.findViewById(R.id.user_dashboard_profile);
         userName = view.findViewById(R.id.user_dashboard_name);
-
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -352,29 +426,260 @@ public class dashboard_bottom extends Fragment {
                 });
     }
 
-
     private void fetchUserPoints() {
-        databaseReference.child("PointsInstructor").child(user.getUid()).addValueEventListener(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot!=null){
-  //                          PointModel model = dataSnapshot.getValue(PointModel.class);
-//                           points = model.getPoints();
-                        }
-                        else{
-                            points = 0;
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                }
-        );
+        Log.d("pop po ",MainActivity.pointsO+"");
+        userPoints.setText(-1*MainActivity.pointsO+"");
     }
 
+    public void checkSubscription()
+    {
+
+        //kon sa subscription h uske pas
+
+
+        Log.d(TAG," pqq ");
+        final int[] flag = new int[1];
+
+        final String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+
+        //      mDatabaseReference.child("USER_PURCHASED_ROUTINES").child(userId).child("Individual").child()
+
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
+        mDatabaseReference.child("USER_PURCHASED").child(user.getUid()).child("Course")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserClass model = dataSnapshot.getValue(UserClass.class);
+                        //find category
+                        if (model != null) {
+                            int k = dataDifference(date, model.getDate());
+                            if (model.getCategory().equals("1month")) {
+                                if(k>30)
+                                {
+                                    circularProgressBarcourse.setProgressWithAnimation(100,20);
+                                }
+                                else
+                                {
+                                    circularProgressBarcourse.setProgressWithAnimation(k*100/30,20);
+                                }
+                            } else if (model.getCategory().equals("6month")) {
+                                if(k>180)
+                                {
+                                    circularProgressBarcourse.setProgressWithAnimation(100,20);
+                                }
+                                else
+                                {
+                                    circularProgressBarcourse.setProgressWithAnimation(k*100/180,20);
+                                }
+                            } else if (model.getCategory().equals("1year")) {
+                                if(k>30)
+                                {
+                                    circularProgressBarcourse.setProgressWithAnimation(100,40);
+                                }
+                                else
+                                {
+                                    circularProgressBarcourse.setProgressWithAnimation(k*100/365,40);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            circularProgressBarcourse.setProgressWithAnimation(0,10);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
+
+        mDatabaseReference.child("USER_PURCHASED").child(user.getUid()).child("Routine")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserClass model = dataSnapshot.getValue(UserClass.class);
+                        //find category
+                        if (model != null) {
+                            int k = dataDifference(date, model.getDate());
+                            if (model.getCategory().equals("1month")) {
+                                if(k>30)
+                                {
+                                    circularProgressBarroutine.setProgressWithAnimation(100,20);
+                                }
+                                else
+                                {
+                                    circularProgressBarroutine.setProgressWithAnimation(k*100/30,20);
+                                }
+                            } else if (model.getCategory().equals("6month")) {
+                                if(k>180)
+                                {
+                                    circularProgressBarroutine.setProgressWithAnimation(100,20);
+                                }
+                                else
+                                {
+                                    circularProgressBarroutine.setProgressWithAnimation(k*100/180,20);
+                                }
+                            } else if (model.getCategory().equals("1year")) {
+                                if(k>365)
+                                {
+                                    circularProgressBarroutine.setProgressWithAnimation(100,40);
+                                }
+                                else
+                                {
+                                    circularProgressBarroutine.setProgressWithAnimation(k*100/365,40);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            circularProgressBarroutine.setProgressWithAnimation(0,10);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
+
+        mDatabaseReference.child("USER_PURCHASED").child(user.getUid()).child("Full")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserClass model = dataSnapshot.getValue(UserClass.class);
+                        //find category
+                        if (model != null) {
+                            int k = dataDifference(date, model.getDate());
+                            if (model.getCategory().equals("1month")) {
+                                if(k>30)
+                                {
+                                    circularProgressBar.setProgressWithAnimation(100,20);
+                                }
+                                else
+                                {
+                                    circularProgressBar.setProgressWithAnimation(k*100/30,20);
+                                }
+                            } else if (model.getCategory().equals("6month")) {
+                                if(k>180)
+                                {
+                                    circularProgressBar.setProgressWithAnimation(100,20);
+                                }
+                                else
+                                {
+                                    circularProgressBar.setProgressWithAnimation(k*100/180,20);
+                                }
+                            } else if (model.getCategory().equals("1year")) {
+                                if(k>365)
+                                {
+                                    circularProgressBar.setProgressWithAnimation(100,40);
+                                }
+                                else
+                                {
+                                    circularProgressBar.setProgressWithAnimation(k*100/365,40);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            circularProgressBar.setProgressWithAnimation(0,10);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
+
+        mDatabaseReference.child("USER_PURCHASED").child(user.getUid()).child("Individual")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserClass model = dataSnapshot.getValue(UserClass.class);
+                        //find category
+                        if (model != null) {
+                            int k = dataDifference(date, model.getDate());
+                            if (model.getCategory().equals("3days")) {
+                                if(k>3)
+                                {
+                                    circularProgressBarinidvidual.setProgressWithAnimation(100,20);
+                                }
+                                else
+                                {
+                                    circularProgressBarinidvidual.setProgressWithAnimation(k*100/3,20);
+                                }
+                            } else if (model.getCategory().equals("10days")) {
+                                if(k>10)
+                                {
+                                    circularProgressBarinidvidual.setProgressWithAnimation(100,20);
+                                }
+                                else
+                                {
+                                    circularProgressBarinidvidual.setProgressWithAnimation(k*100/10,20);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            circularProgressBarinidvidual.setProgressWithAnimation(0,10);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
+
+
+
+
+
+    }
+
+    public int dataDifference(String date1,String date2)
+    {
+        int k=0;
+
+        String sy1 = date1.substring(0,4);
+        String sy2 = date2.substring(0,4);
+
+        int y = 365*(Integer.parseInt(sy1)-Integer.parseInt(sy2));
+
+
+        String sm1 = date1.substring(5,7);
+        String sm2 = date2.substring(5,7);
+        int m = 30*(Integer.parseInt(sm1)-Integer.parseInt(sm2));
+
+        String sd1 = date1.substring(8,10);
+        String sd2 =  date2.substring(8,10);
+        int d = Integer.parseInt(sd1)-Integer.parseInt(sd2);
+        k = y+m+d+1;
+        return k;
+    }
+
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("2323232","111111");
+
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            mImageUri = data.getData();
+        }
+
+    }
+
+    private Uri getImageUri(Context context, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
 
 
 }

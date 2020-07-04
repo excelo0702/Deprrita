@@ -4,7 +4,9 @@ package com.example.chhots.ui.Dashboard.ApproveVideo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,7 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.chhots.LoadingDialog;
 import com.example.chhots.R;
+import com.example.chhots.onBackPressed;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +32,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChatPeopleList extends Fragment {
+public class ChatPeopleList extends Fragment implements onBackPressed {
 
 
     public ChatPeopleList() {
@@ -44,6 +48,7 @@ public class ChatPeopleList extends Fragment {
     private static final String TAG = "ChatPeopleList";
     private FirebaseAuth auth;
     private FirebaseUser user;
+    private LoadingDialog loadingDialog;
 
     String routineId,instructorId;
 
@@ -53,6 +58,8 @@ public class ChatPeopleList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        loadingDialog = new LoadingDialog(getActivity());
+        loadingDialog.startLoadingDialog();
         View view =  inflater.inflate(R.layout.fragment_chat_people_list, container, false);
         list = new ArrayList<>();
         recyclerView = view.findViewById(R.id.chat_pepole_list_recycler_view);
@@ -98,16 +105,15 @@ public class ChatPeopleList extends Fragment {
                 Log.w(TAG, "Listener was cancelled");
             }
         });
-
-
-
         return view;
     }
+
+
     private void showPeople()
     {
 
 
-        mDatabaseReference.child("CHAT_LIST").child(user.getUid())
+        mDatabaseReference.child("CHAT_LIST").child(routineId).child(user.getUid())
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -121,6 +127,7 @@ public class ChatPeopleList extends Fragment {
                         mAdapter.notifyDataSetChanged();
                         recyclerView.setLayoutManager(mLayoutManager);
                         recyclerView.setAdapter(mAdapter);
+                        loadingDialog.DismissDialog();
                     }
 
                     @Override
@@ -131,4 +138,11 @@ public class ChatPeopleList extends Fragment {
         mDatabaseReference.child("CHAT_LIST").child(user.getUid()).keepSynced(true);
     }
 
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = new ApproveVideo();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.dashboard_layout,fragment);
+        fragmentTransaction.commit();
+    }
 }

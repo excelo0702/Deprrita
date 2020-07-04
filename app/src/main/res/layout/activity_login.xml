@@ -35,7 +35,6 @@
         android:layout_marginStart="@dimen/margin15"
         android:layout_marginEnd="@dimen/margin15"
         android:layout_marginTop="@dimen/margin20"
-        android:background="@drawable/buttonbackground"
         android:id="@+id/email_login_TIL">
 
         <EditText
@@ -44,6 +43,7 @@
             android:id="@+id/email_login"
             android:hint="@string/mail"
             android:textStyle="bold"
+            android:background="#FFFFFF"
             android:layout_marginStart="@dimen/margin10"
             android:layout_marginEnd="@dimen/margin10"
             android:textColorHint="@color/black" />
@@ -57,10 +57,7 @@
         android:layout_marginTop="@dimen/margin20"
         android:layout_marginLeft="@dimen/margin10"
         android:layout_marginRight="@dimen/margin10"
-        android:id="@+id/password_login_TIL"
-        android:background="@drawable/buttonbackground"
-
-        >
+        android:id="@+id/password_login_TIL">
 
         <EditText
             android:textStyle="bold"
@@ -69,6 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/password_login"
+            android:background="#FFFFFF"
             android:text="Password"
             android:inputType="textPassword"
             android:hint="@string/pass"
@@ -91,7 +89,7 @@
         android:layout_marginRight="@dimen/margin10"
         android:id="@+id/login_btn"
 
-        android:textColor="#FFFFFF"
+        android:textColor="#000000"
         android:text="Login" />
     <LinearLayout
         android:weightSum="2"

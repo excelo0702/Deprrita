@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 
 import com.example.chhots.R;
 import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
-import com.example.chhots.category_view.routine.VideoAdapter;
+import com.example.chhots.bottom_navigation_fragments.Explore.VideoAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;

@@ -11,20 +11,22 @@ import com.example.chhots.User_Profile.edit_profile;
 import com.example.chhots.bottom_navigation_fragments.Calendar.calendar;
 import com.example.chhots.bottom_navigation_fragments.Explore.explore;
 import com.example.chhots.bottom_navigation_fragments.Explore.upload_video;
+import com.example.chhots.bottom_navigation_fragments.InstructorPackage.InstructorInfoModel;
+import com.example.chhots.bottom_navigation_fragments.InstructorPackage.instructor;
 import com.example.chhots.category_view.Contest.form_contest;
 import com.example.chhots.category_view.Courses.course_purchase_view;
-import com.example.chhots.category_view.Courses.video_course;
-import com.example.chhots.category_view.routine.routine;
 import com.example.chhots.category_view.routine.routine_purchase;
+import com.example.chhots.category_view.routine.routine_view;
 import com.example.chhots.ui.About_Deprrita.about;
 import com.example.chhots.ui.Category.category;
+import com.example.chhots.ui.Dashboard.ApproveVideo.ApproveVideo;
+import com.example.chhots.ui.Dashboard.ApproveVideo.ChatPeopleList;
+import com.example.chhots.ui.Dashboard.PointModel;
 import com.example.chhots.ui.Dashboard.dashboard;
 import com.example.chhots.ui.Feedback.feedback;
-import com.example.chhots.ui.Setting.setting;
 import com.example.chhots.ui.Subscription.subscription;
 import com.example.chhots.ui.SupportUs.support;
 import com.example.chhots.ui.home.HomeFragment;
-import com.example.chhots.User_Profile.userprofile;
 import com.example.chhots.ui.notifications.NotificationsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -42,8 +44,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.ui.AppBarConfiguration;
 
@@ -73,7 +75,7 @@ import android.widget.VideoView;
 import java.util.List;
 
 import static android.graphics.Typeface.BOLD;
-import static androidx.core.view.MenuItemCompat.getActionView;
+import static androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 
 public class MainActivity extends AppCompatActivity implements  PaymentListener{
 
@@ -96,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
     int k=0;
     NavigationView navigationView;
 
+    public static int pointsO=0,pointsW=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
         Intent intent = getIntent();
         if(intent.getStringExtra("Category")==null)
         {
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         }
 
         loadingDialog = new LoadingDialog(MainActivity.this);
@@ -187,27 +191,27 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
                         drawer.closeDrawers();
                         break;
                     case R.id.nav_notification:
-                        setFragment(new NotificationsFragment());
+                        setFragment(new NotificationsFragment(),"not home");
                         drawer.closeDrawers();
                         break;
                     case R.id.nav_subscription:
-                        setFragment(new subscription());
+                        setFragment(new subscription(),"not home");
                         drawer.closeDrawers();
                         break;
                     case R.id.nav_category:
-                        setFragment(new category());
+                        setFragment(new category(),"not home");
                         drawer.closeDrawers();
                         break;
                     case R.id.nav_feedback:
-                        setFragment(new feedback());
+                        setFragment(new feedback(),"not home");
                         drawer.closeDrawers();
                         break;
                     case R.id.nav_about:
-                        setFragment(new about());
+                        setFragment(new about(),"not home");
                         drawer.closeDrawers();
                         break;
                     case R.id.nav_support:
-                        setFragment(new support());
+                        setFragment(new support(),"not home");
                         drawer.closeDrawers();
                         break;
                 }
@@ -312,27 +316,20 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_dashboard:
-                                setFragment(new HomeFragment());
-                                Toast.makeText(getApplicationContext(), "Dashboard", Toast.LENGTH_SHORT).show();
+                                setFragment(new HomeFragment(),"home");
                                 break;
                             case R.id.action_favorites:
-                                setFragment(new explore());
-                                Toast.makeText(getApplicationContext(), "Favorites", Toast.LENGTH_SHORT).show();
+                                setFragment(new explore(),"not home");
                                 break;
                             case R.id.action_trending:
-                                setFragment(new calendar());
-                                Toast.makeText(getApplicationContext(), "Calendar", Toast.LENGTH_SHORT).show();
+                                setFragment(new calendar(),"not home");
                                 break;
 
                             case R.id.action_instructor:
-                                setFragment(new instructor());
-                                Toast.makeText(getApplicationContext(), "Instructor", Toast.LENGTH_SHORT).show();
+                                setFragment(new instructor(),"not home");
                                 break;
-
-
                             default:
-                                setFragment(new HomeFragment());
-                                Toast.makeText(getApplicationContext(), "Dashboard", Toast.LENGTH_SHORT).show();
+                                setFragment(new HomeFragment(),"not home");
 
                         }
                         return true;
@@ -349,9 +346,6 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
             startActivityForResult(intent,2004);
         }
     }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -380,8 +374,6 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
         return true;
     }
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -391,16 +383,34 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
         }
     }
 
-    public void setFragment(Fragment fragment)
+    public void setFragment(Fragment fragment,String name)
     {
         bottomNavigationView.setVisibility(View.VISIBLE);
         bottomNavigationView.setEnabled(true);
+        final FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.drawer_layout,fragment);
+        final int count = fragmentManager.getBackStackEntryCount();
+        if( name.equals( "not home") ) {
+            fragmentTransaction.addToBackStack(name);
+        }
+
+        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                // If the stack decreases it means I clicked the back button
+                if( fragmentManager.getBackStackEntryCount() <= count){
+                    // pop all the fragment and remove the listener
+                    fragmentManager.popBackStack("not home", POP_BACK_STACK_INCLUSIVE);
+                    fragmentManager.removeOnBackStackChangedListener(this);
+                    // set the home button selected
+                    bottomNavigationView.getMenu().getItem(0).setChecked(true);
+                }
+            }
+        });
+
         fragmentTransaction.commit();
     }
-
-
 
     @Override
     public void onPaymentSuccess(String s) {
@@ -409,12 +419,10 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
 
             List<Fragment> fragments = getSupportFragmentManager().getFragments();
             for(Fragment f : fragments) {
-                if (f != null && f instanceof routine_purchase)
-                    ((routine_purchase) f).onPaymentSuccess(s);
-                if (f != null && f instanceof course_purchase_view)
-                    ((course_purchase_view) f).onPaymentSuccess(s);
                 if (f != null && f instanceof form_contest)
                     ((form_contest) f).onPaymentSuccess(s);
+                if (f != null && f instanceof subscription)
+                    ((subscription) f).onPaymentSuccess(s);
             }
         }
         catch (Exception e)
@@ -422,12 +430,6 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
 
         }
 
-/*
-        try {
-            Toast.makeText(getApplicationContext(), "Payment Successful: " + s, Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Log.e(TAG, "Exception in onPaymentSuccess", e);
-        }   */
     }
 
     @Override
@@ -455,14 +457,41 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
                 ((upload_video) f).onBackPressed();
                 super.onBackPressed();
             }
+            if(f != null && (f instanceof routine_purchase)) {
+                ((routine_purchase) f).onBackPressed();
+            }
+
+
+            if(f != null && (f instanceof routine_view)) {
+                ((routine_view) f).onBackPressed();
+            }
+
+            if(f != null && (f instanceof instructor)) {
+                ((instructor) f).onBackPressed();
+            }
+
+            if(f != null && (f instanceof explore)) {
+                ((explore) f).onBackPressed();
+            }
+
+
+            if(f != null && (f instanceof calendar)) {
+                ((calendar) f).onBackPressed();
+            }
+
+
+            if(f != null && (f instanceof ChatPeopleList)) {
+                ((ChatPeopleList) f).onBackPressed();
+            }
+
+            if(f != null && (f instanceof course_purchase_view)) {
+                ((course_purchase_view) f).onBackPressed();
+            }
 
             if(f != null && (f instanceof form_contest)) {
                 ((form_contest) f).onBackPressed();
             }
 
-            if(f != null && (f instanceof video_course)) {
-                ((video_course) f).onBackPressed();
-            }
             if(f != null && (f instanceof dashboard)) {
                 ((dashboard) f).onBackPressed();
                 return 1;
@@ -475,10 +504,6 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
                 ((category) f).onBackPressed();
                 return 1;
             }
-            if(f != null && (f instanceof setting)) {
-                ((setting) f).onBackPressed();
-                return 1;
-            }
             if(f != null && (f instanceof feedback)) {
                 ((feedback) f).onBackPressed();
                 return 1;
@@ -486,6 +511,60 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
 
         }
         return 0;
+    }
+
+    public void onRadioButtonClick(View view)
+    {
+        Fragment fragment = new edit_profile();
+        ((edit_profile) fragment).onRadioButtonClick(view);
+    }
+
+    public static void fetchUserPoints() {
+        DatabaseReference sdatabaseReference = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        sdatabaseReference.child("PointsInstructor").child("OverAll").child(user.getUid()).addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot!=null){
+                            PointModel model = dataSnapshot.getValue(PointModel.class);
+                            pointsO = model.getPoints();
+                            Log.d("pop pop p",pointsO+"");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                }
+        );
+        sdatabaseReference.child("PointsInstructor").child("weekly").child(user.getUid()).addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot!=null){
+                            PointModel model = dataSnapshot.getValue(PointModel.class);
+                            pointsW = model.getPoints();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                }
+        );
+    }
+
+    public static void increaseUserPoints(int p)
+    {
+        DatabaseReference sdatabaseReference = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        MainActivity.pointsO-=p;
+        MainActivity.pointsW-=p;
+        sdatabaseReference.child("PointsInstructor").child("OverAll").child(user.getUid()).child("points").setValue(MainActivity.pointsO);
+        sdatabaseReference.child("PointsInstructor").child("weekly").child(user.getUid()).child("points").setValue(MainActivity.pointsW);
     }
 
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#FFFFFF</color>
-    <color name="colorPrimaryDark">#FFFFFF</color>
+    <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#000000</color>
     <color name ="Smurfogreen">#469749</color>
     <color name="color1">#424549</color>
@@ -9,5 +9,5 @@
     <color name="color3">#424549</color>
     <color name="color4">#7e455e</color>
     <color name="color5">#796e25</color>
-    <color name="textColor">#FFFFFF</color>
+    <color name="textColor">#000000</color>
 </resources>

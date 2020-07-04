@@ -22,6 +22,7 @@
     <TextView
         android:text="Hello,"
         android:textSize="@dimen/text30"
+        android:textColor="@color/black"
         android:layout_marginStart="@dimen/margin10"
         android:textStyle="bold"
         android:layout_marginTop="@dimen/margin10"
@@ -30,61 +31,43 @@
     <TextView
         android:text="We would Love to have you on SMURFO."
         android:textSize="@dimen/text20"
+        android:textColor="@color/black"
         android:layout_marginStart="@dimen/margin10"
         android:layout_width="match_parent"
         android:layout_height="25dp"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/emailTIL"
         >
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/email"
-            android:hint="@string/mail"
-            android:layout_margin="@dimen/margin10"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <com.google.android.material.textfield.TextInputLayout
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:passwordToggleEnabled="true"
-        android:id="@+id/passwordTIL"
-        >
+        android:id="@+id/email"
+        android:hint="@string/mail"
+        android:layout_margin="@dimen/margin10"
+        />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/password"
-            android:inputType="textPassword"
-            android:hint="@string/pass"
-            android:layout_margin="@dimen/margin10"
-
-            />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:passwordToggleEnabled="true"
-        android:id="@+id/cnfpasswordTIL"
-        >
+        android:id="@+id/password"
+        android:filterTouchesWhenObscured="true"
+        android:inputType="textPassword"
+        android:hint="@string/pass"
+        android:layout_margin="@dimen/margin10"/>
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/cnfpassword"
-            android:inputType="textPassword"
-            android:hint="@string/cnf_pass"
-            android:layout_margin="@dimen/margin10"
 
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:filterTouchesWhenObscured="true"
+        android:id="@+id/cnfpassword"
+        android:inputType="textPassword"
+        android:hint="@string/cnf_pass"
+        android:layout_margin="@dimen/margin10"
+
+        />
+
+
 
 
 
@@ -105,6 +88,7 @@
         android:layout_width="@dimen/dp30"
         android:layout_height="@dimen/dp30"
         android:layout_gravity="center|bottom"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="@dimen/margin20"
         android:visibility="gone" />
 

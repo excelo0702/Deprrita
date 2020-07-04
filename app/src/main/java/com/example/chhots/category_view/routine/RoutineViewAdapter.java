@@ -34,6 +34,7 @@ public class RoutineViewAdapter extends RecyclerView.Adapter<RoutineViewAdapter.
     private OnItemClickListener listener;
     int selected=-1;
 
+
     private final String Tag = "RoutineViewAdapter1";
 
     public RoutineViewAdapter(List<RoutineModel> list, Context context, OnItemClickListener listener) {
@@ -53,20 +54,20 @@ public class RoutineViewAdapter extends RecyclerView.Adapter<RoutineViewAdapter.
     public void onBindViewHolder(@NonNull RoutineViewHolder holder, int position) {
         if(selected==position)
         {
-            holder.img1.setVisibility(GONE);
-            holder.img2.setVisibility(View.VISIBLE);
-            holder.section.setTextColor(Color.RED);
+            holder.section.setTextColor(Color.BLUE);
+            holder.img3.setImageDrawable(context.getDrawable(R.drawable.ic_baseline_blue));
+
         }
         else
         {
-            holder.img2.setVisibility(GONE);
-            holder.img1.setVisibility(View.VISIBLE);
             holder.section.setTextColor(Color.BLACK);
+            holder.img3.setImageDrawable(context.getDrawable(R.drawable.ic_baseline_play_circle_filled_24));
         }
 
         holder.bind(list.get(position),listener);
 
         holder.section.setText(list.get(position).getSequenceNo()+". "+list.get(position).getTitle());
+        holder.description.setText(list.get(position).getDescription());
         holder.videoURL = list.get(position).getVideoUrl();
         holder.routineId = list.get(position).getRoutineId();
     }
@@ -82,14 +83,20 @@ public class RoutineViewAdapter extends RecyclerView.Adapter<RoutineViewAdapter.
     }
 
     public class RoutineViewHolder extends RecyclerView.ViewHolder{
-        TextView section;
+        TextView section,description;
         String videoURL,routineId;
-        ImageView img1,img2;
+        ImageView img1,img2, img3;
         public RoutineViewHolder(@NonNull View itemView) {
             super(itemView);
             section = itemView.findViewById(R.id.routine_sectionNo);
-            img1 = itemView.findViewById(R.id.play_section);
-            img2 = itemView.findViewById(R.id.pause_section);
+            description = itemView.findViewById(R.id.routine_description);
+            img1 = itemView.findViewById(R.id.maximize);
+            img2 = itemView.findViewById(R.id.minimize);
+            img3 = itemView.findViewById(R.id.pause);
+            img1.setVisibility(View.VISIBLE);
+            img2.setVisibility(GONE);
+            description.setVisibility(GONE);
+
 
         }
         public void bind(final RoutineModel model, final OnItemClickListener listener)
@@ -100,13 +107,28 @@ public class RoutineViewAdapter extends RecyclerView.Adapter<RoutineViewAdapter.
 
                     selected = getAdapterPosition();
                     Log.d(Tag,selected+"");
-                    listener.onItemClick(model);
+                    listener.onItemClick(model,selected);
                     notifyDataSetChanged();
 
                 }
             });
+            img1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    description.setVisibility(View.VISIBLE);
+                    img1.setVisibility(GONE);
+                    img2.setVisibility(View.VISIBLE);
+                }
+            });
+            img2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    description.setVisibility(GONE);
+                    img1.setVisibility(View.VISIBLE);
+                    img2.setVisibility(GONE);
+                }
+            });
         }
     }
-
 
 }

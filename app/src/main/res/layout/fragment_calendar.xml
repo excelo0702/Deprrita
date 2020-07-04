@@ -3,25 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="10dp"
     tools:context=".bottom_navigation_fragments.Calendar.calendar">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="Calendar"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:id="@+id/calendar_text"
-        android:textSize="20dp"></TextView>
+        android:textSize="30dp"></TextView>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:id="@+id/calendar_view"
         android:layout_below="@id/calendar_text">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".MainActivity">
+            tools:context=".MainActivity"
+            android:id="@+id/calendar_view1">
 
             <!-- Add TextView to display the date -->
             <TextView
@@ -34,17 +40,24 @@
                 android:textColor="@android:color/background_dark"
                 android:textStyle="bold" />
 
-            <!-- Add CalenderView to display the Calender -->
-            <CalendarView
-                android:id="@+id/calender"
-                android:layout_marginTop="80dp"
-                android:layout_marginLeft="19dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-            </CalendarView>
+            <com.applandeo.materialcalendarview.CalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
 
         </RelativeLayout>
     </RelativeLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/calendar_view"
+        android:text="Add Schedule"
+        android:id="@+id/select_datee"
+        android:textColor="@color/black"
+        android:layout_alignParentRight="true"></Button>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"

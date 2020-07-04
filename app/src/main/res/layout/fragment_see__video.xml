@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".bottom_navigation_fragments.Explore.See_Video"
     android:background="#FFFFFF">
@@ -16,123 +17,123 @@
         android:id="@+id/instructor_see_video_photo"
         ></de.hdodenhof.circleimageview.CircleImageView>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Title"
-                android:layout_toRightOf="@id/instructor_see_video_photo"
-                android:layout_marginLeft="15dp"
-                android:textSize="20dp"
-                android:layout_marginTop="10dp"
-                android:id="@+id/video_adapter_title_see"></TextView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:layout_toRightOf="@id/instructor_see_video_photo"
+        android:layout_marginLeft="15dp"
+        android:textSize="20dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/video_adapter_title_see"></TextView>
 
 
-            <com.google.android.exoplayer2.ui.PlayerView
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                app:resize_mode="fit"
-                android:background="@color/black"
-                android:layout_below="@id/video_adapter_title_see"
-                android:id="@+id/video_view_item_see"></com.google.android.exoplayer2.ui.PlayerView>
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        app:resize_mode="fit"
+        android:background="@color/black"
+        android:layout_below="@id/video_adapter_title_see"
+        android:id="@+id/video_view_item_see"></com.google.android.exoplayer2.ui.PlayerView>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:id="@+id/video_views_see"
-                android:layout_below="@id/video_view_item_see"
-                android:layout_marginLeft="15dp"
-                android:textSize="14dp"
-                ></TextView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:id="@+id/video_views_see"
+        android:layout_below="@id/video_view_item_see"
+        android:layout_marginLeft="15dp"
+        android:textSize="14dp"
+        ></TextView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@id/video_views_see"
-                android:layout_marginLeft="10dp"
-                android:gravity="fill_horizontal"
-                android:id="@+id/like_section"
-                android:padding="10dp"
-                >
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberSigned"
-                    android:textSize="20dp"
-                    android:id="@+id/video_likess_see"
-                    android:layout_marginRight="15dp"
-                    android:text="21"
-                    ></TextView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/video_views_see"
+        android:layout_marginLeft="10dp"
+        android:gravity="fill_horizontal"
+        android:id="@+id/like_section"
+        android:padding="10dp"
+        >
 
 
-                <ImageButton
-                    android:layout_width="20dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/video_likes_see"
-                    android:layout_marginLeft="15dp"
-                    android:drawableLeft="@drawable/ic_thumb_up"
-                    app:srcCompat="@drawable/ic_thumb_up"
-                    ></ImageButton>
-
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:id="@+id/video_downvote_see"
-                    android:layout_marginLeft="15dp"
-                    app:srcCompat="@drawable/ic_thumb_down_black_24dp"
-                    ></ImageButton>
-
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:id="@+id/video_share_see"
-                    app:srcCompat="@drawable/ic_share_black_24dp"
-                    android:layout_marginLeft="15dp"
-                    ></ImageView>
-
-
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/favorite_comment_see"
-                    android:layout_marginLeft="18dp"
-                    app:srcCompat="@drawable/image_smurfo"
-                    ></ImageView>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16dp"
-                    android:textColor="@color/colorAccent"
-                    android:id="@+id/save_to_device"
-                    android:text="Save to Device"></TextView>
-
-
-
-            </LinearLayout>
-
-
-
-
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:boxCornerRadiusBottomEnd="20dp"
-            android:id="@+id/comment_section"
-            android:layout_below="@id/like_section"
-            app:boxCornerRadiusBottomStart="20dp"
-            app:boxCornerRadiusTopEnd="20dp"
-            app:boxCornerRadiusTopStart="20dp"
-            >
+            android:inputType="numberSigned"
+            android:textSize="20dp"
+            android:id="@+id/video_likess_see"
+            android:layout_marginRight="15dp"
+            android:text="21"
+            ></TextView>
 
-        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/video_likes_see"
+            android:layout_marginLeft="5dp"
+            android:drawableLeft="@drawable/ic_thumb_up"
+            app:srcCompat="@drawable/ic_thumb_up"
+            ></ImageView>
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:id="@+id/video_downvote_see"
+            android:layout_marginLeft="15dp"
+            app:srcCompat="@drawable/ic_thumb_down_black_24dp"
+            ></ImageView>
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:id="@+id/video_share_see"
+            app:srcCompat="@drawable/ic_share_black_24dp"
+            android:layout_marginLeft="35dp"
+            ></ImageView>
+
+
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:id="@+id/bookmark_icon"
+            android:layout_marginLeft="35dp"
+            app:srcCompat="@drawable/ic_baseline_bookmark_24"
+            ></ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:textColor="@color/colorAccent"
+            android:id="@+id/AddtoBookmars"
+            android:text="Add To Bookmark"></TextView>
+
+
+
+    </LinearLayout>
+
+
+
+
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:boxCornerRadiusBottomEnd="20dp"
+        android:id="@+id/comment_section"
+        android:layout_below="@id/like_section"
+        app:boxCornerRadiusBottomStart="20dp"
+        app:boxCornerRadiusTopEnd="20dp"
+        app:boxCornerRadiusTopStart="20dp"
+        >
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 
 
@@ -170,6 +171,7 @@
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:visibility="gone"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="0.3"
                 android:id="@+id/select_image_content"
