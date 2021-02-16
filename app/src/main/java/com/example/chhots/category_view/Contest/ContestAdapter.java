@@ -28,7 +28,6 @@ import com.example.chhots.LeaderboardAdapter;
 import com.example.chhots.LeaderboardModel;
 import com.example.chhots.Login;
 import com.example.chhots.R;
-import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
 import com.example.chhots.bottom_navigation_fragments.Explore.explore;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -165,9 +164,11 @@ public class ContestAdapter extends PagerAdapter {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot ds: dataSnapshot.getChildren())
                         {
+                            /*
                             VideoModel mode = ds.getValue(VideoModel.class);
                             LeaderboardModel model = new LeaderboardModel("Name",mode.getLike(),mode.getUser());
                             list.add(0,model);
+                            */
                         }
                         mAdapter.setData(list);
                         recyclerView.setLayoutManager(mLayoutManager);

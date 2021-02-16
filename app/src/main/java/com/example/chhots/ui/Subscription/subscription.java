@@ -407,7 +407,7 @@ public class subscription extends Fragment implements PaymentListener {
         /**
          * Set your logo here
          */
-        checkout.setImage(R.drawable.smurfoo_dp);
+        checkout.setImage(R.drawable.bhr1);
 
         /**
          * Reference to current activity
@@ -450,5 +450,7 @@ public class subscription extends Fragment implements PaymentListener {
             Log.e("mmmm", "Error in starting Razorpay Checkout", e);
         }
     }
+
+
 
 }

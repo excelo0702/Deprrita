@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="80dp"
+    tools:context=".User_Profile.Verification_page">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="An Email has been sent to your email id."
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:id="@+id/verification_message"></TextView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Click_Here"
+        android:layout_below="@id/verification_message"
+        android:textColor="#0645AD"
+        android:id="@+id/click_here"></TextView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" to login your account"
+        android:layout_toRightOf="@id/click_here"
+        android:textColor="@color/black"
+        android:layout_below="@id/verification_message"></TextView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="If you haven't received verification mail, click resend button"
+        android:textColor="@color/black"
+        android:layout_below="@id/click_here"
+        android:id="@+id/resend_message"></TextView>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resend"
+        android:textColor="@color/black"
+        android:layout_below="@id/resend_message"
+        android:id="@+id/resend_button"></Button>
+
+
+
+</RelativeLayout>

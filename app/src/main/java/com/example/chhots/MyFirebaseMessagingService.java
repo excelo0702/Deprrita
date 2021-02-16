@@ -28,7 +28,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-
         String title = remoteMessage.getNotification().getTitle();
         String body = remoteMessage.getNotification().getBody();
         Map<String,String> extraData = remoteMessage.getData();
@@ -67,4 +66,5 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         notificationManager.notify(id,notificationBuilder.build());
     }
+
 }

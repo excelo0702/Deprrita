@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 
 import com.example.chhots.LoadingDialog;
 import com.example.chhots.R;
-import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
-import com.example.chhots.bottom_navigation_fragments.Explore.VideoAdapter;
+import com.example.chhots.bottom_navigation_fragments.Explore.ExploreVideoModel;
+import com.example.chhots.bottom_navigation_fragments.Explore.ExploreVideoAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -39,11 +39,11 @@ public class MyExplore extends Fragment {
     }
 
     RecyclerView recyclerView;
-    VideoAdapter mAdapter;
+    ExploreVideoAdapter mAdapter;
     LinearLayoutManager mLayoutManager;
     private LoadingDialog loadingDialog;
     private DatabaseReference mDatabaseRef;
-    private List<VideoModel> videolist;
+    private List<ExploreVideoModel> videolist;
     private static final String TAG = "Explore";
     FirebaseUser user;
 
@@ -59,7 +59,7 @@ public class MyExplore extends Fragment {
         loadingDialog = new LoadingDialog(getActivity());
         loadingDialog.startLoadingDialog();
         recyclerView = view.findViewById(R.id.recycler_my_explore_view);
-        mAdapter = new VideoAdapter(videolist,getContext(),"MyExplore");
+        mAdapter = new ExploreVideoAdapter(videolist,getContext());
 
         recyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -96,11 +96,11 @@ public class MyExplore extends Fragment {
         });
 
 
-        showVideos();
+  //      showVideos();
         return view;
 
     }
-
+/*
     private void showVideos() {
         videolist.clear();
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
@@ -127,7 +127,7 @@ public class MyExplore extends Fragment {
         });
         mDatabaseRef.keepSynced(true);
     }
-
+*/
 
 
 }

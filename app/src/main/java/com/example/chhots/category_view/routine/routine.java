@@ -39,7 +39,6 @@ import android.widget.Toast;
 
 import com.example.chhots.LoadingDialog;
 import com.example.chhots.R;
-import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
 import com.example.chhots.bottom_navigation_fragments.Explore.upload_video;
 import com.example.chhots.onBackPressed;
 import com.google.firebase.auth.FirebaseAuth;
@@ -89,7 +88,6 @@ public class routine extends Fragment {
     int l=0,u=18;
     RelativeLayout tt;
     int Flag=0;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -532,8 +530,6 @@ public class routine extends Fragment {
             getContext().startActivity(intent);
         }
     }
-
-
 
 
 }

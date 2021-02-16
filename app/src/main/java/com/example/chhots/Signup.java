@@ -23,7 +23,6 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
 public class Signup extends AppCompatActivity {
-
     private EditText email,password,cnfpassword;
     Button signup;
     ProgressBar progressBar;
@@ -38,7 +37,6 @@ public class Signup extends AppCompatActivity {
         cnfpassword = (EditText)findViewById(R.id.cnfpassword);
         signup = (Button)findViewById(R.id.signup);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
-
 
 
         signup.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +77,6 @@ public class Signup extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Password does not match!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 Intent intent = new Intent(Signup.this,SignUpNextScreen.class);
                 intent.putExtra("email",Semail);
                 intent.putExtra("password",Spassword);

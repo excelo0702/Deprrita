@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:layout_margin="20dp"
+    android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:padding="20dp"
+        app:cardBackgroundColor="#FFFFFF">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:gravity="center_horizontal"
+                android:textStyle="bold"
+                android:textSize="28dp"
+                android:text="Welcome to Smurfo House"
+                android:id="@+id/welcome"
+                ></TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:layout_below="@+id/welcome"
+                android:id="@+id/lets_get_started_description"
+                android:text="Smurfo House is an E-Learning platform which faclitating and helping people"
+                ></TextView>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lets_get_started_description"
+                android:src="@drawable/br1"
+                android:id="@+id/startimage"
+                ></ImageView>
+
+
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

@@ -31,33 +31,6 @@
             android:textColor="#000000"></TextView>
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Normal"
-            android:layout_toLeftOf="@id/contest_videos"
-            android:layout_below="@id/search_recycler_explore_view"
-            android:textSize="18dp"
-            android:layout_marginRight="5dp"
-            android:id="@+id/normal_videos"
-            android:layout_marginLeft="130dp"
-            android:textColor="#000000"></TextView>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Contest"
-            android:layout_marginRight="20dp"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/search_recycler_explore_view"
-            android:layout_marginLeft="2dp"
-            android:inputType="textMultiLine"
-            android:id="@+id/contest_videos"
-            android:textSize="18dp"
-            android:textColor="#000000"></TextView>
-
-
 
 
     <TextView

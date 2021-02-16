@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFFFFF"
+    android:layout_height="250dp">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="25dp"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            android:text="Video Uploaded!!!"
+            android:id="@+id/video_uploaded"
+            android:textColor="@color/black"
+            android:layout_marginBottom="40dp"
+            android:textSize="40dp"></TextView>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next Step"
+            android:textColor="@color/black"
+            android:id="@+id/done_upload_next"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/video_uploaded"
+            android:layout_marginRight="20dp"></Button>
+
+
+        <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Upload Next "
+        android:textColor="@color/black"
+        android:id="@+id/done_upload"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/video_uploaded"
+        android:layout_marginRight="20dp"></Button>
+    </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

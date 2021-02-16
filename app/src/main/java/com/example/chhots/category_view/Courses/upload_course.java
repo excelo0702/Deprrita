@@ -43,7 +43,6 @@ import android.widget.VideoView;
 
 import com.example.chhots.MainActivity;
 import com.example.chhots.R;
-import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
 import com.example.chhots.category_view.routine.RoutineModel;
 import com.example.chhots.ui.Category.category;
 import com.example.chhots.ui.Dashboard.PointModel;

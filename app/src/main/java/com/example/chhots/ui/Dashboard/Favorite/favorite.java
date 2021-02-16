@@ -14,8 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.chhots.R;
-import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
-import com.example.chhots.bottom_navigation_fragments.Explore.VideoAdapter;
+import com.example.chhots.bottom_navigation_fragments.Explore.ExploreVideoAdapter;
+import com.example.chhots.bottom_navigation_fragments.Explore.ExploreVideoModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,9 +37,9 @@ public class favorite extends Fragment {
     }
 
     RecyclerView recyclerView;
-    VideoAdapter mAdapter;
+    ExploreVideoAdapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
-    private List<VideoModel> videolist;
+    private List<ExploreVideoModel> videolist;
 
     private DatabaseReference mDatabaseRef;
     private static final String TAG = "Favorite";
@@ -58,7 +58,7 @@ public class favorite extends Fragment {
         mLayoutManager = new LinearLayoutManager(getContext());
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
-        showFavorites();
+        //showFavorites();
 
         DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
         presenceRef.onDisconnect().setValue("I disconnected!");
@@ -92,7 +92,7 @@ public class favorite extends Fragment {
 
         return view;
     }
-
+/*
     private void showFavorites() {
         videolist.clear();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("FAVORITE").child(user.getUid());
@@ -108,7 +108,7 @@ public class favorite extends Fragment {
                         videolist.add(model);
                 }
                 Collections.reverse(videolist);
-                mAdapter = new VideoAdapter(videolist,getContext(),"Favourite");
+                mAdapter = new ExploreVideoAdapter(videolist,getContext(),"Favourite");
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(mAdapter);
             }
@@ -119,6 +119,6 @@ public class favorite extends Fragment {
         });
 
     }
-
+*/
 
 }

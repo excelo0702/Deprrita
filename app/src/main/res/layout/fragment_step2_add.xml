@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:id="@+id/step2_routine"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".category_view.Courses.Step2">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/preview_routine"
+        android:orientation="vertical">
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:id="@+id/preview_video_routine"
+            android:background="@color/black"
+            app:resize_mode="fill">
+        </com.google.android.exoplayer2.ui.PlayerView>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="40dp"
+            android:text="Choose Preview"
+            android:textColor="@color/black"
+            android:id="@+id/choose_preview_routine"
+            ></Button>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="40dp"
+            android:text="Upload Preview"
+            android:textColor="@color/black"
+            android:id="@+id/upload_preview_routine"
+            ></Button>
+
+
+        <ProgressBar
+            android:id="@+id/progress_bar_upload_course_preview"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_margin="10dp"
+            android:progress="0"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="end"
+            android:layout_height="40dp"
+            android:text="Go to Step 3 "
+            android:textColor="@color/black"
+            android:id="@+id/next_step3_routine"
+            ></Button>
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/step1"
+    tools:context=".category_view.Courses.Step1">
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:id="@+id/video_course"
+        android:background="@color/black"
+        app:resize_mode="fill">
+    </com.google.android.exoplayer2.ui.PlayerView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/video_course">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_height="40dp"
+                android:text="Choose Video"
+                android:textColor="@color/black"
+                android:id="@+id/choose_video_course"
+                ></Button>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="Video Title"
+                android:layout_below="@id/choose_video_course"
+                android:id="@+id/video_title_course"
+                ></EditText>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="Video Sequence no."
+                android:layout_below="@id/video_title_course"
+                android:id="@+id/video_sequence_course"
+                ></EditText>
+
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="Description max 100 words"
+                android:inputType="textMultiLine"
+                android:layout_below="@id/video_sequence_course"
+                android:id="@+id/video_description_course"
+                ></EditText>
+
+            <ProgressBar
+                android:id="@+id/progress_bar_upload_course"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_below="@id/video_description_course"
+                android:layout_margin="10dp"
+                android:progress="0"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="Upload Video"
+                android:layout_below="@id/progress_bar_upload_course"
+                android:id="@+id/upload_video_course"
+                ></Button>
+
+
+
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="Go to Step 2    "
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/upload_video_course"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/next_course"
+                ></Button>
+
+
+
+
+
+
+        </RelativeLayout>
+    </ScrollView>
+
+
+
+
+
+</RelativeLayout>

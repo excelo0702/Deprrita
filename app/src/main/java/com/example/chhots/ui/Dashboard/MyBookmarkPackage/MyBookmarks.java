@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 
 import com.example.chhots.LoadingDialog;
 import com.example.chhots.R;
-import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
-import com.example.chhots.bottom_navigation_fragments.Explore.VideoAdapter;
+import com.example.chhots.bottom_navigation_fragments.Explore.ExploreVideoAdapter;
+import com.example.chhots.bottom_navigation_fragments.Explore.ExploreVideoModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,11 +40,11 @@ public class MyBookmarks extends Fragment {
 
 
     RecyclerView recyclerView;
-    VideoAdapter mAdapter;
+    ExploreVideoAdapter mAdapter;
     LinearLayoutManager mLayoutManager;
 
     private DatabaseReference mDatabaseRef;
-    private List<VideoModel> videolist;
+    private List<ExploreVideoModel> videolist;
     private static final String TAG = "Bookmarks";
     private LoadingDialog loadingDialog;
     FirebaseUser user;
@@ -54,13 +54,11 @@ public class MyBookmarks extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_my_bookmarks, container, false);
 
-
-
         videolist = new ArrayList<>();
         loadingDialog = new LoadingDialog(getActivity());
         loadingDialog.startLoadingDialog();
         recyclerView = view.findViewById(R.id.recycler_my_bookmark_view);
-        mAdapter = new VideoAdapter(videolist,getContext(),"MyBookmarks");
+        mAdapter = new ExploreVideoAdapter(videolist,getContext());
 
         recyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -109,16 +107,7 @@ public class MyBookmarks extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
             {
-                for (DataSnapshot ds : dataSnapshot.getChildren())
-                {
-                    VideoModel model = ds.getValue(VideoModel.class);
-                        videolist.add(0, model);
-                }
-                //TODO:little change in queries of routine
-                mAdapter.setData(videolist);
-                recyclerView.setLayoutManager(mLayoutManager);
-                recyclerView.setAdapter(mAdapter);
-                loadingDialog.DismissDialog();
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }

@@ -52,6 +52,8 @@
     <string name="ExploreVideos">VIDEOS</string>
     <string name="ExploreThumbnail">THUMBNAIL</string>
     <string name="UsersExploreVideos">USER_VIDEOS</string>
+    <string name="videoId">videoId</string>
+
     <string name="InstructorInfo">InstructorInfo</string>
     <string name="UserInfo">UserInfo</string>
     <string name="CoursesThumbnail">CoursesThumbnail</string>
@@ -62,16 +64,16 @@
     <string name="InstructorStyle">InstructorStyle</string>
     <string name="CALENDAR">CALENDAR</string>
     <string name="Explore">Explore</string>
-    <string name="VIDEOS">VIDEOS</string>
     <string name="CONTEST">CONTEST</string>
     <string name="NORMAL">Normal</string>
     <string name="title">title</string>
-    <string name="like">like</string>
+    <string name="numberOfLikes">numberOfLikes</string>
+    <string name="numberOfViews">numberOfViews</string>
+    <string name="userVideoHistory">userVideoHistory</string>
     <string name="FAVORITE">FAVORITE</string>
     <string name="Bookmarks">Bookmarks</string>
     <string name="UsersPoint">UsersPoint</string>
     <string name="VideoHistory">VideoHistory</string>
-    <string name="view">view</string>
     <string name="HISTORY">HISTORY</string>
     <string name="Description"><u>Description</u></string>
     <string name="Category"><u>Category</u></string>

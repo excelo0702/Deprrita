@@ -22,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chhots.R;
-import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
 import com.example.chhots.category_view.routine.SearchAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

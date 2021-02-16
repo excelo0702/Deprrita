@@ -124,6 +124,10 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
         drawer.addDrawerListener(t);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         t.setDrawerIndicatorEnabled(true);
+
+
+
+
         DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
         presenceRef.onDisconnect().setValue("I disconnected!");
         presenceRef.onDisconnect().removeValue(new DatabaseReference.CompletionListener() {

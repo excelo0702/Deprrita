@@ -14,8 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.chhots.R;
-import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
-import com.example.chhots.bottom_navigation_fragments.Explore.VideoAdapter;
+import com.example.chhots.bottom_navigation_fragments.Explore.ExploreVideoAdapter;
+import com.example.chhots.bottom_navigation_fragments.Explore.ExploreVideoModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -36,12 +36,12 @@ public class category_view extends Fragment {
 
 
     RecyclerView recyclerView;
-    VideoAdapter mAdapter;
+    ExploreVideoAdapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
     private TextView filter,sort,title;
     private ProgressBar mProgressCircle;
     private DatabaseReference mDatabaseRef;
-    private List<VideoModel> videolist;
+    private List<ExploreVideoModel> videolist;
     private static final String TAG = "CategoryView";
 
     FirebaseAuth auth;

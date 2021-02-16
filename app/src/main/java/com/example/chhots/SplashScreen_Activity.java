@@ -16,7 +16,6 @@ import com.sarnava.textwriter.TextWriter;
 public class SplashScreen_Activity extends AppCompatActivity {
 
     private final int SPLASH_DISPLAY_LENGTH = 1500;
-    TextWriter text;
     FirebaseUser usesr;
 
     @Override
@@ -36,16 +35,14 @@ public class SplashScreen_Activity extends AppCompatActivity {
             startActivity(intent);
         }
 
-
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-
                 if(usesr==null){
                     Intent mainIntent = new Intent(SplashScreen_Activity.this, lets_get_started.class);
                     startActivity(mainIntent);
                     SplashScreen_Activity.this.finish();
+
                 }
                 else
                 {
@@ -53,8 +50,6 @@ public class SplashScreen_Activity extends AppCompatActivity {
                     startActivity(mainIntent);
                     SplashScreen_Activity.this.finish();
                 }
-
-
             }
         }, SPLASH_DISPLAY_LENGTH);
     }

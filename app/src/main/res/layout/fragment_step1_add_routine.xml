@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".category_view.Courses.Step1">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/step1_routine"
+        >
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:id="@+id/video_routine"
+        android:background="@color/black"
+        app:resize_mode="fill">
+    </com.google.android.exoplayer2.ui.PlayerView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/video_routine">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_height="40dp"
+                android:text="Choose Video"
+                android:textColor="@color/black"
+                android:id="@+id/choose_video_routine"
+                ></Button>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="Song Name"
+                android:layout_below="@id/choose_video_routine"
+                android:id="@+id/video_title_routine"
+                ></EditText>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="Video Sequence chno."
+                android:layout_below="@id/video_title_routine"
+                android:id="@+id/video_sequence_routine"
+                ></EditText>
+
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="Video Duration"
+                android:inputType="numberSigned"
+                android:visibility="gone"
+                android:layout_below="@id/video_sequence_routine"
+                android:id="@+id/video_duration_routine"
+                ></EditText>
+
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="Description max 100 words"
+                android:inputType="textMultiLine"
+                android:layout_below="@id/video_duration_routine"
+                android:id="@+id/video_description_routine"
+                ></EditText>
+
+            <ProgressBar
+                android:id="@+id/progress_bar_upload_routine"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="18dp"
+                android:layout_below="@id/video_description_routine"
+                android:layout_margin="10dp"
+                android:progress="0"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="Upload Video"
+                android:layout_below="@id/progress_bar_upload_routine"
+                android:id="@+id/upload_video_routine"
+                ></Button>
+
+
+
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="Go to Step 2    "
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/upload_video_routine"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/next_course_routine"
+                ></Button>
+
+
+
+
+
+
+        </RelativeLayout>
+    </ScrollView>
+
+
+    </RelativeLayout>
+
+
+</ScrollView>

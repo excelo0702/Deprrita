@@ -37,7 +37,6 @@ import android.widget.Toast;
 import com.example.chhots.PaymentListener;
 import com.example.chhots.R;
 import com.example.chhots.bottom_navigation_fragments.InstructorPackage.InstructorInfoModel;
-import com.example.chhots.bottom_navigation_fragments.Explore.VideoModel;
 import com.example.chhots.onBackPressed;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -226,7 +225,7 @@ public class form_contest extends Fragment implements onBackPressed, PaymentList
         choose_video = v.findViewById(R.id.choose_video_form);
         progress_seekBar = v.findViewById(R.id.progress_bar_upload_contest_video);
     }
-
+/*
     private void RegisterUser()
     {
         if(videouri!=null&&userEmail!=null && userName!=null)
@@ -282,7 +281,7 @@ public class form_contest extends Fragment implements onBackPressed, PaymentList
 
     }
 
-
+*/
 
     private void FullScreen() {
         if(fullScreen)
@@ -468,7 +467,7 @@ public class form_contest extends Fragment implements onBackPressed, PaymentList
             String time = System.currentTimeMillis()+"";
            // UserClass model = new UserClass(routineId,time);
          //   mDatabaseReference.child("USERS").child(user.getUid()).child("routines").child(routineId).setValue(model);
-            RegisterUser();
+            //RegisterUser();
         }
         catch (Exception e)
         {

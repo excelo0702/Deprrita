@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="#FFFFFF"
+        app:cardBackgroundColor="#FDFEFE "
+        app:cardCornerRadius="30dp">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="110dp"
+            android:layout_margin="10dp"
+            android:layout_height="110sp"
+            android:id="@+id/course_image"
+            android:src="@drawable/smurfoo_dp"></de.hdodenhof.circleimageview.CircleImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/course_image"
+            android:text="Course Name"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:textStyle="bold"
+            android:textSize="16dp"
+            android:id="@+id/course_name"></TextView>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/course_image"
+                android:layout_below="@id/course_name"
+                android:text="Rs 1000.00"
+                android:textColor="@color/black"
+                android:layout_marginLeft="10dp"
+                android:textSize="16dp"
+                android:id="@+id/raw_course_earn_money"></TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="See Course"
+                android:layout_below="@id/raw_course_earn_money"
+                android:layout_toRightOf="@id/course_image"
+                android:layout_marginTop="10dp"
+                android:textSize="16dp"
+                android:id="@+id/watch_course"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/black"></TextView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="10dp"
+                app:cardBackgroundColor="@color/Smurfogreen"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="35dp"
+                android:layout_marginRight="10dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12"
+                android:padding="2dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:id="@+id/raw_course_notification"></TextView>
+
+            </androidx.cardview.widget.CardView>
+
+
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="22dp"
+                android:src="@drawable/three_dot1"
+                android:outlineSpotShadowColor="@color/black"
+                android:layout_margin="10dp"
+                android:id="@+id/three_dot1_course"
+                android:layout_alignParentRight="true"
+                ></ImageView>
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+
+
+</RelativeLayout>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    tools:context=".category_view.Courses.Step3">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/upload_course_image"
+        android:src="@mipmap/ic_launcher_round"></ImageView>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/choose_thumbnail_step3"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/ic_baseline_edit_24"
+        android:layout_gravity="end"
+        >
+
+    </ImageView>
+
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:id="@+id/category_spinnerr"
+        android:layout_toRightOf="@id/upload_course_image"
+        android:layout_below="@id/upload_course_image"
+        ></androidx.appcompat.widget.AppCompatSpinner>
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="Course Name"
+        android:layout_below="@+id/category_spinnerr"
+        android:id="@+id/course_name_step3"
+        ></EditText>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:hint="What you'll learn !! (write in points)"
+        android:layout_below="@id/course_name_step3"
+        android:id="@+id/learn_course">
+
+    </EditText>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:hint="Course Description"
+        android:layout_below="@id/learn_course"
+        android:id="@+id/learn_course_description">
+
+    </EditText>
+
+
+
+    <ProgressBar
+        android:id="@+id/progress_bar_create_course"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_below="@id/learn_course_description"
+        android:layout_margin="10dp"
+        android:progress="0"/>
+
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/progress_bar_create_course"
+        android:textColor="@color/black"
+        android:text="Create Course"
+        android:id="@+id/done"
+        ></Button>
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@drawable/smurfo_thumbnail"
+            android:id="@+id/instructor_cover_photo">
+        </ImageView>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/smurfooo"
+            android:layout_below="@id/instructor_cover_photo"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/instructor_dashboard_profile1"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Instructor Name"
+            android:textStyle="bold"
+            android:layout_below="@id/instructor_cover_photo"
+            android:layout_toRightOf="@id/instructor_dashboard_profile1"
+            android:layout_marginLeft="10dp"
+            android:textSize="30dp"
+            android:textColor="@color/black"
+            android:id="@+id/instructor_name"></TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Crew Name"
+            android:textColor="#0000FF"
+            android:layout_marginLeft="10dp"
+            android:layout_below="@id/instructor_name"
+            android:layout_toRightOf="@id/instructor_dashboard_profile1"
+            android:textSize="18dp"
+            android:id="@+id/instructor_crew_name"></TextView>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Style1, Style2, Style3"
+            android:layout_marginLeft="10dp"
+            android:layout_below="@id/instructor_crew_name"
+            android:layout_toRightOf="@id/instructor_dashboard_profile1"
+            android:textSize="18dp"
+            android:id="@+id/instructor_style"></TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Points"
+            android:id="@+id/instructor_points"
+            android:layout_below="@id/instructor_style"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/instructor_dashboard_profile1"
+            android:textSize="18dp"></TextView>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:id="@+id/line_crew"
+            android:background="@color/black"
+            android:layout_below="@id/instructor_points"></FrameLayout>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="About the Instructor"
+            android:textStyle="bold"
+            android:layout_below="@id/line_crew"
+            android:gravity="center_horizontal"
+            android:textSize="30dp"
+            android:textColor="@color/black"
+            android:id="@+id/about_instructor"></TextView>
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="About"
+            android:padding="5dp"
+            android:layout_below="@id/about_instructor"
+            android:inputType="textMultiLine"
+            android:gravity="center_horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textSize="18dp"
+            android:id="@+id/instructor_description"></TextView>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:id="@+id/line_crew2"
+            android:background="@color/black"
+            android:layout_below="@id/instructor_description"></FrameLayout>
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recent Classes"
+            android:textStyle="bold"
+            android:layout_below="@id/line_crew2"
+            android:gravity="center_horizontal"
+            android:textSize="30dp"
+            android:textColor="@color/black"
+            android:id="@+id/instructor_recent_classes"></TextView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/instructor_recent_classes"
+            android:orientation="vertical"
+            android:id="@+id/live_class_view"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:layout_marginLeft="5dp"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/routine_view_title"></TextView>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Instructor Name"
+                android:layout_marginLeft="5dp"
+                android:textSize="16dp"
+                android:id="@+id/routine_instructor_name"></TextView>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/black"
+                android:paddingRight="5dp"
+                android:id="@+id/routine_view_item"></ImageView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="21035"
+                android:id="@+id/routine_views"
+                android:layout_marginLeft="5dp"
+                android:textSize="14dp"
+                ></TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Level"
+                android:id="@+id/routine_level"
+                android:layout_marginLeft="5dp"
+                android:textSize="14dp"
+                ></TextView>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/instructor_course_text"
+
+            android:textSize="16dp"
+            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:layout_below="@id/live_class_view"
+            android:textColor="@color/black"
+            android:text="Course"></TextView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/instructor_course"
+            android:layout_below="@id/instructor_course_text"
+            ></androidx.recyclerview.widget.RecyclerView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/instructor_routine_text"
+            android:layout_below="@id/instructor_course"
+            android:textColor="@color/black"
+            android:textSize="16dp"
+            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:text="Course"></TextView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/instructor_routine"
+            android:layout_below="@id/instructor_routine_text"
+            ></androidx.recyclerview.widget.RecyclerView>
+
+    </RelativeLayout>
+
+</ScrollView>

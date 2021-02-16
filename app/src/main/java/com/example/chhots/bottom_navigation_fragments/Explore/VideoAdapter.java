@@ -52,7 +52,7 @@ public class VideoAdapter extends
     private static final String TAG = "VideoViewRecAdapter";
     private  OnItemClickListener mListener;
 
-    private List<VideoModel> localVideoTracks;
+    private List<ExploreVideoModel> localVideoTracks;
     private Context context;
     private String activity;
 
@@ -60,11 +60,8 @@ public class VideoAdapter extends
         void onItemClick(int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener){
-        mListener = listener;
-    }
 
-    public VideoAdapter(List<VideoModel> localVideoTracks, Context context, String activity) {
+    public VideoAdapter(List<ExploreVideoModel> localVideoTracks, Context context, String activity) {
         this.localVideoTracks = localVideoTracks;
         this.context = context;
         this.activity = activity;
@@ -81,7 +78,7 @@ public class VideoAdapter extends
     @Override
     public void onBindViewHolder(VideoViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder");
-        VideoModel current = localVideoTracks.get(position);
+       /* ExploreVideoModel current = localVideoTracks.get(position);
         holder.title.setText(current.getTitle());
         holder.upvote.setText(String.valueOf(current.getLike()));
         holder.views.setText(String.valueOf(current.getView()));
@@ -104,15 +101,10 @@ public class VideoAdapter extends
             public boolean onLongClick(View view) {
                 return true;
             }
-        });
+        });*/
     }
 
-
-    public String getLastItemVideoId(){
-        return localVideoTracks.get(localVideoTracks.size()-1).getVideoId();
-    }
-
-    public void setData(List<VideoModel> localVideoTracks)
+    public void setData(List<ExploreVideoModel> localVideoTracks)
     {
         this.localVideoTracks =localVideoTracks;
     }
@@ -205,66 +197,26 @@ public class VideoAdapter extends
             });
 
 
-
-
-            videoview.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    return false;
-                }
-            });
-
-
             videoview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                    if(user==null)
-                    {
-                        Toast.makeText(context,"Login First",Toast.LENGTH_SHORT).show();
+                    if (user == null) {
+                        Toast.makeText(context, "Login First", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(context, Login.class);
                         context.startActivity(intent);
 
+                    } else {
+
+                        Fragment fragment = new See_Video();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("videoId", value);
+                        fragment.setArguments(bundle);
+                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.drawer_layout, fragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
                     }
-                    else {
-
-                        int p = 1;
-                        if (sub_category.equals("ROUTINE")) {
-                            // TODO: check subscription of user
-                            //       p = checkSubscription();
-                            Log.d(TAG, p + " p ");
-                            if (p == 0) {
-                                //         p = checkPurchased();
-                                Log.d(TAG, p + " q ");
-                            }
-                        }
-                        if (p == 1) {
-                            Fragment fragment = new See_Video();
-                            Bundle bundle = new Bundle();
-                            bundle.putString("videoId", value);
-                            fragment.setArguments(bundle);
-                            FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                            fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                            fragmentTransaction.addToBackStack(null);
-                            fragmentTransaction.commit();
-
-                        } else {
-                            //Create Pop up to Buy this Video
-                            //Redirect to routine_purchase
-                            Fragment fragment = new routine_purchase();
-                            Bundle bundle = new Bundle();
-                            bundle.putString("videoId", value);
-                            bundle.putString("thumbnail", thumbnail);
-                            bundle.putString("instructorId", userId);
-                            fragment.setArguments(bundle);
-                            FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                            fragmentTransaction.replace(R.id.drawer_layout, fragment);
-                            fragmentTransaction.addToBackStack(null);
-                            fragmentTransaction.commit();
-
-                        }
-                    }
-
                 }
             });
             view.setOnClickListener(new View.OnClickListener() {
@@ -337,7 +289,6 @@ public class VideoAdapter extends
 
             //set menu item click listener here
             popup.setOnMenuItemClickListener(new MyMenuItemClickListener(getAdapterPosition()));
-
             popup.show();
         }
 
@@ -407,9 +358,6 @@ public class VideoAdapter extends
             }
 
         }
-
-
-
 
     }
 

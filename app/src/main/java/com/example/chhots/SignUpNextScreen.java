@@ -48,6 +48,10 @@ import java.io.ByteArrayOutputStream;
 
 public class SignUpNextScreen extends AppCompatActivity {
 
+    //nope,ab me cut kr rha hu bye
+    //apti kr lena acche se
+    //me sone jaa rha hu
+    //7th ko h test
     private ImageView userImage_signup;
     private EditText user_name_signup,user_profession_signup,phoneE,statusE,aboutE;
     private Spinner user_dancer_level;

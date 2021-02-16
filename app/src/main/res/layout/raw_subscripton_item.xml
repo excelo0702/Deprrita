@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        app:cardCornerRadius="16dp"
+        >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/gradirnt1"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="82dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="25dp"
+                    android:text="Subscription Name"
+                    android:id="@+id/raw_subscription_name"
+                    android:textColor="#000000"
+                    android:textSize="25dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/raw_free_trial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="20dp"
+                    android:inputType="textMultiLine"
+                    android:text="Free Trial \nFor 3 days"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:textSize="16dp"></TextView>
+            </LinearLayout>
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:text=" You can access any song-based choreography \n tutorial "
+                android:textSize="18dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="25dp"
+                />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:text=" For Rs 120 for 1 month Click here >>> "
+                android:id="@+id/raw_plan1"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical"
+                />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:text=" For Rs 670 for 6 months (Rs 50 off) Click here >>>"
+                android:id="@+id/raw_plan2"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:text=" For Rs 1280 for 1 year (Rs 60 off) Click here >>>"
+                android:id="@+id/raw_plan3"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:id="@+id/choose_plan"
+                android:textColor="@color/black"
+                android:text="Choose any plan"
+                ></Button>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>
