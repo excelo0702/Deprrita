@@ -104,11 +104,8 @@ public class dashboard extends Fragment implements onBackPressed {
                         }
                     }
                     @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
+                    public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
-
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -148,8 +145,8 @@ public class dashboard extends Fragment implements onBackPressed {
             }
         });
         return view;
-    }
 
+    }
 
     private void setFragment(Fragment fragment) {
 
@@ -159,8 +156,6 @@ public class dashboard extends Fragment implements onBackPressed {
         fragmentTransaction.commit();
 
     }
-
-
 
     @Override
     public void onDestroy() {

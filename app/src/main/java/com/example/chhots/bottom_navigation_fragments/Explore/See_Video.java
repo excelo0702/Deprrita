@@ -71,7 +71,6 @@ import static android.view.View.VISIBLE;
  */
 public class See_Video extends Fragment implements onBackPressed {
 
-
     public TextView title, numberOfLikes,views,addToBookmark;
     public ImageView share_icon,user_photo;
     public ImageView bookmark ;
@@ -301,7 +300,6 @@ public class See_Video extends Fragment implements onBackPressed {
 
     private void checkUserVideoHistory()
     {
-
         mDatabaseRef.child(getString(R.string.userVideoHistory)).child(currentUser.getUid()).child(videoId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -311,8 +309,10 @@ public class See_Video extends Fragment implements onBackPressed {
                            /* PointModel popo = new PointModel(userVideoId,"",1);
                             mDatabaseRef.child(getResources().getString(R.string.VideoHistory)).child(user.getUid()).child(videoId).setValue(popo);
                             increasePoints(10);*/
+                           Log.d(TAG,"  feet feet feet feet ");
                             currentVideo.setNumberOfViews(currentVideo.getNumberOfViews()+1);
                             mDatabaseRef.child(getResources().getString(R.string.ExploreVideos)).child(videoId).child(getResources().getString(R.string.numberOfViews)).setValue(currentVideo.getNumberOfViews());
+                            mDatabaseRef.child(getString(R.string.userVideoHistory)).child(currentUser.getUid()).child(videoId).child(videoId).setValue(1+"");
                         }
                     }
 
