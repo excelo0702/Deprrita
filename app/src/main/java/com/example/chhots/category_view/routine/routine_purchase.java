@@ -2,14 +2,12 @@ package com.example.chhots.category_view.routine;
 
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -19,21 +17,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.chhots.LoadingDialog;
-import com.example.chhots.PaymentListener;
+import com.example.chhots.Models.PreviewModel;
 import com.example.chhots.R;
-import com.example.chhots.SubscriptionModel;
 import com.example.chhots.UserClass;
 import com.example.chhots.onBackPressed;
-import com.example.chhots.ui.Category.category;
 import com.example.chhots.ui.Subscription.subscription;
-import com.example.chhots.ui.notifications.NotificationModel;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -51,10 +44,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.razorpay.Checkout;
-import com.squareup.picasso.Picasso;
-
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -23,16 +23,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chhots.LoadingDialog;
+import com.example.chhots.Models.CommentModel;
+import com.example.chhots.Models.ExploreVideoModel;
 import com.example.chhots.R;
-import com.example.chhots.UserInfoModel;
-import com.example.chhots.bottom_navigation_fragments.InstructorPackage.InstructorInfoModel;
+import com.example.chhots.Models.InstructorInfoModel;
 import com.example.chhots.onBackPressed;
 import com.example.chhots.ui.Dashboard.HistoryPackage.HistoryModel;
 import com.example.chhots.ui.Dashboard.PointModel;
@@ -46,7 +46,6 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -81,18 +80,18 @@ public class See_Video extends Fragment implements onBackPressed {
     private FirebaseAuth auth;
     private DatabaseReference mDatabaseRef;
     private static final String TAG = "See_Video";
-    private ExploreVideoModel current;
+    private ExploreVideoModel currentVideo;
     private EditText comment_message;
     private Uri videouri;
     private CommentAdapter adapter;
 
     private RecyclerView recyclerView;
     private String videoId;
-    private FirebaseUser user;
+    private FirebaseUser currentUser;
 
     private List<CommentModel> list;
     private String htitle,hvideoName,hthumbnail,videoUserId;
-    private InstructorInfoModel usermodel;
+    private InstructorInfoModel videoUserModel;
     int k=0,points=0;
 
     //exoplayer implementation
@@ -177,20 +176,20 @@ public class See_Video extends Fragment implements onBackPressed {
     }
 
     private void isLike() {
-        mDatabaseRef.child(getResources().getString(R.string.FAVORITE)).child(user.getUid()).child(videoId)
+        mDatabaseRef.child(getResources().getString(R.string.FAVORITE)).child(currentUser.getUid()).child(videoId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.getChildrenCount()==0)
                         {
-                            mDatabaseRef.child(getResources().getString(R.string.FAVORITE)).child(user.getUid()).child(videoId).child("liked").setValue("Yes");
+                            mDatabaseRef.child(getResources().getString(R.string.FAVORITE)).child(currentUser.getUid()).child(videoId).child("liked").setValue("Yes");
                             mDatabaseRef.child(getString(R.string.ExploreVideos)).child(videoId).child(getResources().getString(R.string.numberOfLikes)).setValue((Integer.parseInt(numberOfLikes.getText().toString())+1));
                             numberOfLikes.setText(String.valueOf(Integer.parseInt(numberOfLikes.getText().toString())+1));
                             isLike_icon.setImageResource(R.drawable.ic_thumbs_up_afterlike);
                         }
                         else
                         {
-                            mDatabaseRef.child(getResources().getString(R.string.FAVORITE)).child(user.getUid()).child(videoId).removeValue();
+                            mDatabaseRef.child(getResources().getString(R.string.FAVORITE)).child(currentUser.getUid()).child(videoId).removeValue();
                             mDatabaseRef.child(getString(R.string.ExploreVideos)).child(videoId).child(getResources().getString(R.string.numberOfLikes)).setValue((Integer.parseInt(numberOfLikes.getText().toString())-1));
                             numberOfLikes.setText(String.valueOf(Integer.parseInt(numberOfLikes.getText().toString())-1));
                             isLike_icon.setImageResource(R.drawable.ic_thumb_up);
@@ -221,7 +220,7 @@ public class See_Video extends Fragment implements onBackPressed {
         camera_comment = view.findViewById(R.id.select_image_content);
         comment_message = view.findViewById(R.id.comment_message);
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
         list = new ArrayList<>();
         recyclerView = view.findViewById(R.id.comments);
         recyclerView.setHasFixedSize(true);
@@ -245,7 +244,7 @@ public class See_Video extends Fragment implements onBackPressed {
 
     public void checkBookmark(){
 
-        mDatabaseRef.child(getResources().getString(R.string.Bookmarks)).child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabaseRef.child(getResources().getString(R.string.Bookmarks)).child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if ( dataSnapshot ==null){
@@ -270,25 +269,15 @@ public class See_Video extends Fragment implements onBackPressed {
     }
 
     private void AddBookmark() {
-        mDatabaseRef.child(getResources().getString(R.string.Bookmarks)).child(user.getUid()).child(videoId).setValue(current);
+        mDatabaseRef.child(getResources().getString(R.string.Bookmarks)).child(currentUser.getUid()).child(videoId).setValue(currentVideo);
         Toast.makeText(getContext(),"Added to My Bookmarks",Toast.LENGTH_SHORT).show();
         bookmark.setImageDrawable(getResources().getDrawable(R.drawable.ic_bookmark_afterbookmark,null));
 
     }
 
-    private void increasePoints(int n)
-    {
-        if(modelOverAll!=null) {
-            modelWeekly.setPoints(modelWeekly.getPoints() + n);
-            modelOverAll.setPoints(modelOverAll.getPoints() + n);
-            mDatabaseRef.child(getResources().getString(R.string.UsersPoint)).child(getResources().getString(R.string.Weekly)).child(userVideoId).setValue(modelWeekly);
-            mDatabaseRef.child(getResources().getString(R.string.UsersPoint)).child(getResources().getString(R.string.OverAll)).child(userVideoId).setValue(modelOverAll);
-        }
-    }
-
     private void checkVideoLike()
     {
-        mDatabaseRef.child(getResources().getString(R.string.FAVORITE)).child(user.getUid()).child(videoId)
+        mDatabaseRef.child(getResources().getString(R.string.FAVORITE)).child(currentUser.getUid()).child(videoId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -313,7 +302,7 @@ public class See_Video extends Fragment implements onBackPressed {
     private void checkUserVideoHistory()
     {
 
-        mDatabaseRef.child(getString(R.string.userVideoHistory)).child(user.getUid()).child(videoId)
+        mDatabaseRef.child(getString(R.string.userVideoHistory)).child(currentUser.getUid()).child(videoId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -322,8 +311,8 @@ public class See_Video extends Fragment implements onBackPressed {
                            /* PointModel popo = new PointModel(userVideoId,"",1);
                             mDatabaseRef.child(getResources().getString(R.string.VideoHistory)).child(user.getUid()).child(videoId).setValue(popo);
                             increasePoints(10);*/
-                            current.setNumberOfViews(current.getNumberOfViews()+1);
-                            mDatabaseRef.child(getResources().getString(R.string.ExploreVideos)).child(videoId).child(getResources().getString(R.string.numberOfViews)).setValue(current.getNumberOfViews());
+                            currentVideo.setNumberOfViews(currentVideo.getNumberOfViews()+1);
+                            mDatabaseRef.child(getResources().getString(R.string.ExploreVideos)).child(videoId).child(getResources().getString(R.string.numberOfViews)).setValue(currentVideo.getNumberOfViews());
                         }
                     }
 
@@ -333,75 +322,18 @@ public class See_Video extends Fragment implements onBackPressed {
 
     }
 
-    private void fetchUserPoints() {
-    /*   if(userVideoId!=null) {
-            mDatabaseRef.child(getResources().getString(R.string.UsersPoint)).child(getResources().getString(R.string.Weekly)).child(userVideoId).addListenerForSingleValueEvent(
-                    new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            modelWeekly = dataSnapshot.getValue(PointModel.class);
-                            if (modelWeekly != null) {
-                                points = modelWeekly.getPoints();
-                            }
-                            mDatabaseRef.child(getResources().getString(R.string.UsersPoint)).child(getResources().getString(R.string.OverAll)).child(userVideoId).addListenerForSingleValueEvent(
-                                    new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            modelOverAll = dataSnapshot.getValue(PointModel.class);
-                                            if (modelOverAll != null) {
-                                                points = modelOverAll.getPoints();
-                                            }
-                                            checkVideoHistory();
-                                            checkVideoLike();
-                                        }
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) { }
-                                    });
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) { }
-                    });
-        }
-    */
-    }
-
-    private void userInfo()
+    private void videoUserInfo()
     {
         if(userVideoId!=null)
         {
-            mDatabaseRef.child(getResources().getString(R.string.UserInfo)).child(userVideoId).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    UserInfoModel model = dataSnapshot.getValue(UserInfoModel.class);
-                    Picasso.get().load(Uri.parse(model.getUserImageurl())).into(user_photo);
-                    k++;
-                    if(k==2)
-                    {
-                        loadingDialog.DismissDialog();
-                    }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }
-    }
-
-    private void instructorInfo()
-    {
-        if(userVideoId!=null)
-        {
             mDatabaseRef.child(getResources().getString(R.string.InstructorInfo)).child(userVideoId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    InstructorInfoModel model = dataSnapshot.getValue(InstructorInfoModel.class);
-                    Picasso.get().load(Uri.parse(model.getUserImageurl())).into(user_photo);
-                    k++;
-                    if(k==2)
-                    {
-                        loadingDialog.DismissDialog();
+                    videoUserModel = dataSnapshot.getValue(InstructorInfoModel.class);
+                    if(videoUserModel!=null){
+                        Picasso.get().load(Uri.parse(videoUserModel.getUserImageurl())).into(user_photo);
+
                     }
                 }
 
@@ -410,6 +342,8 @@ public class See_Video extends Fragment implements onBackPressed {
 
                 }
             });
+
+
         }
     }
 
@@ -418,7 +352,7 @@ public class See_Video extends Fragment implements onBackPressed {
         Log.d(TAG,htitle+hvideoName);
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         HistoryModel model = new HistoryModel(htitle,hvideoName,hthumbnail,date,"Explore",videoId);
-        mDatabaseRef.child(getResources().getString(R.string.HISTORY)).child(user.getUid()).child(time).setValue(model);
+        mDatabaseRef.child(getResources().getString(R.string.HISTORY)).child(currentUser.getUid()).child(time).setValue(model);
     }
 
     private void FullScreen() {
@@ -589,22 +523,22 @@ public class See_Video extends Fragment implements onBackPressed {
                 if(dataSnapshot.getChildrenCount()==0)
                     return;
                 else {
-                    current = dataSnapshot.getValue(ExploreVideoModel.class);
-                    videoUserId = current.getUser();
-                    htitle = current.getTitle();
-                    hvideoName = current.getTitle();
-                    userVideoId = current.getUser();
-                    title.setText(current.getTitle());
-                    numberOfLikes.setText(current.getNumberOfLikes()+"");
-                    videouri = (Uri.parse(current.getVideoURL()));
-                    hthumbnail = current.getThumbnailLink();
-                    views.setText(current.getNumberOfViews()+"");
+                    currentVideo = dataSnapshot.getValue(ExploreVideoModel.class);
+                    videoUserId = currentVideo.getUser();
+                    htitle = currentVideo.getTitle();
+                    hvideoName = currentVideo.getTitle();
+                    userVideoId = currentVideo.getUser();
+                    title.setText(currentVideo.getTitle());
+                    numberOfLikes.setText(currentVideo.getNumberOfLikes()+"");
+                    videouri = (Uri.parse(currentVideo.getVideoURL()));
+                    hthumbnail = currentVideo.getThumbnailLink();
+                    views.setText(currentVideo.getNumberOfViews()+"");
 
-                    instructorInfo();
+                    videoUserInfo();
 
                     pushHistory();
                     initializePlayer();
-                    fetchUserPoints();
+                //    fetchUserPoints();
 
                     showComments();
                     loadingDialog.DismissDialog();
@@ -643,10 +577,11 @@ public class See_Video extends Fragment implements onBackPressed {
     }
 
     private void sendComment()
-    {        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+    {
+        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         String time = System.currentTimeMillis()+"";
-        CommentModel model = new CommentModel(comment_message.getText().toString(),date,user.getUid(),usermodel.getUserImageurl(),usermodel.getUserName(),time);
+        CommentModel model = new CommentModel(comment_message.getText().toString(),date, currentUser.getUid(), videoUserModel.getUserImageurl(), videoUserModel.getUserName(),time);
         mDatabaseRef.child("COMMENTS").child(videoId).child(time).setValue(model);
         comment_message.setText("");
     }

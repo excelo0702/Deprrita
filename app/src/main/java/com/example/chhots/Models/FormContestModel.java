@@ -1,4 +1,4 @@
-package com.example.chhots.category_view.Contest;
+package com.example.chhots.Models;
 
 public class FormContestModel {
     private String user,contestId,videoUrl;

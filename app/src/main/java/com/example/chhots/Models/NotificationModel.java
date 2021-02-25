@@ -1,4 +1,4 @@
-package com.example.chhots.ui.notifications;
+package com.example.chhots.Models;
 
 public class NotificationModel {
     private String date,category,userName;

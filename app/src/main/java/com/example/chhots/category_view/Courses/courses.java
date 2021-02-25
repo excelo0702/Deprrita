@@ -21,9 +21,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.chhots.bottom_navigation_fragments.InstructorPackage.InstructorInfoModel;
+import com.example.chhots.Models.InstructorInfoModel;
 import com.example.chhots.LoadingDialog;
 import com.example.chhots.R;
 import com.google.android.material.tabs.TabLayout;

@@ -1,4 +1,4 @@
-package com.example.chhots.ui.Subscription;
+package com.example.chhots.Models;
 
 import org.reactivestreams.Subscription;
 

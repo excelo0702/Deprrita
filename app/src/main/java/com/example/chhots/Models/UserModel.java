@@ -1,4 +1,4 @@
-package com.example.chhots.User_Profile;
+package com.example.chhots.Models;
 
 public class UserModel {
 

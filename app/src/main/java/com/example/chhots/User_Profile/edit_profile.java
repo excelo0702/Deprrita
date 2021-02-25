@@ -33,7 +33,7 @@ import android.widget.Toast;
 
 import com.example.chhots.BuildConfig;
 import com.example.chhots.LoadingDialog;
-import com.example.chhots.bottom_navigation_fragments.InstructorPackage.InstructorInfoModel;
+import com.example.chhots.Models.InstructorInfoModel;
 import com.example.chhots.MainActivity;
 import com.example.chhots.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -163,9 +163,9 @@ public class edit_profile extends Fragment {
                                     @Override
                                     public void onSuccess(Uri uri) {
                                         loadingDialog.DismissDialog();
-                                        InstructorInfoModel mode = new InstructorInfoModel(auth.getCurrentUser().getUid(),model.getUserName(),uri.toString());
-                                        if(mode!=null)
-                                            mDatabaseReference.child("InstructorCoverPhoto").child(auth.getCurrentUser().getUid()).setValue(mode);
+                                      //  UserInfoModel mode = new UserInfoModel(auth.getCurrentUser().getUid(),model.getUserName(),uri.toString());
+                                        //if(mode!=null)
+                                          //  mDatabaseReference.child("InstructorCoverPhoto").child(auth.getCurrentUser().getUid()).setValue(mode);
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -226,8 +226,8 @@ public class edit_profile extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         InstructorInfoModel mode = dataSnapshot.getValue(InstructorInfoModel.class);
-                        if(mode!=null)
-                            Picasso.get().load(Uri.parse(mode.getCoverPhoto())).into(cover_photo);
+                    //    if(mode!=null)
+                      //      Picasso.get().load(Uri.parse(mode.getCoverPhoto())).into(cover_photo);
                     }
 
                     @Override
@@ -245,6 +245,7 @@ public class edit_profile extends Fragment {
 //        String interest = model.getInterest();
   //      String temp = interest.substring(0,3);
         //put check on radio Button
+
     }
 
     private void init(View view) {
@@ -271,6 +272,8 @@ public class edit_profile extends Fragment {
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(videoUri));
     }
+
+
 
     public void onRadioButtonClick(View view) {
         // Is the button now checked?

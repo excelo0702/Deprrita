@@ -1,7 +1,6 @@
 package com.example.chhots.bottom_navigation_fragments.InstructorPackage;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,8 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chhots.Models.InstructorInfoModel;
 import com.example.chhots.R;
-import com.example.chhots.category_view.routine.routine_purchase;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

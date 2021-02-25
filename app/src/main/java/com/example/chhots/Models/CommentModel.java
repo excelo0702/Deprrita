@@ -1,4 +1,4 @@
-package com.example.chhots.bottom_navigation_fragments.Explore;
+package com.example.chhots.Models;
 
 public class CommentModel {
     private String comment,time,userId,userImage,userName,commentId;

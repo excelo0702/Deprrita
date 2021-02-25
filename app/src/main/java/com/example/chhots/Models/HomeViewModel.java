@@ -1,4 +1,4 @@
-package com.example.chhots.ui.home;
+package com.example.chhots.Models;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

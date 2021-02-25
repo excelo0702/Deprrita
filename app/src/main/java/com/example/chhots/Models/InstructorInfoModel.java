@@ -1,25 +1,11 @@
-package com.example.chhots.bottom_navigation_fragments.InstructorPackage;
+package com.example.chhots.Models;
 
 public class InstructorInfoModel {
 
     private String userId,userName,userEmail,userProfession,userPhone,userStatus,userAbout,userLevel,userImageurl,points,badge;
     private String interest,earn;
     private String style;
-    private String coverPhoto;
 
-    public String getCoverPhoto() {
-        return coverPhoto;
-    }
-
-    public void setCoverPhoto(String coverPhoto) {
-        this.coverPhoto = coverPhoto;
-    }
-
-    public InstructorInfoModel(String userId, String userName, String coverPhoto) {
-        this.userId = userId;
-        this.userName = userName;
-        this.coverPhoto = coverPhoto;
-    }
 
     public InstructorInfoModel(String userId, String style) {
         this.userId = userId;

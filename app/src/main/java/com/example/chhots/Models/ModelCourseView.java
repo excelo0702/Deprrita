@@ -1,4 +1,4 @@
-package com.example.chhots.category_view.Courses;
+package com.example.chhots.Models;
 
 public class ModelCourseView {
     String name;

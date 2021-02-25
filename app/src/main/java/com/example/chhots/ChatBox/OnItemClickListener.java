@@ -1,9 +1,7 @@
 package com.example.chhots.ChatBox;
 
-import android.widget.TextView;
-
-import com.example.chhots.category_view.routine.RoutineModel;
-import com.example.chhots.ui.Subscription.SubscriptionModel;
+import com.example.chhots.Models.RoutineModel;
+import com.example.chhots.Models.SubscriptionModel;
 
 public interface OnItemClickListener {
     void onItemClick(MessageModel model);

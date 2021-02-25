@@ -1,4 +1,4 @@
-package com.example.chhots.category_view.Courses;
+package com.example.chhots.Models;
 
 public class ViewPageModel {
     private String name;

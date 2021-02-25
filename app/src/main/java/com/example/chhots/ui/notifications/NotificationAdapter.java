@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chhots.Models.NotificationModel;
 import com.example.chhots.R;
 import com.squareup.picasso.Picasso;
 

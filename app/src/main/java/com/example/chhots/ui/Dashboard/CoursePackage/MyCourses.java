@@ -17,10 +17,8 @@ import android.widget.ProgressBar;
 
 import com.example.chhots.LoadingDialog;
 import com.example.chhots.R;
-import com.example.chhots.category_view.Courses.AllCourseAdapter;
 import com.example.chhots.category_view.Courses.CourseThumbnail;
-import com.example.chhots.ui.Category.category;
-import com.example.chhots.ui.Subscription.SUbscriptionViewModel;
+import com.example.chhots.Models.SUbscriptionViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;

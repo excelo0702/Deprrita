@@ -15,10 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.chhots.LoadingDialog;
-import com.example.chhots.bottom_navigation_fragments.InstructorPackage.InstructorInfoModel;
+import com.example.chhots.Models.InstructorInfoModel;
 import com.example.chhots.R;
 import com.example.chhots.category_view.routine.RoutineThumbnailModel;
-import com.example.chhots.ui.Subscription.SUbscriptionViewModel;
+import com.example.chhots.Models.SUbscriptionViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;

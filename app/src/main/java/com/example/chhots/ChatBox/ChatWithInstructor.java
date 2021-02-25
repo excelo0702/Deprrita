@@ -38,9 +38,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.chhots.NotificationNumberModel;
 import com.example.chhots.R;
-import com.example.chhots.UserInfoModel;
-import com.example.chhots.bottom_navigation_fragments.InstructorPackage.InstructorInfoModel;
-import com.example.chhots.ui.Dashboard.ApproveVideo.ChatPeopleModel;
+import com.example.chhots.Models.InstructorInfoModel;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -51,7 +49,6 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -60,10 +57,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -307,7 +300,7 @@ public class ChatWithInstructor extends AppCompatActivity {
 
                 //TODO:maybe we have to create UserInfoModel
 
-                UserInfoModel model = dataSnapshot.getValue(UserInfoModel.class);
+                com.example.chhots.UserInfoModel model = dataSnapshot.getValue(com.example.chhots.UserInfoModel.class);
                 peopleName.setText(model.getUserName());
                 Picasso.get().load(Uri.parse(model.getUserImageurl())).into(peopleImage);
             }

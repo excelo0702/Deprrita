@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,14 +17,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chhots.ChatBox.MessageModel;
 import com.example.chhots.ChatBox.OnItemClickListener;
+import com.example.chhots.Models.SubscriptionModel;
 import com.example.chhots.PaymentListener;
 import com.example.chhots.R;
 import com.example.chhots.UserClass;
-import com.example.chhots.category_view.routine.RoutineModel;
-import com.example.chhots.category_view.routine.routine_view;
-import com.example.chhots.onBackPressed;
+import com.example.chhots.Models.RoutineModel;
 import com.example.chhots.ui.home.HomeFragment;
-import com.example.chhots.ui.notifications.NotificationModel;
+import com.example.chhots.Models.NotificationModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;

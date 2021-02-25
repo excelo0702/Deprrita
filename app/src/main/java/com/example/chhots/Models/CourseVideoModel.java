@@ -1,4 +1,4 @@
-package com.example.chhots.category_view.Courses;
+package com.example.chhots.Models;
 
 public class CourseVideoModel {
     private String title,seq_no,videoUrl,description,courseId;

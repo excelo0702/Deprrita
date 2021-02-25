@@ -1,7 +1,6 @@
 package com.example.chhots.category_view.Contest;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,10 +24,9 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.example.chhots.LeaderboardAdapter;
 import com.example.chhots.LeaderboardModel;
-import com.example.chhots.Login;
+import com.example.chhots.Models.HostModel;
 import com.example.chhots.R;
 import com.example.chhots.bottom_navigation_fragments.Explore.explore;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,14 +36,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.paytm.pgsdk.Log;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static android.view.LayoutInflater.from;
-import static com.paytm.pgsdk.easypay.manager.PaytmAssist.getContext;
 
 public class ContestAdapter extends PagerAdapter {
     private List<HostModel> models;

@@ -1,4 +1,4 @@
-package com.example.chhots.category_view.routine;
+package com.example.chhots.Models;
 
 public class RoutineModel {
 

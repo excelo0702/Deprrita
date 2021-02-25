@@ -1,6 +1,5 @@
 package com.example.chhots.bottom_navigation_fragments.InstructorPackage;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -16,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.chhots.Models.InstructorInfoModel;
 import com.example.chhots.R;
 import com.example.chhots.category_view.Courses.CourseThumbnail;
 import com.example.chhots.category_view.routine.RoutineThumbnailModel;
@@ -207,8 +207,8 @@ public class InstructorFull extends Fragment {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         InstructorInfoModel model12 = dataSnapshot.getValue(InstructorInfoModel.class);
-                                        if(model12!=null)
-                                            Picasso.get().load(Uri.parse(model12.getCoverPhoto())).placeholder(R.drawable.smurfooo).into(coverPhoto);
+                                        //if(model12!=null)
+                                        //    Picasso.get().load(Uri.parse(model12.getCoverPhoto())).placeholder(R.drawable.smurfooo).into(coverPhoto);
 
                                     }
 

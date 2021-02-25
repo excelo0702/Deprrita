@@ -1,11 +1,11 @@
-package com.example.chhots.category_view.Booking;
+package com.example.chhots.Models;
 
-public class Model {
+public class BookingModel {
 
     String name,danceForm;
     int imageId;
 
-    public Model(String name, String danceForm, int imageId) {
+    public BookingModel(String name, String danceForm, int imageId) {
         this.name = name;
         this.danceForm = danceForm;
         this.imageId = imageId;

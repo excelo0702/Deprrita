@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chhots.ChatBox.OnItemClickListener;
+import com.example.chhots.Models.SubscriptionModel;
 import com.example.chhots.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

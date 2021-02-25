@@ -22,14 +22,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.chhots.User_Profile.Verification_page;
-import com.example.chhots.bottom_navigation_fragments.InstructorPackage.InstructorInfoModel;
-import com.example.chhots.ui.About_Deprrita.about;
+import com.example.chhots.Models.InstructorInfoModel;
 import com.example.chhots.ui.Dashboard.PointModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -181,6 +179,7 @@ public class SignUpNextScreen extends AppCompatActivity {
                                                                         PointModel popo = new PointModel(auth.getCurrentUser().getUid(),name, -40);
                                                                         mDatabaseReference.child(getResources().getString(R.string.PointsInstructor)).child("weekly").child(auth.getCurrentUser().getUid()).setValue(popo);
                                                                         mDatabaseReference.child(getResources().getString(R.string.PointsInstructor)).child("OverAll").child(auth.getCurrentUser().getUid()).setValue(popo);
+
                                                                         auth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                             @Override
                                                                             public void onComplete(@NonNull Task<Void> task) {

@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chhots.Models.NotificationModel;
 import com.example.chhots.R;
 import com.example.chhots.onBackPressed;
 import com.example.chhots.ui.home.HomeFragment;
@@ -24,7 +25,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class NotificationsFragment extends Fragment implements onBackPressed {

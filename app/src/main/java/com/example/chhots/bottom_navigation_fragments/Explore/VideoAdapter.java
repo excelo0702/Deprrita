@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,10 +23,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chhots.Login;
+import com.example.chhots.Models.ExploreVideoModel;
 import com.example.chhots.R;
-import com.example.chhots.UserInfoModel;
-import com.example.chhots.bottom_navigation_fragments.InstructorPackage.InstructorInfoModel;
-import com.example.chhots.category_view.routine.routine_purchase;
+import com.example.chhots.Models.InstructorInfoModel;
 import com.example.chhots.ui.Dashboard.dashboard;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -261,7 +259,7 @@ public class VideoAdapter extends
             databaseReference.child("UserInfo").child(userId).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    UserInfoModel model = dataSnapshot.getValue(UserInfoModel.class);
+                    com.example.chhots.UserInfoModel model = dataSnapshot.getValue(com.example.chhots.UserInfoModel.class);
                     Log.d("VideoAdapter ll ",dataSnapshot.getValue()+"");
                     if(model!=null)
                     {

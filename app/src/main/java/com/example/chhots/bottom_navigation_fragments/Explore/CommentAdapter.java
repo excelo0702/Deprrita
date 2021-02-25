@@ -4,17 +4,14 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chhots.Models.CommentModel;
 import com.example.chhots.R;
 import com.example.chhots.ui.Dashboard.dashboard;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,8 +30,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -97,7 +93,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         private String commentId;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            Log.d(TAG,"vaaabn");
 
             comment = itemView.findViewById(R.id.comment_text);
             comment_user_name = itemView.findViewById(R.id.comment_user);

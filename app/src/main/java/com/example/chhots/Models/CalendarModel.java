@@ -1,4 +1,4 @@
-package com.example.chhots.bottom_navigation_fragments.Calendar;
+package com.example.chhots.Models;
 
 public class CalendarModel {
 

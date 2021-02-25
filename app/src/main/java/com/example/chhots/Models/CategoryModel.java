@@ -1,4 +1,4 @@
-package com.example.chhots.ui.Category;
+package com.example.chhots.Models;
 
 public class CategoryModel {
     String text;
