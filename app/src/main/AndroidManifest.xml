@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
 
     <dist:module dist:instant="true" />
 
@@ -103,6 +105,15 @@
             android:value="rzp_test_lGVIuQHCWOB1Ss" />
 
         <service android:name=".Services.FloatingWidgetService" />
+
+        <receiver android:name = ".Services.MyNetworkReceiver">
+            <intent-filter>
+                <action android:name = "android.net.conn.CONNECTIVITY_CHANGE"
+                    tools:ignore="BatteryLife" />
+                <action android:name = "android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

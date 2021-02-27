@@ -1,12 +1,16 @@
 package com.example.chhots;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.example.chhots.Services.MyNetworkReceiver;
 import com.example.chhots.User_Profile.edit_profile;
 import com.example.chhots.bottom_navigation_fragments.Calendar.calendar;
 import com.example.chhots.bottom_navigation_fragments.Explore.explore;
@@ -99,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
 
     public static int pointsO=0,pointsW=0;
 
+    private BroadcastReceiver myNetworkReceiver = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,43 +132,10 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
 
 
 
-
-        DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
-        presenceRef.onDisconnect().setValue("I disconnected!");
-        presenceRef.onDisconnect().removeValue(new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError error, @NonNull DatabaseReference reference) {
-                if (error != null) {
-                    Log.d(TAG, "could not establish onDisconnect event:" + error.getMessage());
-                }
-            }
-        });
-        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
-        connectedRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                boolean connected = snapshot.getValue(Boolean.class);
-                if (connected) {
-                    Toast.makeText(getApplicationContext(),"Connected",Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "connected");
-                } else {
-                    Toast.makeText(getApplicationContext(),"Not Connected",Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "not connected");
-                }
-            }
-
-
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.w(TAG, "Listener was cancelled");
-            }
-        });
-
-
-
         navigationView = findViewById(R.id.nav_view);
 
+        myNetworkReceiver = new MyNetworkReceiver();
+        broadcastIntent();
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -339,6 +312,11 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
                     }
 
                 });
+    }
+
+    private void broadcastIntent() {
+        registerReceiver(myNetworkReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
     }
 
     private void askPermission() {
@@ -570,6 +548,9 @@ public class MainActivity extends AppCompatActivity implements  PaymentListener{
         sdatabaseReference.child("PointsInstructor").child("weekly").child(user.getUid()).child("points").setValue(MainActivity.pointsW);
     }
 
-
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(myNetworkReceiver);
+    }
 }
